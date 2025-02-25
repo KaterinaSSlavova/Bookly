@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Bookly.Models;
 using Bookly.Repository;
+using Bookly.ViewModels;
 
 namespace Bookly.Controllers
 {
@@ -13,17 +14,20 @@ namespace Bookly.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register(User user)
+        public IActionResult Register(AccountRegister user)
         {
-            if(DbHelper.Register(user))
+            try
             {
-                return RedirectToAction("LogIn");
+                if (DbHelper.Register(user))
+                {
+                    return RedirectToAction("LogIn");
+                }
             }
-            else
+            catch (ApplicationException ex)
             {
-                ViewBag.ErrorMessage = "Username or email already taken!";
-                return View(user);
+                ViewBag.ErrorMessage = ex.Message;
             }
+            return View(user);
         }
 
         [HttpGet]
@@ -38,6 +42,7 @@ namespace Bookly.Controllers
             User loggedUser=DbHelper.LogIn(username, password);
             if(loggedUser!=null)
             {
+                HttpContext.Session.SetString("Username", loggedUser.Username);
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -45,6 +50,13 @@ namespace Bookly.Controllers
                 ViewBag.ErrorMessage = "Invalid username or password! Please try again!";
                 return View(loggedUser);
             }
+        }
+
+        [HttpPost]
+        public IActionResult LogOut()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("LogIn","User");
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Intrinsics.Arm;
 using Bookly.Models;
+using Bookly.ViewModels;
 using Microsoft.Data.SqlClient;
 
 namespace Bookly.Repository
@@ -8,7 +9,7 @@ namespace Bookly.Repository
     {
         private const string connectionString = "Server=DESKTOP-GPBCRNQ;Database=BooklyDB;Trusted_Connection=True; TrustServerCertificate=True;";
 
-        internal static bool Register(User user)
+        internal static bool Register(AccountRegister user)
         {
             try
             {
@@ -75,7 +76,7 @@ namespace Bookly.Repository
             }
         }
 
-        internal static List<User> LoadUsers()
+        internal static List<User> LoadAllUsers()
         {
             try
             {
