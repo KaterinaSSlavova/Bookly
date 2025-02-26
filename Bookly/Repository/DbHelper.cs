@@ -1,5 +1,4 @@
-﻿using System.Runtime.Intrinsics.Arm;
-using Bookly.Models;
+﻿using Bookly.Models;
 using Bookly.ViewModels;
 using Microsoft.Data.SqlClient;
 
@@ -13,9 +12,9 @@ namespace Bookly.Repository
         {
             try
             {
-                using SqlConnection connection=new SqlConnection(connectionString);
+                using SqlConnection connection = new SqlConnection(connectionString);
                 connection.Open();
-                string checkSql= @"SELECT COUNT(*) FROM Users WHERE Username = @Username or Email=@Email";
+                string checkSql = @"SELECT COUNT(*) FROM Users WHERE Username = @Username or Email=@Email";
                 using SqlCommand commandCheck = new SqlCommand(checkSql, connection);
                 commandCheck.Parameters.AddWithValue("@Username", user.Username);
                 commandCheck.Parameters.AddWithValue("@Email", user.Email);
@@ -27,7 +26,7 @@ namespace Bookly.Repository
 
                 string insertSql = @"INSERT INTO Users([Username], Email, [Password]) 
                                VALUES (@Username, @Email, @Password)";
-                using SqlCommand commandInsert = new SqlCommand(insertSql,connection);
+                using SqlCommand commandInsert = new SqlCommand(insertSql, connection);
                 commandInsert.Parameters.AddWithValue("@Username", user.Username);
                 commandInsert.Parameters.AddWithValue("@Email", user.Email);
                 commandInsert.Parameters.AddWithValue("@Password", user.Password);
@@ -35,13 +34,13 @@ namespace Bookly.Repository
                 commandInsert.ExecuteNonQuery();
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                throw new ApplicationException("Error registering user: "+ex.Message);
+                throw new ApplicationException("Error registering user: " + ex.Message);
             }
         }
 
-        internal static User LogIn(string username, string password)
+        internal static User? LogIn(string username, string password)
         {
             try
             {
@@ -55,42 +54,9 @@ namespace Bookly.Repository
                 command.Parameters.AddWithValue("@Password", password);
 
                 using SqlDataReader reader = command.ExecuteReader();
-                if(reader.Read())
+                if (reader.Read())
                 {
-                    User loggedUser = new User
-                    {
-                        Id = reader.GetInt32(0),
-                        Picture = reader.IsDBNull(1) ? null : reader.GetString(1),
-                        Username = reader.GetString(2),
-                        Age = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
-                        Email=reader.GetString(4),
-                        Password=reader.GetString(5)
-                    };
-                    return loggedUser;
-                }
-                return null;
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("Error logging in: "+ex.Message);
-            }
-        }
-
-        internal static List<User> LoadAllUsers()
-        {
-            try
-            {
-                List<User> users=new List<User>();
-                using SqlConnection connection = new SqlConnection(connectionString);
-                connection.Open();
-                string sql = @"SELECT *
-                               FROM Users";
-                using SqlCommand command = new SqlCommand(sql, connection);
-
-                using SqlDataReader reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    users.Add(new User
+                    return new User
                     {
                         Id = reader.GetInt32(0),
                         Picture = reader.IsDBNull(1) ? null : reader.GetString(1),
@@ -98,13 +64,109 @@ namespace Bookly.Repository
                         Age = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
                         Email = reader.GetString(4),
                         Password = reader.GetString(5)
-                    });
+                    };
                 }
-                return users;
+                return null;
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error loading users: " + ex.Message);
+                throw new ApplicationException("Error logging in: " + ex.Message);
+            }
+        }
+
+        //internal static List<User> LoadAllUsers()
+        //{
+        //    try
+        //    {
+        //        List<User> users=new List<User>();
+        //        using SqlConnection connection = new SqlConnection(connectionString);
+        //        connection.Open();
+        //        string sql = @"SELECT *
+        //                       FROM Users";
+        //        using SqlCommand command = new SqlCommand(sql, connection);
+
+        //        using SqlDataReader reader = command.ExecuteReader();
+        //        while (reader.Read())
+        //        {
+        //            users.Add(new User
+        //            {
+        //                Id = reader.GetInt32(0),
+        //                Picture = reader.IsDBNull(1) ? null : reader.GetString(1),
+        //                Username = reader.GetString(2),
+        //                Age = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
+        //                Email = reader.GetString(4),
+        //                Password = reader.GetString(5)
+        //            });
+        //        }
+        //        return users;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new ApplicationException("Error loading users: " + ex.Message);
+        //    }
+        //}
+
+        internal static User? LoadUser(string username)
+        {
+            try
+            {
+                using SqlConnection connection = new SqlConnection(connectionString);
+                connection.Open();
+                string sql = @"SELECT *
+                               FROM Users
+                               Where [Username]=@Username";
+                using SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@Username", username);
+
+                using SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    return new User
+                    {
+                        Id = reader.GetInt32(0),
+                        Picture = reader.IsDBNull(1) ? null : reader.GetString(1),
+                        Username = reader.GetString(2),
+                        Age = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
+                        Email = reader.GetString(4),
+                        Password = reader.GetString(5)
+                    };
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+        }
+
+        internal static bool UpdateProfile(User user)
+        {
+            try
+            {
+                User? loadUser=LoadUser(user.Username);
+                using SqlConnection connection = new SqlConnection(connectionString);
+                connection.Open();
+
+                string sql = @"UPDATE Users 
+                               SET Picture = @Picture, 
+                                [Username] = @NewUsername, 
+                                Age = @Age, 
+                                Email = @Email, 
+                                Password = @Password";
+                using SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@Picture", loadUser.Picture);
+                command.Parameters.AddWithValue("@Username", loadUser.Username);
+                command.Parameters.AddWithValue("@Age", loadUser.Age);
+                command.Parameters.AddWithValue("@Email", loadUser.Email);
+                command.Parameters.AddWithValue("@Password", loadUser.Password);
+                command.Parameters.AddWithValue("@Username", loadUser.Username);
+
+                command.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
             }
         }
     }

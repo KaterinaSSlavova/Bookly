@@ -22,6 +22,7 @@ namespace Bookly.Controllers
 
         public IActionResult Privacy()
         {
+            ViewBag.Username = HttpContext.Session.GetString("Username");
             return View();
         }
 
