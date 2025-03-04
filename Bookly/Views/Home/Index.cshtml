@@ -1,8 +1,38 @@
-﻿@{
+﻿@using Bookly.Models
+@model List<Book>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h1>Books</h1>
+<hr />
+
+@if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        <strong>@ViewBag.ErrorMessage</strong>
+    </div>
+}
+
+@foreach(Book book in Model)
+{
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-controller="Home" asp-action="Index">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-groups">
+                    <img src="data:image/jpeg;base64,@book.Picture" class="img-thumbnail" alt="@book.Title" />
+                    <label>@book.Title</label>
+                    <label>@book.Author</label>
+                </div>
+            </form>
+            <form asp-controller="Home" asp-action="ViewBook">
+                <input type="hidden" name="Id" value="@book.Id" />
+                <div class="form-group">
+                    <input type="submit" value="View" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+}

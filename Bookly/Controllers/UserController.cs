@@ -2,11 +2,13 @@
 using Bookly.Models;
 using Bookly.Repository;
 using Bookly.ViewModels;
+using System.Reflection;
 
 namespace Bookly.Controllers
 {
     public class UserController : Controller
     {
+
         [HttpGet]
         public IActionResult Register()
         {
@@ -59,11 +61,13 @@ namespace Bookly.Controllers
         [HttpGet]
         public IActionResult ViewProfile()
         {
-            ViewBag.Username = HttpContext.Session.GetString("Username");
-            return View();
+            string? currentUser = HttpContext.Session.GetString("Username");
+            ViewBag.Username=currentUser;
+            User? user = DbHelper.LoadUser(currentUser);
+            return View(user);
         }
 
-        [HttpGet]
+        [HttpPost]
         public IActionResult EditProfile()
         {
             ViewBag.Username = HttpContext.Session.GetString("Username");
@@ -71,33 +75,16 @@ namespace Bookly.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit()
+        public IActionResult SaveChanges(string picture, string username, int age, string email, string password)
         {
-            ViewBag.Username = HttpContext.Session.GetString("Username");
+            string? currentUsername= HttpContext.Session.GetString("Username");
+            User? user = DbHelper.LoadUser(currentUsername);
+            if(DbHelper.UpdateProfile(user, picture, username, age, email,password))
+            {
+                return RedirectToAction("ViewProfile", "User");
+            }
+            ViewBag.ErrorMessage="Profile was not updated!";
             return RedirectToAction("EditProfile", "User");
         }
-
-        //[HttpPost]
-        //public IActionResult Settings(User loggedUser)
-        //{
-        //    User? user = DbHelper.LoadUser(loggedUser.Username);
-        //    if(user!=null)
-        //    {
-        //        try
-        //        {
-        //            if (DbHelper.UpdateProfile(user))
-        //            {
-        //                return RedirectToAction("Index", "Home");
-        //            }
-        //        }
-        //        catch(ApplicationException ex)
-        //        {
-        //            ViewBag.ErrorMessage = ex.Message;
-        //            return View(loggedUser);
-        //        }
-        //    }
-        //    ViewBag.ErrorMessage = "Profile not found!";
-        //    return View(loggedUser);
-        //}
     }
 }

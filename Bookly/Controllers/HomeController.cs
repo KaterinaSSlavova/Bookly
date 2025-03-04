@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Azure.Identity;
 using Bookly.Models;
+using Bookly.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookly.Controllers
@@ -14,12 +15,21 @@ namespace Bookly.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             ViewBag.Username=HttpContext.Session.GetString("Username");
-            return View();
+            List<Book> books =DbHelper.LoadBooks();
+            return View(books);
         }
 
+        [HttpPost]
+        public IActionResult ViewBook(int id)
+        {
+            return RedirectToAction("BookDetails","Book", new { id = id });
+        }
+
+        [HttpGet]
         public IActionResult Privacy()
         {
             ViewBag.Username = HttpContext.Session.GetString("Username");
