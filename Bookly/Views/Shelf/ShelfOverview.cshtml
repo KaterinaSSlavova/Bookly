@@ -1,11 +1,11 @@
 ﻿@using Bookly.Models
-@model List<Book>
+@model List<Shelf>
 
 @{
-    ViewData["Title"] = "Home Page";
+	ViewData["Title"] = "Shelf Overview";
 }
 
-<h1>Books</h1>
+<h1>My shelves</h1>
 <hr />
 
 @if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage))
@@ -15,22 +15,26 @@
     </div>
 }
 
-@foreach(Book book in Model)
+<form asp-controller="Shelf" asp-action="GoToCreatePage">
+    <div class="form-group">
+        <input type="submit" value="Create new shelf" class="btn btn-primary" />
+    </div>
+</form>
+
+@foreach(Shelf shelf in Model)
 {
     <div class="row">
         <div class="col-md-4">
-            <form asp-controller="Home" asp-action="Index">
+            <form asp-controller="Shelf" asp-action="ShelfOverview">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-groups">
-                    <img src="@book.Picture" class="img-thumbnail" alt="@book.Title" />
-                    <label>@book.Title</label>
-                    <label>@book.Author</label>
+                    <label>@shelf.Name</label>
                 </div>
             </form>
-            <form asp-controller="Home" asp-action="ViewBook">
-                <input type="hidden" name="Id" value="@book.Id" />
+            <form asp-controller="Shelf" asp-action="ViewShelf">
                 <div class="form-group">
                     <input type="submit" value="View" class="btn btn-primary" />
+                    <input name="id" value="@shelf.Id" type="hidden" />
                 </div>
             </form>
         </div>

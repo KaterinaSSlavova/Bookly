@@ -4,3 +4,57 @@
 @{
 	ViewData["Title"] = "Book Details";
 }
+
+<h1>@Model.Title</h1>
+<hr />
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        <strong>@TempData["Message"]</strong>
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        <strong>@ViewBag.ErrorMessage</strong>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Home" asp-action="Index">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-groups">
+                <img src="@Model.Picture" class="img-thumbnail" alt="@Model.Title" />
+                <label>@Model.Title</label>
+                <label>@Model.Author</label>
+                <label>@Model.Genre</label>
+                <label>@Model.Description</label>
+                <label>@Model.ISBN</label>
+            </div>
+        </form>
+        <form asp-controller="Book" asp-action="MoveToShelf">
+            <input type="hidden" name="bookId" value="@Model.Id"/>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Select a shelf
+                </button>
+                <ul class="dropdown-menu">
+                    @foreach (Shelf shelf in ViewBag.Shelves)
+                    {
+                        <li>
+                           <button type="submit" class="dropdown-item" name="shelfId" value="@shelf.Id">@shelf.Name</button>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </form>
+        <form asp-controller="Book" asp-action="GoBack">
+            <div class="form-group">
+                <input type="submit" value="Go Back" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>  
+</div>
