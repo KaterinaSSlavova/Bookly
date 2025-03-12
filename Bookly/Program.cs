@@ -1,3 +1,6 @@
+using Bookly.Repository;
+using Bookly.Services;
+
 namespace Bookly
 {
     public class Program
@@ -9,6 +12,13 @@ namespace Bookly
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddSession();
+
+            builder.Services.AddScoped<UserRepository>();
+            builder.Services.AddScoped<UserServices>();
+            builder.Services.AddScoped<BookRepository>();
+            builder.Services.AddScoped<BookServices>();
+            builder.Services.AddScoped<ShelfRepository>();
+            builder.Services.AddScoped<ShelfServices>();
 
             var app = builder.Build();
 

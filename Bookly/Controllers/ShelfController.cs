@@ -1,18 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Bookly.Models;
 using Bookly.Repository;
+using Bookly.Services;
 
 namespace Bookly.Controllers
 {
     public class ShelfController : Controller
     {
+        private readonly ShelfServices _shelfService;
+        private readonly UserServices _userService;
+        public ShelfController(ShelfServices shelfService, UserServices userService)
+        {
+            this._shelfService = shelfService;
+            this._userService = userService;
+        }
+
         [HttpGet]
         public IActionResult ShelfOverview()
         {
             string? username = HttpContext.Session.GetString("Username");
             ViewBag.Username =username;
-            User? user = DbHelper.LoadUser(username);
-            List<Shelf> myShelves = DbHelper.GetUserShelves(user.Id);
+            User? user = _userService.LoadUser(username);
+            List<Shelf> myShelves = _shelfService.GetUserShelves(user.Id);
             return View(myShelves);
         }
 
@@ -33,8 +42,8 @@ namespace Bookly.Controllers
         public IActionResult CreateNewShelf(Shelf shelf)
         {
             string? username = HttpContext.Session.GetString("Username");
-            User? user = DbHelper.LoadUser(username);
-            if (!DbHelper.CreateShelf(shelf.Name, user.Id))
+            User? user = _userService.LoadUser(username);
+            if (!_shelfService.CreateShelf(shelf.Name, user.Id)) 
             {
                 ViewBag.ErrorMessage = "The shelf was not created!";
             }
@@ -46,8 +55,8 @@ namespace Bookly.Controllers
         public IActionResult ShelfDetails(int id)
         {
             ViewBag.Username = HttpContext.Session.GetString("Username");
-            Shelf? shelf=DbHelper.GetShelfById(id);
-            shelf.Books = DbHelper.GetBooksFromShelf(id);
+            Shelf? shelf=_shelfService.GetShelfById(id);
+            shelf.Books = _shelfService.GetBooksFromShelf(id);
             return View(shelf);
         } 
 

@@ -2,10 +2,10 @@
 @model List<Shelf>
 
 @{
-	ViewData["Title"] = "Shelf Overview";
+    ViewData["Title"] = "Shelf Overview";
 }
 
-<h1>My shelves</h1>
+<h1 class="mb-4">My Shelves</h1>
 <hr />
 
 @if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage))
@@ -15,28 +15,27 @@
     </div>
 }
 
-<form asp-controller="Shelf" asp-action="GoToCreatePage">
-    <div class="form-group">
-        <input type="submit" value="Create new shelf" class="btn btn-primary" />
-    </div>
-</form>
+<div class="mb-3">
+    <form asp-controller="Shelf" asp-action="GoToCreatePage">
+        <button type="submit" class="btn btn-primary">Create New Shelf</button>
+    </form>
+</div>
 
-@foreach(Shelf shelf in Model)
-{
-    <div class="row">
-        <div class="col-md-4">
-            <form asp-controller="Shelf" asp-action="ShelfOverview">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-groups">
-                    <label>@shelf.Name</label>
+<div class="row">
+    @foreach (Shelf shelf in Model)
+    {
+        <div class="col-md-6 col-lg-4 mb-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title">@shelf.Name</h5>
+                    <div class="d-flex justify-content-between">
+                        <form asp-controller="Shelf" asp-action="ViewShelf">
+                            <input type="hidden" name="id" value="@shelf.Id" />
+                            <button type="submit" class="btn btn-primary">View</button>
+                        </form>
+                    </div>
                 </div>
-            </form>
-            <form asp-controller="Shelf" asp-action="ViewShelf">
-                <div class="form-group">
-                    <input type="submit" value="View" class="btn btn-primary" />
-                    <input name="id" value="@shelf.Id" type="hidden" />
-                </div>
-            </form>
+            </div>
         </div>
-    </div>
-}
+    }
+</div>

@@ -3,11 +3,17 @@ using Bookly.Models;
 using Bookly.Repository;
 using Bookly.ViewModels;
 using System.Reflection;
+using Bookly.Services;
 
 namespace Bookly.Controllers
 {
     public class UserController : Controller
     {
+        private readonly UserServices _userService;
+        public UserController(UserServices userServices)
+        {
+            this._userService = userServices;
+        }
 
         [HttpGet]
         public IActionResult Register()
@@ -20,7 +26,7 @@ namespace Bookly.Controllers
         {
             try
             {
-                if (DbHelper.Register(user))
+                if (_userService.Register(user))
                 {
                     return RedirectToAction("LogIn", "User");
                 }
@@ -41,7 +47,7 @@ namespace Bookly.Controllers
         [HttpPost]
         public IActionResult LogIn(string username, string password)
         {
-            User? loggedUser = DbHelper.LogIn(username, password);
+            User? loggedUser = _userService.LogIn(username, password);
             if (loggedUser != null)
             {
                 HttpContext.Session.SetString("Username", loggedUser.Username);
@@ -63,7 +69,7 @@ namespace Bookly.Controllers
         {
             string? currentUser = HttpContext.Session.GetString("Username");
             ViewBag.Username=currentUser;
-            User? user = DbHelper.LoadUser(currentUser);
+            User? user = _userService.LoadUser(currentUser);
             return View(user);
         }
 
@@ -78,8 +84,8 @@ namespace Bookly.Controllers
         public IActionResult SaveChanges(string picture, string username, int age, string email, string password)
         {
             string? currentUsername= HttpContext.Session.GetString("Username");
-            User? user = DbHelper.LoadUser(currentUsername);
-            if(DbHelper.UpdateProfile(user, picture, username, age, email,password))
+            User? user = _userService.LoadUser(currentUsername);
+            if(_userService.UpdateProfile(user, picture, username, age, email,password))
             {
                 return RedirectToAction("ViewProfile", "User");
             }
