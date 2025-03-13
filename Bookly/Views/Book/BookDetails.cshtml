@@ -2,65 +2,67 @@
 @model Book
 
 @{
-	ViewData["Title"] = "Book Details";
+    ViewData["Title"] = "Book Details";
 }
 
-<h1>@Model.Title</h1>
-<hr />
+<div class="container mt-4">
+    <h1 class="mb-3">@Model.Title</h1>
+    <hr />
 
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-success" role="alert">
-        <strong>@TempData["Message"]</strong>
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            <strong>@TempData["Message"]</strong>
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage))
+    {
+        <div class="alert alert-danger" role="alert">
+            <strong>@ViewBag.ErrorMessage</strong>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-3">
+                <img src="@Model.Picture" class="card-img-top" alt="@Model.Title" />
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Title</h5>
+                    <p class="card-text"><strong>Author:</strong> @Model.Author</p>
+                    <p class="card-text"><strong>Genre:</strong> @Model.Genre</p>
+                    <p class="card-text"><strong>Description:</strong> @Model.Description</p>
+                    <p class="card-text"><strong>ISBN:</strong> @Model.ISBN</p>
+                </div>
+            </div>
+
+            <form asp-controller="Book" asp-action="MoveToShelf" class="mb-2">
+                <input type="hidden" name="bookId" value="@Model.Id" />
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Select a shelf
+                    </button>
+                    <ul class="dropdown-menu w-100">
+                        @foreach (Shelf shelf in ViewBag.Shelves)
+                        {
+                            <li>
+                                <button type="submit" class="dropdown-item" name="shelfId" value="@shelf.Id">@shelf.Name</button>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </form>
+
+            <div class="d-grid gap-2">
+                <form asp-controller="Book" asp-action="RemoveBook">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button type="submit" class="btn btn-danger">Remove Book</button>
+                </form>
+
+                <form asp-controller="Book" asp-action="GoBack">
+                    <button type="submit" class="btn btn-primary">Go Back</button>
+                </form>
+            </div>
+        </div>
     </div>
-}
-
-@if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage))
-{
-    <div class="alert alert-danger" role="alert">
-        <strong>@ViewBag.ErrorMessage</strong>
-    </div>
-}
-
-<div class="row">
-    <div class="col-md-4">
-        <form asp-controller="Home" asp-action="Index">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-groups">
-                <img src="@Model.Picture" class="img-thumbnail" alt="@Model.Title" />
-                <label>@Model.Title</label>
-                <label>@Model.Author</label>
-                <label>@Model.Genre</label>
-                <label>@Model.Description</label>
-                <label>@Model.ISBN</label>
-            </div>
-        </form>
-        <form asp-controller="Book" asp-action="MoveToShelf">
-            <input type="hidden" name="bookId" value="@Model.Id"/>
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Select a shelf
-                </button>
-                <ul class="dropdown-menu">
-                    @foreach (Shelf shelf in ViewBag.Shelves)
-                    {
-                        <li>
-                           <button type="submit" class="dropdown-item" name="shelfId" value="@shelf.Id">@shelf.Name</button>
-                        </li>
-                    }
-                </ul>
-            </div>
-        </form>
-        <form asp-controller="Book" asp-action="RemoveBook">
-            <div class="form-group">
-                <input type="hidden" name="id" value="@Model.Id"/>
-                <input type="submit" value="Remove Back" class="btn btn-primary" />
-            </div>
-        </form>
-        <form asp-controller="Book" asp-action="GoBack">
-            <div class="form-group">
-                <input type="submit" value="Go Back" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>  
 </div>

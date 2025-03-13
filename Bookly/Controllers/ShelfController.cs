@@ -75,7 +75,7 @@ namespace Bookly.Controllers
         [HttpPost]
         public IActionResult RemoveShelf(int id)
         {
-            _shelfService.RenmoveShelf(id);
+            _shelfService.RemoveShelf(id);
             return RedirectToAction("ShelfOverview","Shelf");
         }
     }

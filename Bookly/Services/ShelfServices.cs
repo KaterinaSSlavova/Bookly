@@ -36,7 +36,7 @@ namespace Bookly.Services
             return _shelfRepo.AddBookToShelf(bookId,shelfId,userId);
         }
 
-        public void RenmoveShelf(int id)
+        public void RemoveShelf(int id)
         {
             _shelfRepo.RemoveShelf(id);
         }

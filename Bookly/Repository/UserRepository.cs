@@ -7,10 +7,12 @@ namespace Bookly.Repository
     public class UserRepository
     {
         private readonly string _connectionString;
+        private readonly ShelfRepository _shelfRepo;
         
-        public UserRepository(IConfiguration configuration)
+        public UserRepository(IConfiguration configuration, ShelfRepository shelfRepo)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection");
+            this._shelfRepo = shelfRepo;
         }
 
         public bool Register(AccountRegister user)
@@ -37,6 +39,10 @@ namespace Bookly.Repository
                 commandInsert.Parameters.AddWithValue("@Password", user.Password);
 
                 commandInsert.ExecuteNonQuery();
+
+                User? newUser = LoadUser(user.Username);
+                _shelfRepo.CreateShelf("Have Read", newUser.Id);
+
                 return true;
             }
             catch (Exception ex)

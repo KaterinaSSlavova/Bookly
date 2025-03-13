@@ -74,6 +74,29 @@ namespace Bookly.Repository
             }
         }
 
+        //public void UpdateProgress(int userId, int )
+        //{
+        //    try
+        //    {
+        //        using SqlConnection connection = new SqlConnection(_connectionString);
+        //        connection.Open();
+
+        //        string sql = @"Update Goals
+        //                        SET isArchived = @isArchived
+        //                        WHERE Id=@Id";
+        //        using SqlCommand command = new SqlCommand(sql, connection);
+        //        command.Parameters.AddWithValue("@Id", id);
+        //        command.Parameters.AddWithValue("@isArchived", 1);
+
+        //        command.ExecuteNonQuery();
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
+
         public void RemoveGoal(int id)
         {
             try
@@ -96,5 +119,7 @@ namespace Bookly.Repository
                 throw new Exception(ex.Message);
             }
         }
+
+ 
     }
 }
