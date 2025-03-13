@@ -26,5 +26,9 @@ namespace Bookly.Services
             return _bookRepo.GetBookById(id);
         }
 
+        public void RemoveBook(int id)
+        {
+            _bookRepo.RemoveBook(id);
+        }
     }
 }

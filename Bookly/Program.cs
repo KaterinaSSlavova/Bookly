@@ -19,6 +19,8 @@ namespace Bookly
             builder.Services.AddScoped<BookServices>();
             builder.Services.AddScoped<ShelfRepository>();
             builder.Services.AddScoped<ShelfServices>();
+            builder.Services.AddScoped<GoalRepository>();
+            builder.Services.AddScoped<GoalServices>();
 
             var app = builder.Build();
 

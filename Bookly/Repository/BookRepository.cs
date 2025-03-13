@@ -48,8 +48,10 @@ namespace Bookly.Repository
                 connection.Open();
 
                 string sql = @"SELECT *
-                               FROM Books";
+                               FROM Books
+                                WHERE isArchived=@IsArchived";
                 using SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@IsArchived",0);
                 using SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -104,6 +106,29 @@ namespace Bookly.Repository
             catch (Exception ex)
             {
                 throw new ApplicationException(ex.Message);
+            }
+        }
+
+        public void RemoveBook(int id)
+        {
+            try
+            {
+                using SqlConnection connection = new SqlConnection(_connectionString);
+                connection.Open();
+
+                string sql = @"UPDATE Books
+                                SET isArchived = @isArchived
+                                WHERE Id=@Id";
+                using SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@isArchived", 1);
+                command.Parameters.AddWithValue("@Id", id);
+
+                command.ExecuteNonQuery();
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 

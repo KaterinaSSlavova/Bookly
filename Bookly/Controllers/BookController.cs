@@ -72,5 +72,12 @@ namespace Bookly.Controllers
             _bookService.AddBook(book);
             return RedirectToAction("Index","Home");
         }
+
+        [HttpPost]
+        public IActionResult RemoveBook(int id)
+        {
+            _bookService.RemoveBook(id);
+            return RedirectToAction("Index", "Home");   
+        }
     }
 }

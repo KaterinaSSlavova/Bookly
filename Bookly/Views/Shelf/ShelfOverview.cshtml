@@ -33,6 +33,10 @@
                             <input type="hidden" name="id" value="@shelf.Id" />
                             <button type="submit" class="btn btn-primary">View</button>
                         </form>
+                        <form asp-controller="Shelf" asp-action="RemoveShelf" method="post">
+                            <input type="hidden" name="id" value="@shelf.Id" />
+                            <button type="submit" class="btn btn-danger">Remove Shelf</button>
+                        </form>
                     </div>
                 </div>
             </div>

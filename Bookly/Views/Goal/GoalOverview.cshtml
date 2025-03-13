@@ -1,0 +1,73 @@
+﻿@using Bookly.Models
+@model List<Goal>
+
+@{
+    ViewData["Title"] = "Goal Overview";
+}
+
+<h1 class="mb-4">Goals</h1>
+<hr />
+
+@if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        <strong>@ViewBag.ErrorMessage</strong>
+    </div>
+}
+
+<form asp-controller="Goal" asp-action="GoToCreateGoal" method="post">
+    <input type="submit" value="Create Goal" class="btn btn-primary mb-3" />
+</form>
+
+@if (Model.Any())
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var goal in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Reading Goal: @goal.ReadingGoal books</h5>
+                        <p class="card-text">Start: <strong>@goal.Start.ToString("yyyy-MM-dd")</strong></p>
+                        <p class="card-text">End: <strong>@goal.End.Date.ToString("yyyy-MM-dd")</strong></p>
+
+                        <div class="progress mb-2">
+                            <div class="progress-bar @(goal.CurrentProgress >= goal.ReadingGoal ? "bg-success" : "bg-info")"
+                                 role="progressbar"
+                                 style="width: @(Math.Min((goal.CurrentProgress / (double)goal.ReadingGoal) * 100, 100))%;"
+                                 aria-valuenow="@goal.CurrentProgress"
+                                 aria-valuemin="0"
+                                 aria-valuemax="@goal.ReadingGoal">
+                                @goal.CurrentProgress / @goal.ReadingGoal
+                            </div>
+                        </div>
+
+                        <p class="text-center">
+                            @if (goal.Status == Status.Completed)
+                            {
+                                <span class="badge bg-success">✅ Completed</span>
+                            }
+                            else if (goal.Status == Status.In_progress)
+                            {
+                                <span class="badge bg-warning text-dark">⌛ In Progress</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">🔧 Not Started</span>
+                            }
+                        </p>
+
+                        <form asp-controller="Goal" asp-action="RemoveGoal" method="post">
+                            <input type="hidden" name="id" value="@goal.Id" />
+                            <input type="submit" value="Remove" class="btn btn-danger mb-3" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>No goals set yet. Click "Create Goal" to start!</p>
+}

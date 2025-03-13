@@ -1,4 +1,5 @@
-﻿using Bookly.Models;
+﻿using System.Linq.Expressions;
+using Bookly.Models;
 using Microsoft.Data.SqlClient;
 
 namespace Bookly.Repository
@@ -44,9 +45,10 @@ namespace Bookly.Repository
 
                 string sql = @"SELECT * 
                                FROM Shelves
-                               WHERE UserId = @Id";
+                               WHERE UserId = @Id and isArchived=@isArchived";
                 using SqlCommand command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@Id", id);
+                command.Parameters.AddWithValue("@isArchived", 0);
                 using SqlDataReader reader = command.ExecuteReader();
 
                 while (reader.Read())
@@ -158,6 +160,28 @@ namespace Bookly.Repository
 
                 command.ExecuteNonQuery();
                 return true;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+        }
+
+        public void RemoveShelf(int id)
+        {
+            try
+            {
+                using SqlConnection connection=new SqlConnection(_connectionString);
+                connection.Open();
+
+                string sql = @"UPDATE Shelves
+                                SET isArchived=@isArchived
+                                WHERE Id=@Id";
+                using SqlCommand command= new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@isArchived",1);
+                command.Parameters.AddWithValue("@Id",id);
+
+                command.ExecuteNonQuery();
             }
             catch (Exception ex)
             {

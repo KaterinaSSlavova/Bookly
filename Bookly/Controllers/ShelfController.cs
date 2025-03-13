@@ -71,5 +71,12 @@ namespace Bookly.Controllers
         {
             return RedirectToAction("ShelfOverview", "Shelf");
         }
+
+        [HttpPost]
+        public IActionResult RemoveShelf(int id)
+        {
+            _shelfService.RenmoveShelf(id);
+            return RedirectToAction("ShelfOverview","Shelf");
+        }
     }
 }
