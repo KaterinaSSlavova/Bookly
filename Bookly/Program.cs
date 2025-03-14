@@ -12,6 +12,7 @@ namespace Bookly
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddSession();
+            builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddScoped<UserRepository>();
             builder.Services.AddScoped<UserServices>();

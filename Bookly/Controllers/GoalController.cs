@@ -20,6 +20,8 @@ namespace Bookly.Controllers
         public IActionResult GoalOverview()
         {
             ViewBag.Username = HttpContext.Session.GetString("Username");
+            User user = _userService.LoadUser(ViewBag.Username);
+            _goalService.UpdateGoalProgress(user.Id);
             List<Goal> personalGoals = _goalService.GetPersonalGoals(_userService.LoadUser(ViewBag.Username).Id);
             return View(personalGoals);
         }

@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using System.Net;
 using Bookly.Models;
 using Microsoft.Data.SqlClient;
 
@@ -141,16 +142,7 @@ namespace Bookly.Repository
                 using SqlConnection connection = new SqlConnection(_connectionString);
                 connection.Open();
 
-                string deleteSql = @"DELETE sb
-                                     FROM ShelfBook as sb 
-                                     INNER JOIN Shelves as s
-                                     ON sb.ShelfId=s.Id
-                                     WHERE s.UserId=@UserId and sb.BookId=@BookId";
-                using SqlCommand deleteCommand = new SqlCommand(deleteSql, connection);
-                deleteCommand.Parameters.AddWithValue("@UserId", userId);
-                deleteCommand.Parameters.AddWithValue("@BookId", bookId);
-
-                deleteCommand.ExecuteNonQuery();
+                RemoveBookFromShelf(userId, bookId);
 
                 string sql = @"INSERT INTO ShelfBook(ShelfId, BookId)
                                VALUES (@ShelfId, @BookId)";
@@ -164,6 +156,59 @@ namespace Bookly.Repository
             catch (Exception ex)
             {
                 throw new ApplicationException(ex.Message);
+            }
+        }
+
+        public int GetBookCount(int userId)
+        {
+            try
+            {
+                string name = "Have Read";
+                using SqlConnection connection = new SqlConnection(_connectionString);
+                connection.Open();
+
+                string sql = @"SELECT count(BookId)
+                                FROM ShelfBook as sb
+                                INNER JOIN Shelves as s
+                                ON sb.ShelfId=s.Id
+                                WHERE s.UserId=@UserId and s.isArchived=@isArchived and s.[Name]=@Name";
+
+                using SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@UserId", userId);
+                command.Parameters.AddWithValue("@isArchived", 0);
+                command.Parameters.AddWithValue("@Name", name);
+
+                int count = (int)command.ExecuteScalar();
+                return count;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+        }
+
+        public bool RemoveBookFromShelf(int userId, int bookId)
+        {
+            try
+            {
+                using SqlConnection connection= new SqlConnection(_connectionString);
+                connection.Open();
+
+                string sql = @"DELETE sb
+                               FROM ShelfBook as sb 
+                               INNER JOIN Shelves as s
+                               ON sb.ShelfId=s.Id
+                               WHERE s.UserId=@UserId and sb.BookId=@BookId";
+                using SqlCommand deleteCommand = new SqlCommand(sql, connection);
+                deleteCommand.Parameters.AddWithValue("@UserId", userId);
+                deleteCommand.Parameters.AddWithValue("@BookId", bookId);
+
+                deleteCommand.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message); 
             }
         }
 
