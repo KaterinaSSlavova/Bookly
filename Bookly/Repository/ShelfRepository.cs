@@ -159,34 +159,6 @@ namespace Bookly.Repository
             }
         }
 
-        public int GetBookCount(int userId)
-        {
-            try
-            {
-                string name = "Have Read";
-                using SqlConnection connection = new SqlConnection(_connectionString);
-                connection.Open();
-
-                string sql = @"SELECT count(BookId)
-                                FROM ShelfBook as sb
-                                INNER JOIN Shelves as s
-                                ON sb.ShelfId=s.Id
-                                WHERE s.UserId=@UserId and s.isArchived=@isArchived and s.[Name]=@Name";
-
-                using SqlCommand command = new SqlCommand(sql, connection);
-                command.Parameters.AddWithValue("@UserId", userId);
-                command.Parameters.AddWithValue("@isArchived", 0);
-                command.Parameters.AddWithValue("@Name", name);
-
-                int count = (int)command.ExecuteScalar();
-                return count;
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException(ex.Message);
-            }
-        }
-
         public bool RemoveBookFromShelf(int userId, int bookId)
         {
             try

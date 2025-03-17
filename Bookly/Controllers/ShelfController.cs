@@ -76,7 +76,7 @@ namespace Bookly.Controllers
         public IActionResult RemoveFromShelf(int bookId, int shelfId)
         {
             User? user = _userService.LoadUser(HttpContext.Session.GetString("Username"));
-            if(_shelfService.RemoveBookFromShelf(user.Id, bookId))
+            if(_shelfService.RemoveBookFromShelf(user.Id, bookId, shelfId))
             {
                 TempData["Confirmation"] = "Book was removed successfully!";
             }

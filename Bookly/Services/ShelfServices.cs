@@ -1,5 +1,5 @@
-﻿using Bookly.Repository;
-using Bookly.Models;
+﻿using Bookly.Models;
+using Bookly.Repository;
 
 namespace Bookly.Services
 {
@@ -7,17 +7,18 @@ namespace Bookly.Services
     {
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly ShelfRepository _shelfRepo;
+        private readonly GoalRepository _goalRepo;
         private int progress;
-        public ShelfServices(ShelfRepository shelfRepo, IHttpContextAccessor contextAccessor)
+        public ShelfServices(ShelfRepository shelfRepo, IHttpContextAccessor contextAccessor, GoalRepository goalRepo)
         {
-           this._shelfRepo= shelfRepo;
+            this._shelfRepo = shelfRepo;
             this._contextAccessor = contextAccessor;
-
+            this._goalRepo = goalRepo;
         }
 
         public bool CreateShelf(string name, int id)
-        {  
-            return _shelfRepo.CreateShelf(name, id); 
+        {
+            return _shelfRepo.CreateShelf(name, id);
         }
 
         public List<Shelf> GetUserShelves(int id)
@@ -31,21 +32,25 @@ namespace Bookly.Services
         }
 
         public Shelf? GetShelfById(int id)
-        { 
+        {
             return _shelfRepo.GetShelfById(id);
         }
 
         public bool AddBookToShelf(int bookId, int shelfId, int userId)
         {
-            if(GetShelfById(shelfId).Name=="Have Read")
+            if (GetShelfById(shelfId)?.Name == "Have Read")
             {
-                IncreaseProgress();
+                UpdateProgress(1);
             }
-            return _shelfRepo.AddBookToShelf(bookId,shelfId,userId);
+            return _shelfRepo.AddBookToShelf(bookId, shelfId, userId);
         }
-        
-        public bool RemoveBookFromShelf(int userId, int bookId)
+
+        public bool RemoveBookFromShelf(int userId, int bookId, int shelfId)
         {
+            if (GetShelfById(shelfId)?.Name == "Have Read")
+            {
+                UpdateProgress(-1);
+            }
             return _shelfRepo.RemoveBookFromShelf(userId, bookId);
         }
 
@@ -54,16 +59,20 @@ namespace Bookly.Services
             _shelfRepo.RemoveShelf(id);
         }
 
-        public void IncreaseProgress()
+        public void UpdateProgress(int updateAmount)
         {
-            int progress = _contextAccessor.HttpContext?.Session.GetInt32("Progress") ?? 0;
-            progress++;
-            _contextAccessor.HttpContext?.Session.SetInt32("Progress", progress);
+            progress = GetProgress() + updateAmount;
+            SaveProgress();
         }
 
         public int GetProgress()
         {
             return _contextAccessor.HttpContext?.Session.GetInt32("Progress") ?? 0;
+        }
+
+        public void SaveProgress()
+        {
+            _contextAccessor.HttpContext?.Session.SetInt32("Progress", progress);
         }
     }
 }

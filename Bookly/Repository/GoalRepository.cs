@@ -136,6 +136,29 @@ namespace Bookly.Repository
             }
         }
 
+        public void UpdateStatus(Status status, int goalId, int userId)
+        {
+            try
+            {
+                using SqlConnection connection= new SqlConnection(_connectionString);
+                connection.Open();
+
+                string sql = @"UPDATE Goals
+                                SET Status=@Status
+                                WHERE Id=@goalId and UserId=@UserId";
+                using SqlCommand command = new SqlCommand(sql,connection);
+                command.Parameters.AddWithValue("@Status", status.ToString());
+                command.Parameters.AddWithValue("@goalId", goalId);
+                command.Parameters.AddWithValue("@UserId", userId);
+
+                command.ExecuteNonQuery();  
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public void RemoveGoal(int id)
         {
             try

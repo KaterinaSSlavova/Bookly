@@ -7,10 +7,12 @@ namespace Bookly.Services
     {
         private readonly GoalRepository _goalRepo;
         private readonly ShelfServices _shelfService;
-        public GoalServices(GoalRepository goalRepo, ShelfServices shelfServices)
+        private readonly IHttpContextAccessor _contextAccessor;
+        public GoalServices(GoalRepository goalRepo, ShelfServices shelfServices, IHttpContextAccessor contextAccessor)
         {
             this._goalRepo = goalRepo;
             this._shelfService = shelfServices;
+            this._contextAccessor = contextAccessor; 
         }
 
         public bool CreateGoal(Goal goal, int userId)
@@ -28,13 +30,13 @@ namespace Bookly.Services
             _goalRepo.RemoveGoal(id);
         }
 
+
         public void UpdateGoalProgress(int userId)
         {
             Status newStatus = Status.Not_started;
-            int progress = _shelfService.GetProgress();
             Goal? goal = _goalRepo.GetNewestGoal();
-           // int progress = amount + goal.CurrentProgress;
-            if(goal!=null)
+            int progress = _shelfService.GetProgress();
+            if (goal!=null)
             {
                 if (progress > 0 && progress < goal.ReadingGoal)
                 {
@@ -43,10 +45,7 @@ namespace Bookly.Services
                 else if (progress == goal.ReadingGoal)
                 {
                     newStatus = Status.Completed;
-                }
-                else
-                {
-                    newStatus = Status.Not_started;
+                    _contextAccessor.HttpContext?.Session.SetInt32("Progress", 0);
                 }
                 _goalRepo.UpdateProgress(userId, goal.Id, progress, newStatus);
             }

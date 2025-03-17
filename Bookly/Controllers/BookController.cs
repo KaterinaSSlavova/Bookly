@@ -38,7 +38,7 @@ namespace Bookly.Controllers
         [HttpPost]
         public IActionResult MoveToShelf(int bookId, int shelfId)
         {
-            string username = HttpContext.Session.GetString("Username");
+            string? username = HttpContext.Session.GetString("Username");
             User? user = _userService.LoadUser(username);
             if (_shelfService.AddBookToShelf(bookId, shelfId, user.Id))
             {
