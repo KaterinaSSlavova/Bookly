@@ -1,6 +1,7 @@
 ﻿using Bookly.Repository;
 using Bookly.Services;
 using Bookly.Models;
+using Bookly.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookly.Controllers
@@ -8,22 +9,22 @@ namespace Bookly.Controllers
     public class GoalController : Controller
     {
 
-        private readonly GoalServices _goalService;
-        private readonly UserServices _userService;
-        public GoalController(GoalServices goalService, UserServices userService)
+        private readonly IGoalServices _igoalService;
+        private readonly IUserServices _iuserService;
+        public GoalController(IGoalServices igoalService, IUserServices iuserService)
         {
-            this._goalService = goalService;
-            this._userService = userService;
+            this._igoalService = igoalService;
+            this._iuserService = iuserService;
         }
 
         [HttpGet]
         public IActionResult GoalOverview()
         {
             ViewBag.Username = HttpContext.Session.GetString("Username");
-            User user = _userService.LoadUser(ViewBag.Username);
-            _goalService.UpdateGoalProgress(user.Id);
-            _goalService.GetPersonalGoals(user.Id);
-            List<Goal> personalGoals = _goalService.GetPersonalGoals(_userService.LoadUser(ViewBag.Username).Id);
+            User user = _iuserService.LoadUser(ViewBag.Username);
+            _igoalService.UpdateGoalProgress(user.Id);
+            _igoalService.GetPersonalGoals(user.Id);
+            List<Goal> personalGoals = _igoalService.GetPersonalGoals(_iuserService.LoadUser(ViewBag.Username).Id);
             return View(personalGoals);
         }
 
@@ -44,7 +45,7 @@ namespace Bookly.Controllers
         public IActionResult SaveGoal(Goal goal)
         {
             ViewBag.Username = HttpContext.Session.GetString("Username");
-            if (_goalService.CreateGoal(goal, _userService.LoadUser(ViewBag.Username).Id))
+            if (_igoalService.CreateGoal(goal, _iuserService.LoadUser(ViewBag.Username).Id))
             {
                 return RedirectToAction("GoalOverview", "Goal");
             }
@@ -54,7 +55,7 @@ namespace Bookly.Controllers
         [HttpPost]
         public IActionResult RemoveGoal(int id)
         {
-            _goalService.RemoveGoal(id);
+            _igoalService.RemoveGoal(id);
             return RedirectToAction("GoalOverview", "Goal");
         }
     }

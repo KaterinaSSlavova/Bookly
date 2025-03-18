@@ -1,41 +1,42 @@
-﻿using Bookly.Models;
+﻿using Bookly.Interfaces;
+using Bookly.Models;
 using Bookly.Repository;
 
 namespace Bookly.Services
 {
-    public class GoalServices
+    public class GoalServices: IGoalServices
     {
-        private readonly GoalRepository _goalRepo;
-        private readonly ShelfServices _shelfService;
+        private readonly IGoalRepository _igoalRepo;
+        private readonly IShelfServices _ishelfService;
         private readonly IHttpContextAccessor _contextAccessor;
-        public GoalServices(GoalRepository goalRepo, ShelfServices shelfServices, IHttpContextAccessor contextAccessor)
+        public GoalServices(IGoalRepository igoalRepo, IShelfServices ishelfServices, IHttpContextAccessor contextAccessor)
         {
-            this._goalRepo = goalRepo;
-            this._shelfService = shelfServices;
+            this._igoalRepo = igoalRepo;
+            this._ishelfService = ishelfServices;
             this._contextAccessor = contextAccessor; 
         }
 
         public bool CreateGoal(Goal goal, int userId)
         {
-            return _goalRepo.CreateGoal(goal, userId);
+            return _igoalRepo.CreateGoal(goal, userId);
         }
 
         public List<Goal> GetPersonalGoals(int id)
         {
-            return _goalRepo.GetPersonalGoals(id);
+            return _igoalRepo.GetPersonalGoals(id);
         }
 
         public void RemoveGoal(int id)
         {
-            _goalRepo.RemoveGoal(id);
+            _igoalRepo.RemoveGoal(id);
         }
 
 
         public void UpdateGoalProgress(int userId)
         {
             Status newStatus = Status.Not_started;
-            Goal? goal = _goalRepo.GetNewestGoal();
-            int progress = _shelfService.GetProgress();
+            Goal? goal = _igoalRepo.GetNewestGoal();
+            int progress = _ishelfService.GetProgress();
             if (goal!=null)
             {
                 if (progress > 0 && progress < goal.ReadingGoal)
@@ -47,7 +48,7 @@ namespace Bookly.Services
                     newStatus = Status.Completed;
                     _contextAccessor.HttpContext?.Session.SetInt32("Progress", 0);
                 }
-                _goalRepo.UpdateProgress(userId, goal.Id, progress, newStatus);
+                _igoalRepo.UpdateProgress(userId, goal.Id, progress, newStatus);
             }
         }
     }

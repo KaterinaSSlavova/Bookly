@@ -1,9 +1,10 @@
-﻿using Bookly.Models;
+﻿using Bookly.Interfaces;
+using Bookly.Models;
 using Microsoft.Data.SqlClient;
 
 namespace Bookly.Repository
 {
-    public class BookRepository
+    public class BookRepository: IBookRepository
     {
         private readonly string _connectionString;
 

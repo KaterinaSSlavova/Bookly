@@ -1,11 +1,12 @@
 ﻿using System.Linq.Expressions;
 using System.Net;
+using Bookly.Interfaces;
 using Bookly.Models;
 using Microsoft.Data.SqlClient;
 
 namespace Bookly.Repository
 {
-    public class ShelfRepository
+    public class ShelfRepository: IShelfRepository
     {
         private readonly string _connectionString;
 

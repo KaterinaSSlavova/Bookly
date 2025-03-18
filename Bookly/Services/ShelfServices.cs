@@ -1,39 +1,40 @@
-﻿using Bookly.Models;
+﻿using Bookly.Interfaces;
+using Bookly.Models;
 using Bookly.Repository;
 
 namespace Bookly.Services
 {
-    public class ShelfServices
+    public class ShelfServices: IShelfServices
     {
         private readonly IHttpContextAccessor _contextAccessor;
-        private readonly ShelfRepository _shelfRepo;
-        private readonly GoalRepository _goalRepo;
+        private readonly IShelfRepository _ishelfRepo;
+        private readonly IGoalRepository _igoalRepo;
         private int progress;
-        public ShelfServices(ShelfRepository shelfRepo, IHttpContextAccessor contextAccessor, GoalRepository goalRepo)
+        public ShelfServices(IShelfRepository ishelfRepo, IHttpContextAccessor contextAccessor, IGoalRepository igoalRepo)
         {
-            this._shelfRepo = shelfRepo;
+            this._ishelfRepo = ishelfRepo;
             this._contextAccessor = contextAccessor;
-            this._goalRepo = goalRepo;
+            this._igoalRepo = igoalRepo;
         }
 
         public bool CreateShelf(string name, int id)
         {
-            return _shelfRepo.CreateShelf(name, id);
+            return _ishelfRepo.CreateShelf(name, id);
         }
 
         public List<Shelf> GetUserShelves(int id)
         {
-            return _shelfRepo.GetUserShelves(id);
+            return _ishelfRepo.GetUserShelves(id);
         }
 
         public List<Book> GetBooksFromShelf(int id)
         {
-            return _shelfRepo.GetBooksFromShelf(id);
+            return _ishelfRepo.GetBooksFromShelf(id);
         }
 
         public Shelf? GetShelfById(int id)
         {
-            return _shelfRepo.GetShelfById(id);
+            return _ishelfRepo.GetShelfById(id);
         }
 
         public bool AddBookToShelf(int bookId, int shelfId, int userId)
@@ -42,7 +43,7 @@ namespace Bookly.Services
             {
                 UpdateProgress(1);
             }
-            return _shelfRepo.AddBookToShelf(bookId, shelfId, userId);
+            return _ishelfRepo.AddBookToShelf(bookId, shelfId, userId);
         }
 
         public bool RemoveBookFromShelf(int userId, int bookId, int shelfId)
@@ -51,12 +52,12 @@ namespace Bookly.Services
             {
                 UpdateProgress(-1);
             }
-            return _shelfRepo.RemoveBookFromShelf(userId, bookId);
+            return _ishelfRepo.RemoveBookFromShelf(userId, bookId);
         }
 
         public void RemoveShelf(int id)
         {
-            _shelfRepo.RemoveShelf(id);
+            _ishelfRepo.RemoveShelf(id);
         }
 
         public void UpdateProgress(int updateAmount)

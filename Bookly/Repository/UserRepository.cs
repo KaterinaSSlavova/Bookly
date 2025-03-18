@@ -1,18 +1,19 @@
-﻿using Bookly.Models;
+﻿using Bookly.Interfaces;
+using Bookly.Models;
 using Bookly.ViewModels;
 using Microsoft.Data.SqlClient;
 
 namespace Bookly.Repository
 {
-    public class UserRepository
+    public class UserRepository: IUserRepository
     {
         private readonly string _connectionString;
-        private readonly ShelfRepository _shelfRepo;
+        private readonly IShelfRepository _ishelfRepo;
         
-        public UserRepository(IConfiguration configuration, ShelfRepository shelfRepo)
+        public UserRepository(IConfiguration configuration, IShelfRepository ishelfRepo)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection");
-            this._shelfRepo = shelfRepo;
+            this._ishelfRepo = ishelfRepo;
         }
 
         public bool Register(AccountRegister user)
@@ -41,7 +42,7 @@ namespace Bookly.Repository
                 commandInsert.ExecuteNonQuery();
 
                 User? newUser = LoadUser(user.Username);
-                _shelfRepo.CreateShelf("Have Read", newUser.Id);
+                _ishelfRepo.CreateShelf("Have Read", newUser.Id);
 
                 return true;
             }

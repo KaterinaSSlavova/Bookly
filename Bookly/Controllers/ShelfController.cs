@@ -2,17 +2,18 @@
 using Bookly.Models;
 using Bookly.Repository;
 using Bookly.Services;
+using Bookly.Interfaces;
 
 namespace Bookly.Controllers
 {
     public class ShelfController : Controller
     {
-        private readonly ShelfServices _shelfService;
-        private readonly UserServices _userService;
-        public ShelfController(ShelfServices shelfService, UserServices userService)
+        private readonly IShelfServices _ishelfService;
+        private readonly IUserServices _iuserService;
+        public ShelfController(IShelfServices ishelfService, IUserServices iuserService)
         {
-            this._shelfService = shelfService;
-            this._userService = userService;
+            this._ishelfService = ishelfService;
+            this._iuserService = iuserService;
         }
 
         [HttpGet]
@@ -20,8 +21,8 @@ namespace Bookly.Controllers
         {
             string? username = HttpContext.Session.GetString("Username");
             ViewBag.Username =username;
-            User? user = _userService.LoadUser(username);
-            List<Shelf> myShelves = _shelfService.GetUserShelves(user.Id);
+            User? user = _iuserService.LoadUser(username);
+            List<Shelf> myShelves = _ishelfService.GetUserShelves(user.Id);
             return View(myShelves);
         }
 
@@ -42,8 +43,8 @@ namespace Bookly.Controllers
         public IActionResult CreateNewShelf(Shelf shelf)
         {
             string? username = HttpContext.Session.GetString("Username");
-            User? user = _userService.LoadUser(username);
-            if (!_shelfService.CreateShelf(shelf.Name, user.Id)) 
+            User? user = _iuserService.LoadUser(username);
+            if (!_ishelfService.CreateShelf(shelf.Name, user.Id)) 
             {
                 ViewBag.ErrorMessage = "The shelf was not created!";
             }
@@ -55,8 +56,8 @@ namespace Bookly.Controllers
         public IActionResult ShelfDetails(int id)
         {
             ViewBag.Username = HttpContext.Session.GetString("Username");
-            Shelf? shelf=_shelfService.GetShelfById(id);
-            shelf.Books = _shelfService.GetBooksFromShelf(id);
+            Shelf? shelf=_ishelfService.GetShelfById(id);
+            shelf.Books = _ishelfService.GetBooksFromShelf(id);
             return View(shelf);
         } 
 
@@ -75,8 +76,8 @@ namespace Bookly.Controllers
         [HttpPost]
         public IActionResult RemoveFromShelf(int bookId, int shelfId)
         {
-            User? user = _userService.LoadUser(HttpContext.Session.GetString("Username"));
-            if(_shelfService.RemoveBookFromShelf(user.Id, bookId, shelfId))
+            User? user = _iuserService.LoadUser(HttpContext.Session.GetString("Username"));
+            if(_ishelfService.RemoveBookFromShelf(user.Id, bookId, shelfId))
             {
                 TempData["Confirmation"] = "Book was removed successfully!";
             }
@@ -86,7 +87,7 @@ namespace Bookly.Controllers
         [HttpPost]
         public IActionResult RemoveShelf(int id)
         {
-            _shelfService.RemoveShelf(id);
+            _ishelfService.RemoveShelf(id);
             return RedirectToAction("ShelfOverview","Shelf");
         }
     }

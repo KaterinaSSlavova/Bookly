@@ -2,29 +2,30 @@
 using Bookly.Models;
 using Bookly.Repository;
 using Bookly.Services;
+using Bookly.Interfaces;
 
 namespace Bookly.Controllers
 {
     public class BookController : Controller
     {
-        private readonly BookServices _bookService;
-        private readonly ShelfServices _shelfService;
-        private readonly UserServices _userService;
+        private readonly IBookServices _ibookService;
+        private readonly IShelfServices _ishelfService;
+        private readonly IUserServices _iuserService;
 
-        public BookController(BookServices bookService, ShelfServices shelfService, UserServices userService)
+        public BookController(IBookServices ibookService, IShelfServices ishelfService, IUserServices iuserService)
         {
-            this._bookService = bookService;
-            this._shelfService = shelfService;
-            this._userService = userService;
+            this._ibookService = ibookService;
+            this._ishelfService = ishelfService;
+            this._iuserService = iuserService;
         }
 
         [HttpGet]
         public IActionResult BookDetails(int id)   
         {
             ViewBag.Username = HttpContext.Session.GetString("Username");
-            Book? book = _bookService.GetBookById(id); 
-            User user = _userService.LoadUser(ViewBag.Username);
-            ViewBag.Shelves = _shelfService.GetUserShelves(user.Id);
+            Book? book = _ibookService.GetBookById(id); 
+            User user = _iuserService.LoadUser(ViewBag.Username);
+            ViewBag.Shelves = _ishelfService.GetUserShelves(user.Id);
             return View(book);
         }
 
@@ -39,8 +40,8 @@ namespace Bookly.Controllers
         public IActionResult MoveToShelf(int bookId, int shelfId)
         {
             string? username = HttpContext.Session.GetString("Username");
-            User? user = _userService.LoadUser(username);
-            if (_shelfService.AddBookToShelf(bookId, shelfId, user.Id))
+            User? user = _iuserService.LoadUser(username);
+            if (_ishelfService.AddBookToShelf(bookId, shelfId, user.Id))
             {
                 TempData["Message"] = "Book added to shelf!";
             }
@@ -69,14 +70,14 @@ namespace Bookly.Controllers
         [HttpPost]
         public IActionResult AddBook(Book book)
         {
-            _bookService.AddBook(book);
+            _ibookService.AddBook(book);
             return RedirectToAction("Index","Home");
         }
 
         [HttpPost]
         public IActionResult RemoveBook(int id)
         {
-            _bookService.RemoveBook(id);
+            _ibookService.RemoveBook(id);
             return RedirectToAction("Index", "Home");   
         }
     }

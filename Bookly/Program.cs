@@ -1,3 +1,4 @@
+using Bookly.Interfaces;
 using Bookly.Repository;
 using Bookly.Services;
 
@@ -14,14 +15,14 @@ namespace Bookly
             builder.Services.AddSession();
             builder.Services.AddHttpContextAccessor();
 
-            builder.Services.AddScoped<UserRepository>();
-            builder.Services.AddScoped<UserServices>();
-            builder.Services.AddScoped<BookRepository>();
-            builder.Services.AddScoped<BookServices>();
-            builder.Services.AddScoped<ShelfRepository>();
-            builder.Services.AddScoped<ShelfServices>();
-            builder.Services.AddScoped<GoalRepository>();
-            builder.Services.AddScoped<GoalServices>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IUserServices, UserServices>();
+            builder.Services.AddScoped<IBookRepository,BookRepository>();
+            builder.Services.AddScoped<IBookServices, BookServices>();
+            builder.Services.AddScoped<IShelfRepository, ShelfRepository>();
+            builder.Services.AddScoped<IShelfServices, ShelfServices>();
+            builder.Services.AddScoped<IGoalRepository, GoalRepository>();
+            builder.Services.AddScoped<IGoalServices, GoalServices>();
 
             var app = builder.Build();
 

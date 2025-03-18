@@ -1,11 +1,12 @@
 ﻿using System.Reflection.PortableExecutable;
+using Bookly.Interfaces;
 using Bookly.Models;
 
 using Microsoft.Data.SqlClient;
 
 namespace Bookly.Repository
 {
-    public class GoalRepository
+    public class GoalRepository: IGoalRepository
     {
         private readonly string _connectionString;
         public GoalRepository(IConfiguration configuration)

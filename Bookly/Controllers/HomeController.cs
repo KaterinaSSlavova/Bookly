@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Azure.Identity;
+using Bookly.Interfaces;
 using Bookly.Models;
 using Bookly.Repository;
 using Bookly.Services;
@@ -10,21 +11,21 @@ namespace Bookly.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly BookServices _bookService;
-        private readonly UserServices _userService;
+        private readonly IBookServices _ibookServices;
+        private readonly IUserServices _iuserService;
 
-        public HomeController(ILogger<HomeController> logger, BookServices bookService, UserServices userService)
+        public HomeController(ILogger<HomeController> logger, IBookServices ibookServices, IUserServices iuserService)
         {
             _logger = logger;
-            this._bookService = bookService;
-            this._userService = userService;
+            this._ibookServices = ibookServices;
+            this._iuserService = iuserService;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
             ViewBag.Username=HttpContext.Session.GetString("Username");
-            List<Book> books = _bookService.LoadBooks();
+            List<Book> books = _ibookServices.LoadBooks();
             return View(books);
         }
 
