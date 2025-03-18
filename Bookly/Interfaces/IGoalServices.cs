@@ -7,6 +7,7 @@ namespace Bookly.Interfaces
         bool CreateGoal(Goal goal, int userId);
         List<Goal> GetPersonalGoals(int id);
         void RemoveGoal(int id);
+        Goal? GetNewestGoal();
         void UpdateGoalProgress(int userId);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Bookly.Interfaces;
+﻿using System.Runtime.CompilerServices;
+using Bookly.Interfaces;
 using Bookly.Models;
 using Bookly.Repository;
 
@@ -14,7 +15,7 @@ namespace Bookly.Services
         {
             this._ishelfRepo = ishelfRepo;
             this._contextAccessor = contextAccessor;
-            this._igoalRepo = igoalRepo;
+            this._igoalRepo = igoalRepo;    
         }
 
         public bool CreateShelf(string name, int id)
@@ -39,16 +40,16 @@ namespace Bookly.Services
 
         public bool AddBookToShelf(int bookId, int shelfId, int userId)
         {
-            if (GetShelfById(shelfId)?.Name == "Have Read")
-            {
+            if (GetShelfById(shelfId)?.Name == "Have Read" && !CheckForBook(shelfId, bookId))
+            { 
                 UpdateProgress(1);
             }
             return _ishelfRepo.AddBookToShelf(bookId, shelfId, userId);
         }
 
         public bool RemoveBookFromShelf(int userId, int bookId, int shelfId)
-        {
-            if (GetShelfById(shelfId)?.Name == "Have Read")
+        {     
+            if (GetShelfById(shelfId)?.Name == "Have Read" && CheckForBook(shelfId, bookId))
             {
                 UpdateProgress(-1);
             }
@@ -68,12 +69,24 @@ namespace Bookly.Services
 
         public int GetProgress()
         {
-            return _contextAccessor.HttpContext?.Session.GetInt32("Progress") ?? 0;
+            return _contextAccessor.HttpContext?.Session.GetInt32("Progress") ?? _igoalRepo.GetNewestGoal().CurrentProgress;
         }
 
         public void SaveProgress()
         {
             _contextAccessor.HttpContext?.Session.SetInt32("Progress", progress);
+        }
+
+        public bool CheckForBook(int shelfId, int bookId)
+        {
+            foreach(Book book in GetBooksFromShelf(shelfId))
+            {
+                if(book.Id == bookId)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

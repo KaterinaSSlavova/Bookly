@@ -31,6 +31,10 @@ namespace Bookly.Services
             _igoalRepo.RemoveGoal(id);
         }
 
+        public Goal? GetNewestGoal()
+        {
+            return _igoalRepo.GetNewestGoal();
+        }
 
         public void UpdateGoalProgress(int userId)
         {
