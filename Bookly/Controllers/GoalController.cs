@@ -1,10 +1,9 @@
-﻿using Bookly.Repository;
-using Bookly.Services;
-using Bookly.Models;
-using Bookly.Interfaces;
+﻿using Bookly.Business_logic.Services;
+using Bookly.Data.Models;
+using Bookly.Business_logic.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Bookly.Controllers
+namespace Bookly.WebApp.Controllers
 {
     public class GoalController : Controller
     {

@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Bookly.Models;
-using Bookly.Repository;
-using Bookly.ViewModels;
+using Bookly.Data.Models;
+using Bookly.Data.ViewModels;
 using System.Reflection;
-using Bookly.Services;
-using Bookly.Interfaces;
+using Bookly.Business_logic.InterfacesServices;
 
-namespace Bookly.Controllers
+namespace Bookly.Bookly.Controllers
 {
     public class UserController : Controller
     {

@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Bookly.Models;
-using Bookly.Repository;
-using Bookly.Services;
-using Bookly.Interfaces;
+using Bookly.Data.Models;
+using Bookly.Business_logic.InterfacesServices;
 
-namespace Bookly.Controllers
+namespace Bookly.Bookly.Controllers
 {
     public class BookController : Controller
     {

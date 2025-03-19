@@ -1,8 +1,10 @@
-using Bookly.Interfaces;
+using Bookly.Data.InterfacesRepo;
+using Bookly.Business_logic.InterfacesServices;
+using Bookly.Data.Repository;
 using Bookly.Repository;
-using Bookly.Services;
+using Bookly.Business_logic.Services;
 
-namespace Bookly
+namespace WebApp
 {
     public class Program
     {
