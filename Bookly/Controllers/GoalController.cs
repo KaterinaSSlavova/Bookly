@@ -21,7 +21,6 @@ namespace Bookly.WebApp.Controllers
         {
             ViewBag.Username = HttpContext.Session.GetString("Username");
             User user = _iuserService.LoadUser(ViewBag.Username);
-            _igoalService.UpdateGoalProgress(user.Id);
             _igoalService.GetPersonalGoals(user.Id);
             List<Goal> personalGoals = _igoalService.GetPersonalGoals(_iuserService.LoadUser(ViewBag.Username).Id);
             return View(personalGoals);

@@ -8,15 +8,13 @@ namespace Bookly.Business_logic.Services
 {
     public class ShelfServices: IShelfServices
     {
-        private readonly IHttpContextAccessor _contextAccessor;
         private readonly IShelfRepository _ishelfRepo;
         private readonly IGoalRepository _igoalRepo;
         private int progress;
-        public ShelfServices(IShelfRepository ishelfRepo, IHttpContextAccessor contextAccessor, IGoalRepository igoalRepo)
+        public ShelfServices(IShelfRepository ishelfRepo, IGoalRepository igoalRepo)
         {
             this._ishelfRepo = ishelfRepo;
-            this._contextAccessor = contextAccessor;
-            this._igoalRepo = igoalRepo;    
+            this._igoalRepo = igoalRepo;
         }
 
         public bool CreateShelf(string name, int id)
@@ -42,9 +40,14 @@ namespace Bookly.Business_logic.Services
         public bool AddBookToShelf(int bookId, int shelfId, int userId)
         {
             if (GetShelfById(shelfId)?.Name == "Have Read" && !CheckForBook(shelfId, bookId))
-            { 
-                UpdateProgress(1);
-            }
+            {
+                Goal? goal = _igoalRepo.GetNewestGoal(true);
+                if(goal!=null)
+                {
+                    progress = ++ goal.CurrentProgress;
+                    SetStatus(progress, goal, userId);
+                }
+            } 
             return _ishelfRepo.AddBookToShelf(bookId, shelfId, userId);
         }
 
@@ -52,7 +55,12 @@ namespace Bookly.Business_logic.Services
         {     
             if (GetShelfById(shelfId)?.Name == "Have Read" && CheckForBook(shelfId, bookId))
             {
-                UpdateProgress(-1);
+                Goal? goal = _igoalRepo.GetNewestGoal(false);
+                if (goal != null && goal.CurrentProgress>0)
+                {
+                    progress = -- goal.CurrentProgress;
+                    SetStatus(progress, goal, userId);
+                }
             }
             return _ishelfRepo.RemoveBookFromShelf(userId, bookId);
         }
@@ -60,22 +68,6 @@ namespace Bookly.Business_logic.Services
         public void RemoveShelf(int id)
         {
             _ishelfRepo.RemoveShelf(id);
-        }
-
-        public void UpdateProgress(int updateAmount)
-        {
-            progress = GetProgress() + updateAmount;
-            SaveProgress();
-        }
-
-        public int GetProgress()
-        {
-            return _contextAccessor.HttpContext?.Session.GetInt32("Progress") ?? _igoalRepo.GetNewestGoal().CurrentProgress;
-        }
-
-        public void SaveProgress()
-        {
-            _contextAccessor.HttpContext?.Session.SetInt32("Progress", progress);
         }
 
         public bool CheckForBook(int shelfId, int bookId)
@@ -88,6 +80,21 @@ namespace Bookly.Business_logic.Services
                 }
             }
             return false;
+        }
+
+        public void SetStatus(int progress, Goal goal, int userId)
+        {
+            _igoalRepo.UpdateProgress(userId, goal.Id, progress);
+            Status newStatus = Status.Not_started;
+            if (goal.CurrentProgress > 0 && goal.CurrentProgress < goal.ReadingGoal)
+            {
+                newStatus = Status.In_progress;
+            }
+            else if (goal.CurrentProgress == goal.ReadingGoal)
+            {
+                newStatus = Status.Completed;
+            }
+            _igoalRepo.UpdateStatus(newStatus, goal.Id, userId);
         }
     }
 }

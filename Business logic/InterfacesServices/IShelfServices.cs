@@ -11,8 +11,5 @@ namespace Bookly.Business_logic.InterfacesServices
         bool AddBookToShelf(int bookId, int shelfId, int userId);
         bool RemoveBookFromShelf(int userId, int bookId, int shelfId);
         void RemoveShelf(int id);
-        void UpdateProgress(int updateAmount);
-        int GetProgress();
-        void SaveProgress();
     }
 }
