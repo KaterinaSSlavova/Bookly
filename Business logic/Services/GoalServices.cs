@@ -1,6 +1,6 @@
 ﻿using Bookly.Business_logic.InterfacesServices;
 using Bookly.Data.InterfacesRepo;
-using Bookly.Data.Models;
+using Models.Entities;
 using Microsoft.AspNetCore.Http;
 
 namespace Bookly.Business_logic.Services

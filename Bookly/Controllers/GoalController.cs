@@ -1,5 +1,5 @@
 ﻿using Bookly.Business_logic.Services;
-using Bookly.Data.Models;
+using Models.Entities;
 using Bookly.Business_logic.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
 

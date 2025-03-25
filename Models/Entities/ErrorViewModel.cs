@@ -1,4 +1,4 @@
-namespace Bookly.Data.Models
+namespace Models.Entities
 {
     public class ErrorViewModel
     {

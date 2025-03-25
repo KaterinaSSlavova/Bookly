@@ -1,8 +1,6 @@
-﻿using System.Linq.Expressions;
-using System.Net;
-using Bookly.Data.InterfacesRepo;
+﻿using Bookly.Data.InterfacesRepo;
 using Microsoft.Extensions.Configuration;
-using Bookly.Data.Models;
+using Models.Entities;
 using Microsoft.Data.SqlClient;
 
 namespace Bookly.Data.Repository

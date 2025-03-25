@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Bookly.Data.ViewModels
+namespace ViewModels.Model
 {
     public class AccountLogIn
     {

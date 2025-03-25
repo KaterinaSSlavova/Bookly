@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Bookly.Data.Models;
-using Bookly.Data.ViewModels;
+using Models.Entities;
+using ViewModels.Model;
 using Bookly.Business_logic.InterfacesServices;
 
 namespace Bookly.Bookly.Controllers
@@ -43,9 +43,9 @@ namespace Bookly.Bookly.Controllers
         }
 
         [HttpPost]
-        public IActionResult LogIn(string username, string password)
+        public IActionResult LogIn(AccountLogIn model)
         {
-            User? loggedUser = _iuserService.LogIn(username, password);
+            User? loggedUser = _iuserService.LogIn(model);
             if (loggedUser != null)
             {
                 HttpContext.Session.SetString("Username", loggedUser.Username);

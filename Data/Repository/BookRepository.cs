@@ -1,5 +1,5 @@
 ﻿using Bookly.Data.InterfacesRepo;
-using Bookly.Data.Models;
+using Models.Entities;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 

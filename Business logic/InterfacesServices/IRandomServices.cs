@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Bookly.Data.Models;
+﻿using Models.Entities;
 
 namespace Business_logic.InterfacesServices
 {

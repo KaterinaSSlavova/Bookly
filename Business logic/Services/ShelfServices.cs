@@ -1,8 +1,7 @@
-﻿using System.Runtime.CompilerServices;
-using Bookly.Business_logic.InterfacesServices;
-using Bookly.Data.Models;
+﻿using Bookly.Business_logic.InterfacesServices;
+using Models.Entities;
+using Models.Enums;
 using Bookly.Data.InterfacesRepo;
-using Microsoft.AspNetCore.Http;
 
 namespace Bookly.Business_logic.Services
 {

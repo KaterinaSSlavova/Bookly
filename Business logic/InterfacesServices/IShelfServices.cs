@@ -1,4 +1,4 @@
-﻿using Bookly.Data.Models;
+﻿using Models.Entities;
 
 namespace Bookly.Business_logic.InterfacesServices
 {

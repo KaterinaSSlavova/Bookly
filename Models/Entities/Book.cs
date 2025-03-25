@@ -1,6 +1,4 @@
-﻿using Bookly.Data.Models;
-
-namespace Bookly.Data.Models
+﻿namespace Models.Entities
 {
     public class Book
     {

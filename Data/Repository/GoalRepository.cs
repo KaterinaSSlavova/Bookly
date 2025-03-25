@@ -1,8 +1,8 @@
-﻿using System.Reflection.PortableExecutable;
-using Bookly.Data.InterfacesRepo;
-using Bookly.Data.Models;
+﻿using Bookly.Data.InterfacesRepo;
+using Models.Entities;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Models.Enums;
 
 namespace Bookly.Data.Repository
 {

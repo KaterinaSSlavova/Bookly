@@ -1,4 +1,5 @@
-﻿using Bookly.Data.Models;
+﻿using Models.Entities;
+using Models.Enums;
 
 namespace Bookly.Data.InterfacesRepo
 {

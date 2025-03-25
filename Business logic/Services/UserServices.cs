@@ -1,27 +1,32 @@
-﻿using Bookly.Data.Models;
+﻿using Models.Entities;
 using Bookly.Data.InterfacesRepo;
-using Bookly.Data.ViewModels;
+using ViewModels.Model;
 using Bookly.Business_logic.InterfacesServices;
 using Microsoft.AspNetCore.Http;
+using AutoMapper;
 
 namespace Bookly.Business_logic.Services
 {
     public class UserServices: IUserServices
     {
         private readonly IUserRepository _iuserRepo;
-        public UserServices(IUserRepository iuserRepo)
+        private readonly IMapper _iMapper;
+        public UserServices(IUserRepository iuserRepo, IMapper iMapper)
         {
             this._iuserRepo = iuserRepo;
+            this._iMapper = iMapper;    
         }
 
-        public bool Register(AccountRegister user)
+        public bool Register(AccountRegister model)
         {
+            User user = _iMapper.Map<User>(model);
             return _iuserRepo.Register(user);
         }
 
-        public User? LogIn(string username, string password)
+        public User? LogIn(AccountLogIn model)
         {
-            return _iuserRepo.LogIn(username, password);
+            User user = _iMapper.Map<User>(model);
+            return _iuserRepo.LogIn(user);
         }
 
         public User? LoadUser(string username)

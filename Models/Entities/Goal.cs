@@ -1,4 +1,6 @@
-﻿namespace Bookly.Data.Models
+﻿using Models.Enums;
+
+namespace Models.Entities
 {
     public class Goal
     {

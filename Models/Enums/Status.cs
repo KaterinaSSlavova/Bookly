@@ -1,4 +1,4 @@
-﻿namespace Bookly.Data.Models
+﻿namespace Models.Enums
 {
     public enum Status
     {

@@ -1,7 +1,7 @@
 ﻿using Bookly.Business_logic.InterfacesServices;
 using Business_logic.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
-using Bookly.Data.Models;
+using Models.Entities;
 
 namespace Bookly.Controllers
 {

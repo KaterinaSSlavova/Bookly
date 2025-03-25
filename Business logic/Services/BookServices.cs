@@ -1,5 +1,5 @@
 ﻿using Bookly.Data.InterfacesRepo;
-using Bookly.Data.Models;
+using Models.Entities;
 using Bookly.Business_logic.InterfacesServices;
 
 namespace Bookly.Business_logic.Services

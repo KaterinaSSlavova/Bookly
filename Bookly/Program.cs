@@ -5,6 +5,7 @@ using Bookly.Repository;
 using Bookly.Business_logic.Services;
 using Business_logic.Services;
 using Business_logic.InterfacesServices;
+using Business_logic.Mappers;
 
 namespace WebApp
 {
@@ -18,6 +19,7 @@ namespace WebApp
             builder.Services.AddControllersWithViews();
             builder.Services.AddSession();
             builder.Services.AddHttpContextAccessor();
+            builder.Services.AddAutoMapper(typeof(UserProfile));
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserServices, UserServices>();

@@ -1,6 +1,5 @@
 ﻿using Bookly.Data.InterfacesRepo;
-using Bookly.Data.Models;
-using Bookly.Data.ViewModels;
+using Models.Entities;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
@@ -17,7 +16,7 @@ namespace Bookly.Repository
             this._ishelfRepo = ishelfRepo;
         }
 
-        public bool Register(AccountRegister user)
+        public bool Register(User user)
         {
             try
             {
@@ -53,7 +52,7 @@ namespace Bookly.Repository
             }
         }
 
-        public User? LogIn(string username, string password)
+        public User? LogIn(User user)
         {
             try
             {
@@ -63,8 +62,8 @@ namespace Bookly.Repository
                                FROM Users
                                Where [Username]=@Username and [Password]=@Password";
                 using SqlCommand command = new SqlCommand(sql, connection);
-                command.Parameters.AddWithValue("@Username", username);
-                command.Parameters.AddWithValue("@Password", password);
+                command.Parameters.AddWithValue("@Username", user.Username);
+                command.Parameters.AddWithValue("@Password", user.Password);
 
                 using SqlDataReader reader = command.ExecuteReader();
                 if (reader.Read())
