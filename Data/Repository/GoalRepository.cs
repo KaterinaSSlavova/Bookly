@@ -6,19 +6,15 @@ using Models.Enums;
 
 namespace Bookly.Data.Repository
 {
-    public class GoalRepository: IGoalRepository
+    public class GoalRepository: Repository, IGoalRepository
     {
-        private readonly string _connectionString;
-        public GoalRepository(IConfiguration configuration)
-        {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
-        }
+        public GoalRepository(IConfiguration configuration): base(configuration) { }
 
         public bool CreateGoal(Goal goal, int userId)
         {
             try
             {
-                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
                 string sql = @"INSERT INTO Goals ([Start], [End], ReadingGoal, CurrentProgress, [Status], UserId)
@@ -45,7 +41,7 @@ namespace Bookly.Data.Repository
             try
             {
                 List<Goal> goals = new List<Goal>();
-                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
                 string sql = @"SELECT Id, [Start], [End], ReadingGoal, CurrentProgress, [Status]
@@ -80,7 +76,7 @@ namespace Bookly.Data.Repository
         {
             try
             {
-                using SqlConnection connection= new SqlConnection(_connectionString);
+                using SqlConnection connection= GetSqlConnection();
                 connection.Open();
 
                 string sql = @"SELECT TOP 1 Id, [Start], [End], ReadingGoal, CurrentProgress, [Status]
@@ -159,7 +155,7 @@ namespace Bookly.Data.Repository
         {
             try
             {
-                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
                 string sql = @"UPDATE Goals
@@ -182,7 +178,7 @@ namespace Bookly.Data.Repository
         {
             try
             {
-                using SqlConnection connection= new SqlConnection(_connectionString);
+                using SqlConnection connection= GetSqlConnection();
                 connection.Open();
 
                 string sql = @"UPDATE Goals
@@ -205,7 +201,7 @@ namespace Bookly.Data.Repository
         {
             try
             {
-                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
                 string sql = @"Update Goals

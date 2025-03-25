@@ -4,19 +4,15 @@ using Models.Entities;
 
 namespace Bookly.Data.Repository
 {
-    public class ReviewRepository
+    public class ReviewRepository: Repository
     {
-        private readonly string _connectionString;
-        public ReviewRepository(IConfiguration configuration)
-        {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
-        }
+        public ReviewRepository(IConfiguration configuration): base(configuration){ }
 
         public void AddReview(int userId, int bookId)
         {
             try
             {
-                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
                 string sql = @"INSERT INTO Reviews (Description, Date, UserId, BookId)

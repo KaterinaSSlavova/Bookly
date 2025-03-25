@@ -5,21 +5,16 @@ using Microsoft.Extensions.Configuration;
 
 namespace Bookly.Data.Repository
 {
-    public class BookRepository: IBookRepository
+    public class BookRepository: Repository, IBookRepository
     {
-        private readonly string _connectionString;
-
-        public BookRepository(IConfiguration configuration)
-        {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
-        }
+        public BookRepository(IConfiguration configuration): base(configuration) { }
 
         public bool AddBook(Book book)
         {
             try
             {
                 string picturePath = GetPicturePath(book.Picture);
-                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
                 string sql = @"INSERT INTO Books(Picture, Title, Author, Description, ISBN, Genre) 
@@ -46,7 +41,7 @@ namespace Bookly.Data.Repository
             try
             {
                 List<Book> books = new List<Book>();
-                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
                 string sql = @"SELECT Id, Picture, Title, Author, [Description], ISBN, Genre
@@ -80,7 +75,7 @@ namespace Bookly.Data.Repository
         {
             try
             {
-                SqlConnection connection = new SqlConnection(_connectionString);
+                SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
                 string sql = @"SELECT Id, Picture, Title, Author, [Description], ISBN, Genre
@@ -115,7 +110,7 @@ namespace Bookly.Data.Repository
         {
             try
             {
-                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
                 string sql = @"UPDATE Books

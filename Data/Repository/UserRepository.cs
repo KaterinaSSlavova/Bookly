@@ -3,24 +3,19 @@ using Models.Entities;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
-namespace Bookly.Repository
+namespace Bookly.Data.Repository
 {
-    public class UserRepository: IUserRepository
+    public class UserRepository: Repository,IUserRepository
     {
-        private readonly string _connectionString;
         private readonly IShelfRepository _ishelfRepo;
-        
-        public UserRepository(IConfiguration configuration, IShelfRepository ishelfRepo)
-        {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
-            this._ishelfRepo = ishelfRepo;
-        }
+
+        public UserRepository(IConfiguration configuration, IShelfRepository ishelfRepo) : base(configuration) { }
 
         public bool Register(User user)
         {
             try
             {
-                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlConnection connection = GetSqlConnection();
                 connection.Open();
                 string checkSql = @"SELECT COUNT(*) FROM Users WHERE Username = @Username or Email=@Email";
                 using SqlCommand commandCheck = new SqlCommand(checkSql, connection);
@@ -56,7 +51,7 @@ namespace Bookly.Repository
         {
             try
             {
-                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlConnection connection = GetSqlConnection();
                 connection.Open();
                 string sql = @"SELECT *
                                FROM Users
@@ -90,7 +85,7 @@ namespace Bookly.Repository
         {
             try
             {
-                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlConnection connection = GetSqlConnection();
                 connection.Open();
                 string sql = @"SELECT *
                                FROM Users
@@ -123,7 +118,7 @@ namespace Bookly.Repository
         {
             try
             {
-                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlConnection connection = GetSqlConnection();
                 connection.Open();
                 
                 string sql = @"UPDATE Users 

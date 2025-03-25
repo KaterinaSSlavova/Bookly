@@ -5,20 +5,15 @@ using Microsoft.Data.SqlClient;
 
 namespace Bookly.Data.Repository
 {
-    public class ShelfRepository: IShelfRepository
+    public class ShelfRepository: Repository, IShelfRepository
     {
-        private readonly string _connectionString;
-
-        public ShelfRepository(IConfiguration configuration)
-        {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
-        }
+        public ShelfRepository(IConfiguration configuration): base(configuration) { }
 
         public bool CreateShelf(string name, int id)
         {
             try
             {
-                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
                 string sql = @"INSERT INTO Shelves ([Name], UserId)
@@ -41,7 +36,7 @@ namespace Bookly.Data.Repository
             try
             {
                 List<Shelf> shelves = new List<Shelf>();
-                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
                 string sql = @"SELECT * 
@@ -74,7 +69,7 @@ namespace Bookly.Data.Repository
             try
             {
                 List<Book> books = new List<Book>();
-                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
                 string sql = @"SELECT * 
@@ -110,7 +105,7 @@ namespace Bookly.Data.Repository
         {
             try
             {
-                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
                 string sql = @"SELECT *
@@ -139,7 +134,7 @@ namespace Bookly.Data.Repository
         {
             try
             {
-                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
                 RemoveBookFromShelf(userId, bookId);
@@ -163,7 +158,7 @@ namespace Bookly.Data.Repository
         {
             try
             {
-                using SqlConnection connection= new SqlConnection(_connectionString);
+                using SqlConnection connection= GetSqlConnection();
                 connection.Open();
 
                 string sql = @"DELETE sb
@@ -188,7 +183,7 @@ namespace Bookly.Data.Repository
         {
             try
             {
-                using SqlConnection connection=new SqlConnection(_connectionString);
+                using SqlConnection connection= GetSqlConnection();
                 connection.Open();
 
                 string sql = @"UPDATE Shelves
