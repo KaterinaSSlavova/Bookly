@@ -1,4 +1,6 @@
-﻿namespace Bookly.Data.Models
+﻿using Bookly.Data.Models;
+
+namespace Bookly.Data.Models
 {
     public class Book
     {
@@ -10,6 +12,5 @@
         public string ISBN { get; set; }
         public string Genre { get; set; }
         public List<Review> Reviews{ get; set; }
-        public List<Emotion> Emotions { get; set; }
     }
 }

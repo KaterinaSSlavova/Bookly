@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Bookly.Data.Models;
 using Bookly.Data.ViewModels;
-using System.Reflection;
 using Bookly.Business_logic.InterfacesServices;
 
 namespace Bookly.Bookly.Controllers
@@ -80,7 +79,7 @@ namespace Bookly.Bookly.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveChanges(string picture, string username, int age, string email, string password)
+        public IActionResult SaveChanges(IFormFile picture, string username, int age, string email, string password)
         {
             string? currentUsername= HttpContext.Session.GetString("Username");
             User? user = _iuserService.LoadUser(currentUsername);

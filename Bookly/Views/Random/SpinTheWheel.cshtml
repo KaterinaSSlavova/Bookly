@@ -1,0 +1,15 @@
+﻿@using Bookly.Data.Models
+@model List<Book>
+
+@{
+    ViewData["Title"] = "Spin the wheel";
+}
+
+<h1>Spin The Wheel</h1>
+<hr />
+
+<label>Result: @TempData["Book"]</label>
+
+<form asp-controller="Random" asp-action="Spin" method="post">
+    <button type="submit" class="btn btn-secondary">Spin</button>
+</form>

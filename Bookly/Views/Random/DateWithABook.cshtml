@@ -1,0 +1,24 @@
+﻿@using Bookly.Data.Models
+@model List<Book>
+
+@{
+    ViewData["Title"] = "Random date with a book";
+}
+
+<h1>Random Date With A Book</h1>
+<hr />
+
+@if(Model != null)
+{
+    @foreach(Book book in Model)
+    {
+
+        <label>@book.Description</label>
+    }
+}
+else
+{
+    <form asp-controller="Random" asp-action="FilterBooks" method="post">
+        <button type="submit" class="btn btn-secondary">Filter</button>
+    </form>
+}

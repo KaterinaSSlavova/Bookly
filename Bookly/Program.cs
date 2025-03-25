@@ -3,6 +3,8 @@ using Bookly.Business_logic.InterfacesServices;
 using Bookly.Data.Repository;
 using Bookly.Repository;
 using Bookly.Business_logic.Services;
+using Business_logic.Services;
+using Business_logic.InterfacesServices;
 
 namespace WebApp
 {
@@ -25,6 +27,7 @@ namespace WebApp
             builder.Services.AddScoped<IShelfServices, ShelfServices>();
             builder.Services.AddScoped<IGoalRepository, GoalRepository>();
             builder.Services.AddScoped<IGoalServices, GoalServices>();
+            builder.Services.AddScoped<IRandomServices, RandomServices>();
 
             var app = builder.Build();
 

@@ -120,13 +120,13 @@ namespace Bookly.Repository
             }
         }
 
-        public bool UpdateProfile(User user, string picture, string newUsername, int age, string email, string password)
+        public bool UpdateProfile(User user, byte[] picture, string newUsername, int age, string email, string password)
         {
             try
             {
                 using SqlConnection connection = new SqlConnection(_connectionString);
                 connection.Open();
-
+                
                 string sql = @"UPDATE Users 
                                SET Picture = @Picture, 
                                 [Username] = @Username, 

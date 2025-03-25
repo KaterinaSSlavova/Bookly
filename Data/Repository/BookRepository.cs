@@ -49,7 +49,7 @@ namespace Bookly.Data.Repository
                 using SqlConnection connection = new SqlConnection(_connectionString);
                 connection.Open();
 
-                string sql = @"SELECT *
+                string sql = @"SELECT Id, Picture, Title, Author, [Description], ISBN, Genre
                                FROM Books
                                 WHERE isArchived=@IsArchived";
                 using SqlCommand command = new SqlCommand(sql, connection);
@@ -83,7 +83,7 @@ namespace Bookly.Data.Repository
                 SqlConnection connection = new SqlConnection(_connectionString);
                 connection.Open();
 
-                string sql = @"SELECT *
+                string sql = @"SELECT Id, Picture, Title, Author, [Description], ISBN, Genre
                                FROM Books 
                                WHERE Id=@Id";
                 using SqlCommand command = new SqlCommand(sql, connection);

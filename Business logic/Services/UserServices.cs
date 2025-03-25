@@ -2,6 +2,7 @@
 using Bookly.Data.InterfacesRepo;
 using Bookly.Data.ViewModels;
 using Bookly.Business_logic.InterfacesServices;
+using Microsoft.AspNetCore.Http;
 
 namespace Bookly.Business_logic.Services
 {
@@ -28,9 +29,21 @@ namespace Bookly.Business_logic.Services
             return _iuserRepo.LoadUser(username);    
         }
 
-        public bool UpdateProfile(User user, string picture, string newUsername, int age, string email, string password)
+        public bool UpdateProfile(User user, IFormFile picture, string newUsername, int age, string email, string password)
         {
-            return _iuserRepo.UpdateProfile(user, picture, newUsername, age, email, password);
+            byte[] image = ConvertImageToBinary(picture);  
+            return _iuserRepo.UpdateProfile(user, image, newUsername, age, email, password);
+        }
+
+        private byte[] ConvertImageToBinary(IFormFile picture)
+        {
+            if(picture != null)
+            {
+                using MemoryStream mStream = new MemoryStream();
+                picture.CopyTo(mStream);
+                return mStream.ToArray();
+            }
+            return null;
         }
     }
 }
