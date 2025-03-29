@@ -9,7 +9,10 @@ namespace Bookly.Data.Repository
     {
         private readonly IShelfRepository _ishelfRepo;
 
-        public UserRepository(IConfiguration configuration, IShelfRepository ishelfRepo) : base(configuration) { }
+        public UserRepository(IConfiguration configuration, IShelfRepository ishelfRepo) : base(configuration) 
+        { 
+            this._ishelfRepo = ishelfRepo;
+        }
 
         public bool Register(User user)
         {
@@ -109,6 +112,40 @@ namespace Bookly.Data.Repository
                 return null;
             }
             catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+        }
+
+        public User? GetUserById(int id)
+        {
+            try
+            {
+                using SqlConnection connection = GetSqlConnection();
+                connection.Open();
+
+                string sql = @"SELECT *
+                                FROM Users
+                                WHERE Id = @Id";
+                using SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@Id", id);
+
+                using SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    return new User
+                    {
+                        Id = reader.GetInt32(0),
+                        Picture = reader.IsDBNull(1) ? null : Convert.ToBase64String(reader.GetSqlBinary(1).Value),
+                        Username = reader.GetString(2),
+                        Age = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
+                        Email = reader.GetString(4),
+                        Password = reader.GetString(5)
+                    };
+                }
+                return null;
+            }
+            catch(Exception ex)
             {
                 throw new ApplicationException(ex.Message);
             }

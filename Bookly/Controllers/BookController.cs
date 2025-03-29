@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Models.Entities;
 using Bookly.Business_logic.InterfacesServices;
+using Bookly.Controllers;
+using Bookly.Business_logic.Services;
+using Business_logic.Services;
 
 namespace Bookly.Bookly.Controllers
 {
@@ -9,12 +12,14 @@ namespace Bookly.Bookly.Controllers
         private readonly IBookServices _ibookService;
         private readonly IShelfServices _ishelfService;
         private readonly IUserServices _iuserService;
+        private readonly ReviewServices _reviewService;
 
-        public BookController(IBookServices ibookService, IShelfServices ishelfService, IUserServices iuserService)
+        public BookController(IBookServices ibookService, IShelfServices ishelfService, IUserServices iuserService, ReviewServices reviewService)
         {
             this._ibookService = ibookService;
             this._ishelfService = ishelfService;
             this._iuserService = iuserService;
+            _reviewService = reviewService;
         }
 
         [HttpGet]
@@ -24,6 +29,7 @@ namespace Bookly.Bookly.Controllers
             Book? book = _ibookService.GetBookById(id); 
             User user = _iuserService.LoadUser(ViewBag.Username);
             ViewBag.Shelves = _ishelfService.GetUserShelves(user.Id);
+            ViewBag.Reviews = _reviewService.GetBookReviews(id);
             return View(book);
         }
 
@@ -76,7 +82,7 @@ namespace Bookly.Bookly.Controllers
         public IActionResult RemoveBook(int id)
         {
             _ibookService.RemoveBook(id);
-            return RedirectToAction("Index", "Home");   
+            return RedirectToAction("Index", "Home");
         }
     }
 }

@@ -9,11 +9,13 @@ namespace Bookly.Business_logic.Services
     {
         private readonly IShelfRepository _ishelfRepo;
         private readonly IGoalRepository _igoalRepo;
+        //private readonly IGoalServices _igoalSrevice;
         private int progress;
-        public ShelfServices(IShelfRepository ishelfRepo, IGoalRepository igoalRepo)
+        public ShelfServices(IShelfRepository ishelfRepo, /*IGoalServices igoalSrevice,*/ IGoalRepository igoalRepo)
         {
             this._ishelfRepo = ishelfRepo;
             this._igoalRepo = igoalRepo;
+            //_igoalSrevice = igoalSrevice;
         }
 
         public bool CreateShelf(string name, int id)

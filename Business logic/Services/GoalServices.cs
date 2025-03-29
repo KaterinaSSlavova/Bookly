@@ -2,6 +2,7 @@
 using Bookly.Data.InterfacesRepo;
 using Models.Entities;
 using Microsoft.AspNetCore.Http;
+using Models.Enums;
 
 namespace Bookly.Business_logic.Services
 {
@@ -30,6 +31,20 @@ namespace Bookly.Business_logic.Services
         public void RemoveGoal(int id)
         {
             _igoalRepo.RemoveGoal(id);
+        }
+
+        public Goal? GetNewestGoal(bool isIncreasing)
+        {
+            return _igoalRepo.GetNewestGoal(isIncreasing);
+        }
+
+        public void UpdateProgress(int userId, int goalId, int progress)
+        {
+            _igoalRepo.UpdateProgress(userId, goalId, progress);    
+        }
+        public void UpdateStatus(Status status, int goalId, int userId)
+        {
+            _igoalRepo.UpdateStatus(status, goalId, userId);    
         }
     }
 }

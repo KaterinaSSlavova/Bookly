@@ -20,15 +20,17 @@ namespace WebApp
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddAutoMapper(typeof(UserProfile));
 
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IUserServices, UserServices>();
-            builder.Services.AddScoped<IBookRepository,BookRepository>();
-            builder.Services.AddScoped<IBookServices, BookServices>();
-            builder.Services.AddScoped<IShelfRepository, ShelfRepository>();
-            builder.Services.AddScoped<IShelfServices, ShelfServices>();
             builder.Services.AddScoped<IGoalRepository, GoalRepository>();
+            builder.Services.AddScoped<IShelfRepository, ShelfRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IBookRepository, BookRepository>();
+            builder.Services.AddScoped<ReviewRepository>();
+            builder.Services.AddScoped<IUserServices, UserServices>();
+            builder.Services.AddScoped<IBookServices, BookServices>();
+            builder.Services.AddScoped<IShelfServices, ShelfServices>();
             builder.Services.AddScoped<IGoalServices, GoalServices>();
             builder.Services.AddScoped<IRandomServices, RandomServices>();
+            builder.Services.AddScoped<ReviewServices>();
 
             var app = builder.Build();
 

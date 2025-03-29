@@ -63,6 +63,35 @@
                     <button type="submit" class="btn btn-primary">Go Back</button>
                 </form>
             </div>
+
+            <h3>Reviews</h3>
+            @if (ViewBag.Reviews != null && ViewBag.Reviews.Count > 0)
+            {
+                <ul class="list-group">
+                    @foreach (var review in ViewBag.Reviews)
+                    {
+                        <li class="list-group-item">
+                            <strong>@review.User.Username:</strong> @review.Description
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>No reviews yet. Be the first to add one!</p>
+            }
+
+
+         <form asp-controller="Review" asp-action="CreateReview" method="post">
+    <input type="hidden" name="bookId" value="@Model.Id" />
+
+    <div class="mb-3">
+        <label for="reviewDescription" class="form-label">Write a review:</label>
+        <textarea class="form-control" id="reviewDescription" name="description" rows="3" required></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit Review</button>
+</form> 
         </div>
     </div>
 </div>
