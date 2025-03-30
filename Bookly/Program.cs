@@ -25,12 +25,14 @@ namespace WebApp
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IBookRepository, BookRepository>();
             builder.Services.AddScoped<ReviewRepository>();
+            builder.Services.AddScoped<RatingRepository>();
             builder.Services.AddScoped<IUserServices, UserServices>();
             builder.Services.AddScoped<IBookServices, BookServices>();
             builder.Services.AddScoped<IShelfServices, ShelfServices>();
             builder.Services.AddScoped<IGoalServices, GoalServices>();
             builder.Services.AddScoped<IRandomServices, RandomServices>();
             builder.Services.AddScoped<ReviewServices>();
+            builder.Services.AddScoped<RatingServices>();
 
             var app = builder.Build();
 

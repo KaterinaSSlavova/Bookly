@@ -13,13 +13,15 @@ namespace Bookly.Bookly.Controllers
         private readonly IShelfServices _ishelfService;
         private readonly IUserServices _iuserService;
         private readonly ReviewServices _reviewService;
+        private readonly RatingServices _ratingService;
 
-        public BookController(IBookServices ibookService, IShelfServices ishelfService, IUserServices iuserService, ReviewServices reviewService)
+        public BookController(IBookServices ibookService, IShelfServices ishelfService, IUserServices iuserService, ReviewServices reviewService, RatingServices ratingService)
         {
             this._ibookService = ibookService;
             this._ishelfService = ishelfService;
             this._iuserService = iuserService;
             _reviewService = reviewService;
+            _ratingService = ratingService;
         }
 
         [HttpGet]
@@ -30,6 +32,7 @@ namespace Bookly.Bookly.Controllers
             User user = _iuserService.LoadUser(ViewBag.Username);
             ViewBag.Shelves = _ishelfService.GetUserShelves(user.Id);
             ViewBag.Reviews = _reviewService.GetBookReviews(id);
+            ViewBag.BookRating = _ratingService.GetUserRatingForBook(user.Id, id);
             return View(book);
         }
 
