@@ -79,7 +79,7 @@ namespace Bookly.Bookly.Controllers
             {
                 TempData["Confirmation"] = "Book was removed successfully!";
             }
-            return RedirectToAction("ShelfDetails", "Shelf", new {id=shelfId});
+            return RedirectToAction("ShelfDetails", "Shelf", new { id=shelfId });
         }
 
         [HttpPost]

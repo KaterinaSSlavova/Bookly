@@ -115,5 +115,52 @@ namespace Bookly.Data.Repository
                 throw new Exception(e.Message, e);
             }
         }
+
+        public int CheckForRating(int userId, int bookId)
+        {
+            try
+            {
+                using SqlConnection connection = GetSqlConnection();
+                connection.Open();
+
+                string sql = @"SELECT COUNT(*)
+                            FROM UserRating ur
+                            INNER JOIN BookRating br ON ur.RatingId = br.RatingId
+                            WHERE ur.UserId = @UserId AND br.BookId = @BookId";
+                using SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@UserId", userId);
+                command.Parameters.AddWithValue("@BookId", bookId);
+
+                int count = (int)command.ExecuteScalar();
+                return count;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message, e);
+            }
+        }
+
+        public void DeleteRating(int userId, int bookId)
+        {
+            try
+            {
+                using SqlConnection connection = GetSqlConnection();
+                connection.Open();
+
+                string sql = @"DELETE FROM UserRating 
+                                 WHERE UserId = @UserId AND RatingId IN
+                                 (SELECT RatingId FROM BookRating WHERE BookId = @BookId)";
+
+                using SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@UserId", userId);
+                command.Parameters.AddWithValue("@BookId", bookId);
+
+                command.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message, e);
+            }
+        }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Models.Enums;
-
 using Bookly.Data.Repository;
 
 namespace Business_logic.Services
@@ -14,7 +13,12 @@ namespace Business_logic.Services
 
         public bool RateBook(int userId, int bookId, int ratingId)
         {
-            if(_ratingRepository.RateBook(bookId, ratingId) && _ratingRepository.ConnectUserWithRating(userId, ratingId))
+            int previousRatingCount = _ratingRepository.CheckForRating(userId,bookId);
+            if(previousRatingCount > 0)
+            {
+                _ratingRepository.DeleteRating(userId,bookId);
+            }
+            if (_ratingRepository.RateBook(bookId, ratingId) && _ratingRepository.ConnectUserWithRating(userId, ratingId))
             {
                 return true;
             }
