@@ -1,4 +1,6 @@
-﻿namespace Models.Entities
+﻿using Models.Enums;
+
+namespace Models.Entities
 {
     public class Book
     {
@@ -8,7 +10,7 @@
         public string Author { get; set; }
         public string Description { get; set; }
         public string ISBN { get; set; }
-        public string Genre { get; set; }
+        public Genre Genre { get; set; }
         public List<Review> Reviews{ get; set; }
     }
 }

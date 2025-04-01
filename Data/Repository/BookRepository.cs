@@ -2,6 +2,7 @@
 using Models.Entities;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Models.Enums;
 
 namespace Bookly.Data.Repository
 {
@@ -25,7 +26,7 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("@Author", book.Author);
                 command.Parameters.AddWithValue("@Description", book.Description);
                 command.Parameters.AddWithValue("@ISBN", book.ISBN);
-                command.Parameters.AddWithValue("@Genre", book.Genre);
+                command.Parameters.AddWithValue("@Genre", book.Genre.ToString());
 
                 command.ExecuteNonQuery();
                 return true;
@@ -60,7 +61,7 @@ namespace Bookly.Data.Repository
                         Author = reader.GetString(3),
                         Description = reader.GetString(4),
                         ISBN = reader.GetString(5),
-                        Genre = reader.GetString(6)
+                        Genre = (Genre)Enum.Parse(typeof(Genre), reader.GetString(6))
                     });
                 }
                 return books;
@@ -95,7 +96,7 @@ namespace Bookly.Data.Repository
                         Author = reader.GetString(3),
                         Description = reader.GetString(4),
                         ISBN = reader.GetString(5),
-                        Genre = reader.GetString(6)
+                        Genre = (Genre)Enum.Parse(typeof(Genre), reader.GetString(6))
                     };
                 }
                 return null;

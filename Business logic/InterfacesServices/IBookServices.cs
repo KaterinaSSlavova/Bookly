@@ -1,4 +1,5 @@
 ﻿using Models.Entities;
+using Models.Enums;
 
 namespace Bookly.Business_logic.InterfacesServices
 {
@@ -8,5 +9,6 @@ namespace Bookly.Business_logic.InterfacesServices
         List<Book> LoadBooks();
         Book? GetBookById(int id);
         void RemoveBook(int id);
+        List<Genre> GetAllGenres();
     }
 }

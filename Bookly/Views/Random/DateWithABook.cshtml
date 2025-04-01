@@ -7,17 +7,37 @@
 <h1>Random Date With A Book</h1>
 <hr />
 
-@if(Model != null)
+@if (Model != null && Model.Any())
 {
-    @foreach(Book book in Model)
+    foreach (Book book in Model)
     {
-
         <label>@book.Description</label>
     }
 }
 else
 {
     <form asp-controller="Random" asp-action="FilterBooks" method="post">
+        <div class="form-group">
+            <label for="RatingSelect" class="control-label">Select Rating:</label>
+            <select name="ratings" class="form-select">
+                <option value="">Select a Rating</option>
+                @foreach (var rating in ViewBag.Ratings)
+                {
+                    <option value="@rating">@rating</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="GenreSelect" class="control-label">Genre:</label>
+            <select name="genre" class="form-select">
+                <option value="">Select a Genre</option>
+                @foreach (var genre in ViewBag.Genres)
+                {
+                    <option value="@genre">@genre</option>
+                }
+            </select>
+        </div>
         <button type="submit" class="btn btn-secondary">Filter</button>
     </form>
 }

@@ -1,10 +1,11 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Models.Enums;
+using Bookly.Data.InterfacesRepo;
 
 namespace Bookly.Data.Repository
 {
-    public class RatingRepository : Repository
+    public class RatingRepository : Repository, IRatingRepostiory
     {
         public RatingRepository(IConfiguration configuration) : base(configuration) { }
 
@@ -140,7 +141,7 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public void DeleteRating(int userId, int bookId)
+        public void RemoveRating(int userId, int bookId, int ratingId)
         {
             try
             {
@@ -149,9 +150,14 @@ namespace Bookly.Data.Repository
 
                 string sql = @"DELETE FROM UserRating 
                                  WHERE UserId = @UserId AND RatingId IN
-                                 (SELECT RatingId FROM BookRating WHERE BookId = @BookId)";
+                                 (SELECT RatingId FROM UserRating WHERE UserId = @UserId);
+
+                               DELETE FROM BookRating
+                                WHERE BookId = @BookId AND RatingId IN
+                                 (SELECT RatingId FROM BookRating WHERE BookId = @BookId);";
 
                 using SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@RatingId", ratingId);
                 command.Parameters.AddWithValue("@UserId", userId);
                 command.Parameters.AddWithValue("@BookId", bookId);
 

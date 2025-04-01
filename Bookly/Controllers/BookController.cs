@@ -3,6 +3,7 @@ using Models.Entities;
 using Bookly.Business_logic.InterfacesServices;
 using Bookly.Business_logic.Services;
 using Business_logic.Services;
+using Business_logic.InterfacesServices;
 
 namespace Bookly.Bookly.Controllers
 {
@@ -12,9 +13,9 @@ namespace Bookly.Bookly.Controllers
         private readonly IShelfServices _ishelfService;
         private readonly IUserServices _iuserService;
         private readonly ReviewServices _reviewService;
-        private readonly RatingServices _ratingService;
+        private readonly IRatingServices _ratingService;
 
-        public BookController(IBookServices ibookService, IShelfServices ishelfService, IUserServices iuserService, ReviewServices reviewService, RatingServices ratingService)
+        public BookController(IBookServices ibookService, IShelfServices ishelfService, IUserServices iuserService, ReviewServices reviewService, IRatingServices ratingService)
         {
             this._ibookService = ibookService;
             this._ishelfService = ishelfService;
@@ -64,6 +65,7 @@ namespace Bookly.Bookly.Controllers
         public IActionResult AddBookPage()
         {
             ViewBag.Username= HttpContext.Session.GetString("Username");
+            ViewBag.Genres = _ibookService.GetAllGenres();
             return View();
         }
 

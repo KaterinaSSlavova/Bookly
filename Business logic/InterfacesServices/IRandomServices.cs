@@ -1,4 +1,5 @@
 ﻿using Models.Entities;
+using Models.Enums;
 
 namespace Business_logic.InterfacesServices
 {
@@ -6,5 +7,6 @@ namespace Business_logic.InterfacesServices
     {
         List<Book> GetUnreadBooks(int userId);
         Book RandomResult(int userId);
+        List<Book> FilterBooks(int userId, Genre genre, Ratings rating);
     }
 }

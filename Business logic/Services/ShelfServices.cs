@@ -8,14 +8,12 @@ namespace Bookly.Business_logic.Services
     public class ShelfServices: IShelfServices
     {
         private readonly IShelfRepository _ishelfRepo;
-        private readonly IGoalRepository _igoalRepo;
-        //private readonly IGoalServices _igoalSrevice;
+        private readonly IGoalServices _igoalService;
         private int progress;
-        public ShelfServices(IShelfRepository ishelfRepo, /*IGoalServices igoalSrevice,*/ IGoalRepository igoalRepo)
+        public ShelfServices(IShelfRepository ishelfRepo, IGoalServices igoalSrevice) 
         {
             this._ishelfRepo = ishelfRepo;
-            this._igoalRepo = igoalRepo;
-            //_igoalSrevice = igoalSrevice;
+            _igoalService = igoalSrevice;
         }
 
         public bool CreateShelf(string name, int id)
@@ -42,7 +40,7 @@ namespace Bookly.Business_logic.Services
         {
             if (GetShelfById(shelfId)?.Name == "Have Read" && !CheckForBook(shelfId, bookId))
             {
-                Goal? goal = _igoalRepo.GetNewestGoal(true);
+                Goal? goal = _igoalService.GetNewestGoal(true);
                 if(goal!=null)
                 {
                     progress = ++ goal.CurrentProgress;
@@ -56,7 +54,7 @@ namespace Bookly.Business_logic.Services
         {     
             if (GetShelfById(shelfId)?.Name == "Have Read" && CheckForBook(shelfId, bookId))
             {
-                Goal? goal = _igoalRepo.GetNewestGoal(false);
+                Goal? goal = _igoalService.GetNewestGoal(false);
                 if (goal != null && goal.CurrentProgress>0)
                 {
                     progress = -- goal.CurrentProgress;
@@ -85,7 +83,7 @@ namespace Bookly.Business_logic.Services
 
         public void SetStatus(int progress, Goal goal, int userId)
         {
-            _igoalRepo.UpdateProgress(userId, goal.Id, progress);
+            _igoalService.UpdateProgress(userId, goal.Id, progress);
             Status newStatus = Status.Not_started;
             if (goal.CurrentProgress > 0 && goal.CurrentProgress < goal.ReadingGoal)
             {
@@ -95,7 +93,7 @@ namespace Bookly.Business_logic.Services
             {
                 newStatus = Status.Completed;
             }
-            _igoalRepo.UpdateStatus(newStatus, goal.Id, userId);
+            _igoalService.UpdateStatus(newStatus, goal.Id, userId);
         }
     }
 }

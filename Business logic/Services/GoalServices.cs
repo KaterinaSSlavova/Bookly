@@ -9,12 +9,10 @@ namespace Bookly.Business_logic.Services
     public class GoalServices : IGoalServices
     {
         private readonly IGoalRepository _igoalRepo;
-        private readonly IShelfServices _ishelfService;
         private readonly IHttpContextAccessor _contextAccessor;
-        public GoalServices(IGoalRepository igoalRepo, IShelfServices ishelfServices, IHttpContextAccessor contextAccessor)
+        public GoalServices(IGoalRepository igoalRepo, IHttpContextAccessor contextAccessor)
         {
             this._igoalRepo = igoalRepo;
-            this._ishelfService = ishelfServices;
             this._contextAccessor = contextAccessor;
         }
 

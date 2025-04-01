@@ -5,7 +5,7 @@ using Models.Entities;
 
 namespace Bookly.Data.Repository
 {
-    public class ReviewRepository: Repository
+    public class ReviewRepository: Repository, IReviewRepository
     {
         private readonly IUserRepository _iuserRepo;
         public ReviewRepository(IConfiguration configuration, IUserRepository iuserRepo): base(configuration)

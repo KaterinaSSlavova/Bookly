@@ -1,12 +1,13 @@
 ﻿using Models.Enums;
-using Bookly.Data.Repository;
+using Bookly.Data.InterfacesRepo;
+using Bookly.Business_logic.InterfacesServices;
 
 namespace Business_logic.Services
 {
-    public class RatingServices
+    public class RatingServices: IRatingServices
     {
-        private readonly RatingRepository _ratingRepository;    
-        public RatingServices(RatingRepository ratingRepository)
+        private readonly IRatingRepostiory _ratingRepository; 
+        public RatingServices(IRatingRepostiory ratingRepository)
         {
             _ratingRepository = ratingRepository;
         }
@@ -16,7 +17,7 @@ namespace Business_logic.Services
             int previousRatingCount = _ratingRepository.CheckForRating(userId,bookId);
             if(previousRatingCount > 0)
             {
-                _ratingRepository.DeleteRating(userId,bookId);
+                _ratingRepository.RemoveRating(userId,bookId, ratingId);
             }
             if (_ratingRepository.RateBook(bookId, ratingId) && _ratingRepository.ConnectUserWithRating(userId, ratingId))
             {
@@ -34,5 +35,21 @@ namespace Business_logic.Services
         {
             return _ratingRepository.GetUserRatingForBook(userId, bookId);
         }
+
+        public List<Ratings> GetAllRatings()
+        {
+            List<Ratings> ratings = Enum.GetValues(typeof(Ratings)).Cast<Ratings>().ToList();
+            return ratings;
+        }
+
+        public Ratings GetMostPopularRating(int bookId)
+        {
+            List<Ratings> bookRatings = GetBookRatings(bookId);
+            Ratings rating = bookRatings.GroupBy(r => r).
+                OrderByDescending(gr => gr.Count()).Select(gr => gr.Key).FirstOrDefault();
+            return rating;
+        }
+
+
     }
 }

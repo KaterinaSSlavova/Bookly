@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Bookly.Business_logic.InterfacesServices;
 using Bookly.Data.InterfacesRepo;
 using Models.Entities;
 
-using Bookly.Business_logic.InterfacesServices;
-using Bookly.Data.Repository;
-
 namespace Bookly.Business_logic.Services
 {
-    public class ReviewServices
+    public class ReviewServices: IReviewServices
     {
-        private readonly ReviewRepository _reviewRepo;
-        public ReviewServices(ReviewRepository reviewRepo)
+        private readonly IReviewRepository _reviewRepo;
+        public ReviewServices(IReviewRepository reviewRepo)
         {
             this._reviewRepo = reviewRepo;
         }

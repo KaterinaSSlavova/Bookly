@@ -1,6 +1,7 @@
 ﻿using Bookly.Data.InterfacesRepo;
 using Models.Entities;
 using Bookly.Business_logic.InterfacesServices;
+using Models.Enums;
 
 namespace Bookly.Business_logic.Services
 {
@@ -31,5 +32,12 @@ namespace Bookly.Business_logic.Services
         {
             _ibookRepo.RemoveBook(id);
         }
+
+        public List<Genre> GetAllGenres()
+        {
+            List<Genre> genres = Enum.GetValues(typeof(Genre)).Cast<Genre>().ToList();
+            return genres;
+        }
+
     }
 }
