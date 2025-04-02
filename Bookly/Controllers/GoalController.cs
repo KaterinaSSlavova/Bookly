@@ -1,7 +1,7 @@
-﻿using Bookly.Business_logic.Services;
-using Models.Entities;
+﻿using Models.Entities;
 using Bookly.Business_logic.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
+using ViewModels.Model;
 
 namespace Bookly.WebApp.Controllers
 {
@@ -21,8 +21,7 @@ namespace Bookly.WebApp.Controllers
         {
             ViewBag.Username = HttpContext.Session.GetString("Username");
             User user = _iuserService.LoadUser(ViewBag.Username);
-            _igoalService.GetPersonalGoals(user.Id);
-            List<Goal> personalGoals = _igoalService.GetPersonalGoals(_iuserService.LoadUser(ViewBag.Username).Id);
+            List<GoalViewModel> personalGoals = _igoalService.GetPersonalGoals(user.Id);
             return View(personalGoals);
         }
 
@@ -40,7 +39,7 @@ namespace Bookly.WebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveGoal(Goal goal)
+        public IActionResult SaveGoal(GoalViewModel goal)
         {
             ViewBag.Username = HttpContext.Session.GetString("Username");
             if (_igoalService.CreateGoal(goal, _iuserService.LoadUser(ViewBag.Username).Id))

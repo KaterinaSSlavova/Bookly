@@ -39,9 +39,6 @@ namespace Bookly.Data.Repository
 
                 commandInsert.ExecuteNonQuery();
 
-                User? newUser = LoadUser(user.Username);
-                _ishelfRepo.CreateShelf("Have Read", newUser.Id);
-
                 return true;
             }
             catch (Exception ex)

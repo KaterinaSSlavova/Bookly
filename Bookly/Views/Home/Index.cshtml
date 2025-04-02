@@ -1,4 +1,4 @@
-﻿@model List<Book>
+﻿@model List<BookViewModel>
 
 @{
     ViewData["Title"] = "Home Page";
@@ -27,7 +27,7 @@
             <th>Actions</th>
         </tr>
     </thead>
-    @foreach (Book book in Model)
+    @foreach (BookViewModel book in Model)
     {
         <tbody>
             <tr>

@@ -1,4 +1,4 @@
-﻿@model List<Shelf>
+﻿@model List<ShelfViewModel>
 
 @{
     ViewData["Title"] = "Shelf Overview";
@@ -21,7 +21,7 @@
 </div>
 
 <div class="row">
-    @foreach (Shelf shelf in Model)
+    @foreach (ShelfViewModel shelf in Model)
     {
         <div class="col-md-6 col-lg-4 mb-3">
             <div class="card shadow-sm border-0">

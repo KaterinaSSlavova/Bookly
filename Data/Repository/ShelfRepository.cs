@@ -10,7 +10,7 @@ namespace Bookly.Data.Repository
     {
         public ShelfRepository(IConfiguration configuration): base(configuration) { }
 
-        public bool CreateShelf(string name, int id)
+        public bool CreateShelf(Shelf shelf, int id)
         {
             try
             {
@@ -20,7 +20,7 @@ namespace Bookly.Data.Repository
                 string sql = @"INSERT INTO Shelves ([Name], UserId)
                                VALUES (@Name, @UserId)";
                 using SqlCommand command = new SqlCommand(sql, connection);
-                command.Parameters.AddWithValue("@Name", name);
+                command.Parameters.AddWithValue("@Name", shelf.Name);
                 command.Parameters.AddWithValue("@UserId", id);
 
                 command.ExecuteNonQuery();

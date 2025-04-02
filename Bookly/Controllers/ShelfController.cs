@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Models.Entities;
 using Bookly.Business_logic.InterfacesServices;
+using ViewModels.Model;
 
 namespace Bookly.Bookly.Controllers
 {
@@ -20,7 +21,7 @@ namespace Bookly.Bookly.Controllers
             string? username = HttpContext.Session.GetString("Username");
             ViewBag.Username =username;
             User? user = _iuserService.LoadUser(username);
-            List<Shelf> myShelves = _ishelfService.GetUserShelves(user.Id);
+            List<ShelfViewModel> myShelves = _ishelfService.GetUserShelves(user.Id);
             return View(myShelves);
         }
 
@@ -38,11 +39,11 @@ namespace Bookly.Bookly.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateNewShelf(Shelf shelf)
+        public IActionResult CreateNewShelf(ShelfViewModel shelfModel)
         {
             string? username = HttpContext.Session.GetString("Username");
             User? user = _iuserService.LoadUser(username);
-            if (!_ishelfService.CreateShelf(shelf.Name, user.Id)) 
+            if (!_ishelfService.CreateShelf(shelfModel, user.Id)) 
             {
                 ViewBag.ErrorMessage = "The shelf was not created!";
             }
@@ -54,9 +55,9 @@ namespace Bookly.Bookly.Controllers
         public IActionResult ShelfDetails(int id)
         {
             ViewBag.Username = HttpContext.Session.GetString("Username");
-            Shelf? shelf=_ishelfService.GetShelfById(id);
-            shelf.Books = _ishelfService.GetBooksFromShelf(id);
-            return View(shelf);
+            ShelfViewModel shelfModel=_ishelfService.GetShelfById(id);
+            shelfModel.BooksOnShelf = _ishelfService.GetBooksFromShelf(id);
+            return View(shelfModel);
         } 
 
         [HttpPost]

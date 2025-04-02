@@ -2,6 +2,8 @@
 using Models.Entities;
 using Models.Enums;
 using Bookly.Data.InterfacesRepo;
+using ViewModels.Model;
+using AutoMapper;
 
 namespace Bookly.Business_logic.Services
 {
@@ -9,38 +11,53 @@ namespace Bookly.Business_logic.Services
     {
         private readonly IShelfRepository _ishelfRepo;
         private readonly IGoalServices _igoalService;
+        private readonly IMapper _mapper;
         private int progress;
-        public ShelfServices(IShelfRepository ishelfRepo, IGoalServices igoalSrevice) 
+        public ShelfServices(IShelfRepository ishelfRepo, IGoalServices igoalSrevice, IMapper mapper) 
         {
             this._ishelfRepo = ishelfRepo;
             _igoalService = igoalSrevice;
+            _mapper = mapper;
         }
 
-        public bool CreateShelf(string name, int id)
+        public bool CreateShelf(ShelfViewModel shelfModel, int id)
         {
-            return _ishelfRepo.CreateShelf(name, id);
+            Shelf shelf = _mapper.Map<Shelf>(shelfModel);
+            return _ishelfRepo.CreateShelf(shelf, id);
         }
 
-        public List<Shelf> GetUserShelves(int id)
+        public List<ShelfViewModel> GetUserShelves(int id)
         {
-            return _ishelfRepo.GetUserShelves(id);
+            List<ShelfViewModel> shelves = new List<ShelfViewModel>();
+            foreach (Shelf shelf in _ishelfRepo.GetUserShelves(id))
+            {
+                shelves.Add(_mapper.Map<ShelfViewModel>(shelf));
+            }
+            return shelves;
         }
 
-        public List<Book> GetBooksFromShelf(int id)
+        public List<BookViewModel> GetBooksFromShelf(int id)
         {
-            return _ishelfRepo.GetBooksFromShelf(id);
+            List<BookViewModel> bookModels = new List<BookViewModel>();
+            foreach(Book book in _ishelfRepo.GetBooksFromShelf(id))
+            {
+                bookModels.Add(_mapper.Map<BookViewModel>(book));
+            }
+            return bookModels;
         }
 
-        public Shelf? GetShelfById(int id)
+        public ShelfViewModel? GetShelfById(int id)
         {
-            return _ishelfRepo.GetShelfById(id);
+            Shelf shelf = _ishelfRepo.GetShelfById(id);
+            ShelfViewModel shelfModel = _mapper.Map<ShelfViewModel>(shelf);
+            return shelfModel;
         }
 
         public bool AddBookToShelf(int bookId, int shelfId, int userId)
         {
             if (GetShelfById(shelfId)?.Name == "Have Read" && !CheckForBook(shelfId, bookId))
             {
-                Goal? goal = _igoalService.GetNewestGoal(true);
+                Goal? goal = _mapper.Map<Goal>(_igoalService.GetNewestGoal(true));
                 if(goal!=null)
                 {
                     progress = ++ goal.CurrentProgress;
@@ -54,7 +71,7 @@ namespace Bookly.Business_logic.Services
         {     
             if (GetShelfById(shelfId)?.Name == "Have Read" && CheckForBook(shelfId, bookId))
             {
-                Goal? goal = _igoalService.GetNewestGoal(false);
+                Goal? goal = _mapper.Map<Goal>(_igoalService.GetNewestGoal(true));
                 if (goal != null && goal.CurrentProgress>0)
                 {
                     progress = -- goal.CurrentProgress;
@@ -71,7 +88,7 @@ namespace Bookly.Business_logic.Services
 
         public bool CheckForBook(int shelfId, int bookId)
         {
-            foreach(Book book in GetBooksFromShelf(shelfId))
+            foreach(BookViewModel book in GetBooksFromShelf(shelfId))
             {
                 if(book.Id == bookId)
                 {

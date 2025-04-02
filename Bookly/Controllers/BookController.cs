@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Models.Entities;
 using Bookly.Business_logic.InterfacesServices;
-using Bookly.Business_logic.Services;
-using Business_logic.Services;
-using Business_logic.InterfacesServices;
+using ViewModels.Model;
+using Models.Enums;
 
 namespace Bookly.Bookly.Controllers
 {
@@ -12,10 +11,10 @@ namespace Bookly.Bookly.Controllers
         private readonly IBookServices _ibookService;
         private readonly IShelfServices _ishelfService;
         private readonly IUserServices _iuserService;
-        private readonly ReviewServices _reviewService;
+        private readonly IReviewServices _reviewService;
         private readonly IRatingServices _ratingService;
 
-        public BookController(IBookServices ibookService, IShelfServices ishelfService, IUserServices iuserService, ReviewServices reviewService, IRatingServices ratingService)
+        public BookController(IBookServices ibookService, IShelfServices ishelfService, IUserServices iuserService, IReviewServices reviewService, IRatingServices ratingService)
         {
             this._ibookService = ibookService;
             this._ishelfService = ishelfService;
@@ -28,12 +27,15 @@ namespace Bookly.Bookly.Controllers
         public IActionResult BookDetails(int id)   
         {
             ViewBag.Username = HttpContext.Session.GetString("Username");
-            Book? book = _ibookService.GetBookById(id); 
+            BookViewModel? book = _ibookService.GetBookById(id); 
             User user = _iuserService.LoadUser(ViewBag.Username);
-            ViewBag.Shelves = _ishelfService.GetUserShelves(user.Id);
-            ViewBag.Reviews = _reviewService.GetBookReviews(id);
-            ViewBag.BookRating = _ratingService.GetUserRatingForBook(user.Id, id);
-            return View(book);
+            //ViewBag.Shelves = _ishelfService.GetUserShelves(user.Id);
+            //ViewBag.Reviews = _reviewService.GetBookReviews(id);
+            Ratings? rating = _ratingService.GetUserRatingForBook(user.Id, id);
+            List<ShelfViewModel> shelfViewModels = _ishelfService.GetUserShelves(user.Id); 
+            List<ReviewViewModel> reviewViewModels = _reviewService.GetBookReviews(id);
+            BookDetailsViewModel model = new BookDetailsViewModel(book, shelfViewModels,reviewViewModels, rating.ToString());
+            return View(model);
         }
 
         [HttpPost]
@@ -65,8 +67,11 @@ namespace Bookly.Bookly.Controllers
         public IActionResult AddBookPage()
         {
             ViewBag.Username= HttpContext.Session.GetString("Username");
-            ViewBag.Genres = _ibookService.GetAllGenres();
-            return View();
+            BookViewModel bookModel = new BookViewModel()
+            {
+                Genres = _ibookService.GetAllGenres(),  
+            };  
+            return View(bookModel);
         }
 
         [HttpPost]
@@ -76,9 +81,9 @@ namespace Bookly.Bookly.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddBook(Book book)
+        public IActionResult AddBook(BookViewModel bookModel)
         {
-            _ibookService.AddBook(book);
+            _ibookService.AddBook(bookModel);
             return RedirectToAction("Index","Home");
         }
 

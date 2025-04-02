@@ -1,12 +1,13 @@
-﻿using Models.Enums;
+﻿using Bookly.Business_logic.InterfacesServices;
 using Bookly.Data.InterfacesRepo;
-using Bookly.Business_logic.InterfacesServices;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Models.Enums;
 
 namespace Business_logic.Services
 {
-    public class RatingServices: IRatingServices
+    public class RatingServices : IRatingServices
     {
-        private readonly IRatingRepostiory _ratingRepository; 
+        private readonly IRatingRepostiory _ratingRepository;
         public RatingServices(IRatingRepostiory ratingRepository)
         {
             _ratingRepository = ratingRepository;
@@ -14,10 +15,10 @@ namespace Business_logic.Services
 
         public bool RateBook(int userId, int bookId, int ratingId)
         {
-            int previousRatingCount = _ratingRepository.CheckForRating(userId,bookId);
-            if(previousRatingCount > 0)
+            int previousRatingCount = _ratingRepository.CheckForRating(userId, bookId);
+            if (previousRatingCount > 0)
             {
-                _ratingRepository.RemoveRating(userId,bookId, ratingId);
+                _ratingRepository.RemoveRating(userId, bookId, ratingId);
             }
             if (_ratingRepository.RateBook(bookId, ratingId) && _ratingRepository.ConnectUserWithRating(userId, ratingId))
             {
@@ -36,9 +37,16 @@ namespace Business_logic.Services
             return _ratingRepository.GetUserRatingForBook(userId, bookId);
         }
 
-        public List<Ratings> GetAllRatings()
+        public List<SelectListItem> GetAllRatings()
         {
-            List<Ratings> ratings = Enum.GetValues(typeof(Ratings)).Cast<Ratings>().ToList();
+            List<SelectListItem> ratings = Enum.GetValues(typeof(Ratings))
+                .Cast<Ratings>()
+                .Select(r => new SelectListItem
+                {
+                    Value = r.ToString(),
+                    Text = r.ToString()
+                })
+                .ToList();
             return ratings;
         }
 

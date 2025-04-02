@@ -10,16 +10,23 @@ namespace Bookly.Business_logic.Services
     public class UserServices: IUserServices
     {
         private readonly IUserRepository _iuserRepo;
+        private readonly IShelfServices _shelfServices; 
         private readonly IMapper _iMapper;
-        public UserServices(IUserRepository iuserRepo, IMapper iMapper)
+        public UserServices(IUserRepository iuserRepo, IMapper iMapper, IShelfServices shelfServices)
         {
             this._iuserRepo = iuserRepo;
             this._iMapper = iMapper;    
+            this._shelfServices = shelfServices;
         }
 
         public bool Register(AccountRegister model)
         {
             User user = _iMapper.Map<User>(model);
+            ShelfViewModel shelf = new ShelfViewModel()
+            {
+                Name = "Have Read"
+            };
+            _shelfServices.CreateShelf(shelf, user.Id);
             return _iuserRepo.Register(user);
         }
 

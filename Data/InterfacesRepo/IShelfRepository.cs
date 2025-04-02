@@ -4,7 +4,7 @@ namespace Bookly.Data.InterfacesRepo
 {
     public interface IShelfRepository
     {
-        bool CreateShelf(string name, int id);
+        bool CreateShelf(Shelf shelf, int id);
         List<Shelf> GetUserShelves(int id);
         List<Book> GetBooksFromShelf(int id);
         Shelf? GetShelfById(int id);

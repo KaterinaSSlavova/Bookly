@@ -10,7 +10,7 @@ namespace Models.Entities
         public int ReadingGoal { get; set; }
         public int CurrentProgress { get; set; }
         public Status Status { get; set; }
-        public User User { get; set; }
+        //public User User { get; set; }
 
         public Goal() { }   
     }

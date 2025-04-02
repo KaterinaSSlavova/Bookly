@@ -1,4 +1,4 @@
-﻿@model Shelf
+﻿@model ShelfViewModel
 
 @{
     ViewData["Title"] = "Shelf Details";
@@ -31,7 +31,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (Book book in Model.Books)
+        @foreach (BookViewModel book in Model.BooksOnShelf)
         {
             <tr>
                 <td>

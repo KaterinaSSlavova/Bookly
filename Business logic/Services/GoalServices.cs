@@ -3,6 +3,8 @@ using Bookly.Data.InterfacesRepo;
 using Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Models.Enums;
+using AutoMapper;
+using ViewModels.Model;
 
 namespace Bookly.Business_logic.Services
 {
@@ -10,20 +12,28 @@ namespace Bookly.Business_logic.Services
     {
         private readonly IGoalRepository _igoalRepo;
         private readonly IHttpContextAccessor _contextAccessor;
-        public GoalServices(IGoalRepository igoalRepo, IHttpContextAccessor contextAccessor)
+        private readonly IMapper _mapper;
+        public GoalServices(IGoalRepository igoalRepo, IHttpContextAccessor contextAccessor, IMapper mapper)
         {
             this._igoalRepo = igoalRepo;
             this._contextAccessor = contextAccessor;
+            this._mapper = mapper;
         }
 
-        public bool CreateGoal(Goal goal, int userId)
+        public bool CreateGoal(GoalViewModel goalModel, int userId)
         {
+            Goal goal = _mapper.Map<Goal>(goalModel);
             return _igoalRepo.CreateGoal(goal, userId);
         }
 
-        public List<Goal> GetPersonalGoals(int id)
+        public List<GoalViewModel> GetPersonalGoals(int id)
         {
-            return _igoalRepo.GetPersonalGoals(id);
+            List<GoalViewModel> goals = new List<GoalViewModel>();
+            foreach (Goal goal in _igoalRepo.GetPersonalGoals(id))
+            {
+                goals.Add(_mapper.Map<GoalViewModel>(goal));
+            }
+            return goals;
         }
 
         public void RemoveGoal(int id)
@@ -31,9 +41,10 @@ namespace Bookly.Business_logic.Services
             _igoalRepo.RemoveGoal(id);
         }
 
-        public Goal? GetNewestGoal(bool isIncreasing)
+        public GoalViewModel? GetNewestGoal(bool isIncreasing)
         {
-            return _igoalRepo.GetNewestGoal(isIncreasing);
+            GoalViewModel goal = _mapper.Map<GoalViewModel>(_igoalRepo.GetNewestGoal(isIncreasing));
+            return goal;
         }
 
         public void UpdateProgress(int userId, int goalId, int progress)

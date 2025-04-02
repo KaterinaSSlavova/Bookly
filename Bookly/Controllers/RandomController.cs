@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models.Entities;
 using Models.Enums;
 using Newtonsoft.Json;
+using ViewModels.Model;
 
 namespace Bookly.Controllers
 {
@@ -26,7 +27,7 @@ namespace Bookly.Controllers
         {
             ViewBag.Username = HttpContext.Session.GetString("Username");
             User user = _iuserService.LoadUser(ViewBag.Username);
-            List<Book> unreadBooks = _iRandomServices.GetUnreadBooks(user.Id);
+            List<BookViewModel> unreadBooks = _iRandomServices.GetUnreadBooks(user.Id);
             return View(unreadBooks);
         }
 
@@ -44,11 +45,17 @@ namespace Bookly.Controllers
         {
             ViewBag.Username = HttpContext.Session.GetString("Username");
             User user = _iuserService.LoadUser(ViewBag.Username);
-            ViewBag.Ratings = ratingServices.GetAllRatings();
-            ViewBag.Genres = bookServices.GetAllGenres();
+            //ViewBag.Ratings = ratingServices.GetAllRatings();
+            //ViewBag.Genres = bookServices.GetAllGenres();
             var filteredBooksJson = TempData["Filtered"] as string;
-            List<Book> filteredBooks = filteredBooksJson != null ? JsonConvert.DeserializeObject<List<Book>>(filteredBooksJson) : new List<Book>();
-            return View(filteredBooks);
+            List<BookViewModel> filteredBooks = filteredBooksJson != null ? JsonConvert.DeserializeObject<List<BookViewModel>>(filteredBooksJson) : new List<BookViewModel>();
+            DateWithABookViewModel model = new DateWithABookViewModel()
+            {
+                filteredBooksModel = filteredBooks,
+                Genres = bookServices.GetAllGenres(),
+                Ratings = ratingServices.GetAllRatings()
+            };
+            return View(model);
         }
 
         [HttpPost]
@@ -56,7 +63,7 @@ namespace Bookly.Controllers
         {
             ViewBag.Username = HttpContext.Session.GetString("Username");
             User user = _iuserService.LoadUser(ViewBag.Username);
-            List<Book> filteredBooks = _iRandomServices.FilterBooks(user.Id, genre, ratings);
+            List<BookViewModel> filteredBooks = _iRandomServices.FilterBooks(user.Id, genre, ratings);
             TempData["Filtered"] = JsonConvert.SerializeObject(filteredBooks);  
             return RedirectToAction("DateWithABook", "Random");
         }

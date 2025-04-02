@@ -19,6 +19,9 @@ namespace WebApp
             builder.Services.AddSession();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddAutoMapper(typeof(UserProfile));
+            builder.Services.AddAutoMapper(typeof(ReviewProfile));
+            builder.Services.AddAutoMapper(typeof(BookProfile));
+            builder.Services.AddAutoMapper(typeof(ShelfProfile));
 
             builder.Services.AddScoped<IGoalRepository, GoalRepository>();
             builder.Services.AddScoped<IShelfRepository, ShelfRepository>();

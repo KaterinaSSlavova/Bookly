@@ -1,11 +1,11 @@
-﻿@model Book
+﻿@model BookDetailsViewModel
 
 @{
     ViewData["Title"] = "Book Details";
 }
 
 <div class="container mt-4">
-    <h1 class="mb-3">@Model.Title</h1>
+    <h1 class="mb-3">@Model.Book.Title</h1>
     <hr />
 
     @if (TempData["Message"] != null)
@@ -25,24 +25,24 @@
     <div class="row">
         <div class="col-md-4">
             <div class="card shadow-sm mb-3">
-                <img src="@Model.Picture" class="card-img-top" alt="@Model.Title" />
+                <img src="@Model.Book.Picture" class="card-img-top" alt="@Model.Book.Title" />
                 <div class="card-body">
-                    <h5 class="card-title">@Model.Title</h5>
-                    <p class="card-text"><strong>Author:</strong> @Model.Author</p>
-                    <p class="card-text"><strong>Genre:</strong> @Model.Genre</p>
-                    <p class="card-text"><strong>Description:</strong> @Model.Description</p>
-                    <p class="card-text"><strong>ISBN:</strong> @Model.ISBN</p>
+                    <h5 class="card-title">@Model.Book.Title</h5>
+                    <p class="card-text"><strong>Author:</strong> @Model.Book.Author</p>
+                    <p class="card-text"><strong>Genre:</strong> @Model.Book.Genre</p>
+                    <p class="card-text"><strong>Description:</strong> @Model.Book.Description</p>
+                    <p class="card-text"><strong>ISBN:</strong> @Model.Book.ISBN</p>
                 </div>
             </div>
 
             <form asp-controller="Book" asp-action="MoveToShelf" class="mb-2">
-                <input type="hidden" name="bookId" value="@Model.Id" />
+                <input type="hidden" name="bookId" value="@Model.Book.Id" />
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Select a shelf
                     </button>
                     <ul class="dropdown-menu w-100">
-                        @foreach (Shelf shelf in ViewBag.Shelves)
+                        @foreach (ShelfViewModel shelf in Model.Shelves)
                         {
                             <li>
                                 <button type="submit" class="dropdown-item" name="shelfId" value="@shelf.Id">@shelf.Name</button>
@@ -54,7 +54,7 @@
 
             <div class="d-grid gap-2">
                 <form asp-controller="Book" asp-action="RemoveBook">
-                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="id" value="@Model.Book.Id" />
                     <button type="submit" class="btn btn-danger">Remove Book</button>
                 </form>
 
@@ -64,13 +64,13 @@
             </div>
 
             <h3>Reviews</h3>
-            @if (ViewBag.Reviews != null && ViewBag.Reviews.Count > 0)
+            @if (Model.Reviews != null && Model.Reviews.Count > 0)
             {
                 <ul class="list-group">
-                    @foreach (var review in ViewBag.Reviews)
+                    @foreach (var review in Model.Reviews)
                     {
                         <li class="list-group-item">
-                            <strong>@review.User.Username:</strong> @review.Description
+                            <strong>@review.Username:</strong> @review.Description
                         </li>
                     }
                 </ul>
@@ -90,27 +90,27 @@
             }
 
             <form asp-controller="Rating" asp-action="RateABook" method="post">
-                <input type="hidden" name="bookId" value="@Model.Id" />
+                <input type="hidden" name="bookId" value="@Model.Book.Id" />
 
                 <div class="d-flex gap-2">
                     <button type="submit" name="ratingId" value="1"
-                            class="btn btn-outline-secondary  @((ViewBag.BookRating == Ratings.Very_Sad) ? "selected" : "")">
+                            class="btn btn-outline-secondary  @((Model.RatingFromUser == "Very_Sad") ? "selected" : "")">
                         😢
                     </button>
                     <button type="submit" name="ratingId" value="2"
-                            class="btn btn-outline-secondary @((ViewBag.BookRating == Ratings.Sad) ? "selected" : "")">
+                            class="btn btn-outline-secondary @((Model.RatingFromUser == "Sad") ? "selected" : "")">
                         ☹️
                     </button>
                     <button type="submit" name="ratingId" value="3"
-                            class="btn btn-outline-secondary @((ViewBag.BookRating == Ratings.Neutral) ? "selected" : "")">
+                            class="btn btn-outline-secondary @((Model.RatingFromUser == "Neutral") ? "selected" : "")">
                         😐
                     </button>
                     <button type="submit" name="ratingId" value="4"
-                            class="btn btn-outline-secondary @((ViewBag.BookRating == Ratings.Happy) ? "selected" : "")">
+                            class="btn btn-outline-secondary @((Model.RatingFromUser == "Happy") ? "selected" : "")">
                         🙂
                     </button>
                     <button type="submit" name="ratingId" value="5"
-                            class="btn btn-outline-secondary @((ViewBag.BookRating == Ratings.Very_Happy) ? "selected" : "")">
+                            class="btn btn-outline-secondary @((Model.RatingFromUser == "Very_Happy") ? "selected" : "")">
                         😃
                     </button>
                 </div>
@@ -119,7 +119,7 @@
 
 
          <form asp-controller="Review" asp-action="CreateReview" method="post">
-    <input type="hidden" name="bookId" value="@Model.Id" />
+    <input type="hidden" name="bookId" value="@Model.Book.Id" />
 
     <div class="mb-3">
         <label for="reviewDescription" class="form-label">Write a review:</label>

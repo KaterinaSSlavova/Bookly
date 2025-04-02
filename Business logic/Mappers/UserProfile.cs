@@ -10,6 +10,8 @@ namespace Business_logic.Mappers
         {
             CreateMap<User, AccountLogIn>().ReverseMap();
             CreateMap<User, AccountRegister>().ReverseMap();
+            //CreateMap<User, UserViewModel>()
+            //    .ForMember(dest => dest.Picture, opt => opt.MapFrom(src => ))
         }
     }
 }

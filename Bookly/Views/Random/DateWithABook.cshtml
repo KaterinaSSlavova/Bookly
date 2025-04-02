@@ -1,4 +1,4 @@
-﻿@model List<Book>
+﻿@model DateWithABookViewModel
 
 @{
     ViewData["Title"] = "Random date with a book";
@@ -7,9 +7,9 @@
 <h1>Random Date With A Book</h1>
 <hr />
 
-@if (Model != null && Model.Any())
+@if (Model.filteredBooksModel != null && Model.filteredBooksModel.Any())
 {
-    foreach (Book book in Model)
+    foreach (BookViewModel book  in Model.filteredBooksModel)
     {
         <label>@book.Description</label>
     }
@@ -21,9 +21,9 @@ else
             <label for="RatingSelect" class="control-label">Select Rating:</label>
             <select name="ratings" class="form-select">
                 <option value="">Select a Rating</option>
-                @foreach (var rating in ViewBag.Ratings)
+                @foreach (var rating in Model.Ratings)
                 {
-                    <option value="@rating">@rating</option>
+                    <option value="@rating.Value">@rating.Text</option>
                 }
             </select>
         </div>
@@ -32,9 +32,9 @@ else
             <label for="GenreSelect" class="control-label">Genre:</label>
             <select name="genre" class="form-select">
                 <option value="">Select a Genre</option>
-                @foreach (var genre in ViewBag.Genres)
+                @foreach (var genre in Model.Genres)
                 {
-                    <option value="@genre">@genre</option>
+                    <option value="@genre.Value">@genre.Text</option>
                 }
             </select>
         </div>

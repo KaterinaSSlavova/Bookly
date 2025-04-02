@@ -4,6 +4,7 @@ using Bookly.Business_logic.InterfacesServices;
 using Models.Entities;
 using Bookly.Business_logic.Services;
 using Microsoft.AspNetCore.Mvc;
+using ViewModels.Model;
 
 namespace Bookly.Bookly.Controllers
 {
@@ -24,7 +25,7 @@ namespace Bookly.Bookly.Controllers
         public IActionResult Index()
         {
             ViewBag.Username=HttpContext.Session.GetString("Username");
-            List<Book> books = _ibookServices.LoadBooks();
+            List<BookViewModel> books = _ibookServices.LoadBooks();
             return View(books);
         }
 

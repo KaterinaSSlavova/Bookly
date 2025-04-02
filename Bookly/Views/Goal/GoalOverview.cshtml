@@ -1,4 +1,4 @@
-﻿@model List<Goal>
+﻿@model List<GoalViewModel>
 
 @{
     ViewData["Title"] = "Goal Overview";
@@ -27,8 +27,8 @@
                 <div class="card h-100 shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title">Reading Goal: @goal.ReadingGoal books</h5>
-                        <p class="card-text">Start: <strong>@goal.Start.ToString("yyyy-MM-dd")</strong></p>
-                        <p class="card-text">End: <strong>@goal.End.Date.ToString("yyyy-MM-dd")</strong></p>
+                        <p class="card-text">Start: <strong>@goal.FormattedStartDate</strong></p>
+                        <p class="card-text">End: <strong>@goal.FormattedEndDate</strong></p>
 
                         <div class="progress mb-2">
                             <div class="progress-bar @(goal.CurrentProgress >= goal.ReadingGoal ? "bg-success" : "bg-info")"
@@ -42,11 +42,11 @@
                         </div>
 
                         <p class="text-center">
-                            @if (goal.Status == Status.Completed)
+                            @if (goal.Status == "Completed")
                             {
                                 <span class="badge bg-success">✅ Completed</span>
                             }
-                            else if (goal.Status == Status.In_progress)
+                            else if (goal.Status == "In_progress")
                             {
                                 <span class="badge bg-warning text-dark">⌛ In Progress</span>
                             }

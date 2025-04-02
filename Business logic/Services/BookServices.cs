@@ -2,30 +2,43 @@
 using Models.Entities;
 using Bookly.Business_logic.InterfacesServices;
 using Models.Enums;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using ViewModels.Model;
+using AutoMapper;
 
 namespace Bookly.Business_logic.Services
 {
     public class BookServices: IBookServices
     {
         private readonly IBookRepository _ibookRepo;
-        public BookServices(IBookRepository ibookRepo)
+        private readonly IMapper _mapper;
+        public BookServices(IBookRepository ibookRepo, IMapper mapper)
         {
             this._ibookRepo = ibookRepo;
+            this._mapper = mapper;
         }
 
-        public bool AddBook(Book book)
+        public bool AddBook(BookViewModel bookModel)
         {
+            Book book = _mapper.Map<Book>(bookModel);
             return _ibookRepo.AddBook(book); 
         }
 
-        public List<Book> LoadBooks()
+        public List<BookViewModel> LoadBooks()
         {
-            return _ibookRepo.LoadBooks();    
+            List<BookViewModel> books = new List<BookViewModel>();
+            foreach(Book book in _ibookRepo.LoadBooks())
+            {
+                books.Add(_mapper.Map<BookViewModel>(book));
+            }
+            return books;    
         }
 
-        public Book? GetBookById(int id)
+        public BookViewModel? GetBookById(int id)
         {
-            return _ibookRepo.GetBookById(id);
+            Book book = _ibookRepo.GetBookById(id);
+            BookViewModel bookModel = _mapper.Map<BookViewModel>(book);    
+            return bookModel;
         }
 
         public void RemoveBook(int id)
@@ -33,9 +46,16 @@ namespace Bookly.Business_logic.Services
             _ibookRepo.RemoveBook(id);
         }
 
-        public List<Genre> GetAllGenres()
+        public List<SelectListItem> GetAllGenres()
         {
-            List<Genre> genres = Enum.GetValues(typeof(Genre)).Cast<Genre>().ToList();
+            List<SelectListItem> genres = Enum.GetValues(typeof(Genre))
+                .Cast<Genre>()
+                .Select(g => new SelectListItem
+                {
+                    Value = g.ToString(), 
+                    Text = g.ToString()  
+                })
+                .ToList();
             return genres;
         }
 

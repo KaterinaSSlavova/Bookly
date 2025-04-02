@@ -8,9 +8,9 @@
         public int Age { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public List<Shelf> Shelves { get; set; }
-        public List<Goal> Goals { get; set; }
-        public List<Review> Reviews { get; set; }
+        //public List<Shelf> Shelves { get; set; }
+        //public List<Goal> Goals { get; set; }
+        //public List<Review> Reviews { get; set; }
 
         public User()
         {

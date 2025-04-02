@@ -1,14 +1,14 @@
-﻿using Models.Entities;
-using Models.Enums;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using ViewModels.Model;
 
 namespace Bookly.Business_logic.InterfacesServices
 {
     public interface IBookServices
     {
-        bool AddBook(Book book);
-        List<Book> LoadBooks();
-        Book? GetBookById(int id);
+        bool AddBook(BookViewModel bookModel);
+        List<BookViewModel> LoadBooks();
+        BookViewModel? GetBookById(int id);
         void RemoveBook(int id);
-        List<Genre> GetAllGenres();
+        List<SelectListItem> GetAllGenres();
     }
 }

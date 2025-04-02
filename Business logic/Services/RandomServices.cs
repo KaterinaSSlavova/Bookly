@@ -2,6 +2,8 @@
 using Business_logic.InterfacesServices;
 using Bookly.Business_logic.InterfacesServices;
 using Models.Enums;
+using ViewModels.Model;
+using AutoMapper;
 
 namespace Business_logic.Services
 {
@@ -10,16 +12,18 @@ namespace Business_logic.Services
         private readonly IShelfServices _ishelfService;
         private readonly IBookServices _ibookService;   
         private readonly IRatingServices ratingServices;
-        public RandomServices(IShelfServices ishelfService, IBookServices ibookService, IRatingServices ratingServices)
+        private readonly IMapper _mapper;
+        public RandomServices(IShelfServices ishelfService, IBookServices ibookService, IRatingServices ratingServices, IMapper mapper)
         { 
             _ishelfService = ishelfService;
             _ibookService = ibookService;
             this.ratingServices = ratingServices;
+            _mapper = mapper;
         }
 
-        private List<Book>? GetHaveReadShelf(int userId)
+        private List<BookViewModel>? GetHaveReadShelf(int userId)
         {
-            foreach(Shelf shelf in _ishelfService.GetUserShelves(userId))
+            foreach(ShelfViewModel shelf in _ishelfService.GetUserShelves(userId))
             {
                 if(shelf.Name == "Have Read")
                 {
@@ -29,15 +33,15 @@ namespace Business_logic.Services
             return null;
         }
 
-        public List<Book> GetUnreadBooks(int userId)
+        public List<BookViewModel> GetUnreadBooks(int userId)
         {
-            List<Book>? readBooks = GetHaveReadShelf(userId);
-            List<Book> allBooks = _ibookService.LoadBooks();
+            List<BookViewModel>? readBooks = GetHaveReadShelf(userId);
+            List<BookViewModel> allBooks = _ibookService.LoadBooks();
             if(readBooks != null)
             {
-                List<Book> unreadBooks = new List<Book>();
+                List<BookViewModel> unreadBooks = new List<BookViewModel>();
                 List<int> readBooksId = readBooks.Select(x => x.Id).ToList();   
-                foreach(Book book in allBooks)
+                foreach(BookViewModel book in allBooks)
                 {
                     if(!readBooksId.Contains(book.Id))
                     {
@@ -54,12 +58,12 @@ namespace Business_logic.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <returns>randomly chosen book</returns>
-        public Book RandomResult(int userId) 
+        public BookViewModel RandomResult(int userId) 
         {
-            List<Book> books = GetUnreadBooks(userId);
+            List<BookViewModel> books = GetUnreadBooks(userId);
             Random random = new Random();
             int index = random.Next(books.Count);
-            Book randomBook = books[index];
+            BookViewModel randomBook = books[index];
             return randomBook;
         }
 
@@ -70,12 +74,22 @@ namespace Business_logic.Services
         /// <param name="genre"></param>
         /// <param name="stars"></param>
         /// <returns>Filtered list of a books</returns>
-        public List<Book> FilterBooks(int userId, Genre genre, Ratings rating)
+        public List<BookViewModel> FilterBooks(int userId, Genre genre, Ratings rating)
         {
-            List<Book> filteredBooks = GetUnreadBooks(userId);
+            List<Book> filteredBooks = new List<Book>();
+            List<BookViewModel> unreadBooks = GetUnreadBooks(userId);
+            foreach (BookViewModel book in unreadBooks)
+            {
+                filteredBooks.Add(_mapper.Map<Book>(book));
+            }
             filteredBooks = filteredBooks.Where(b => b.Genre == genre).ToList();
             filteredBooks = filteredBooks.Where(b => ratingServices.GetMostPopularRating(b.Id) == rating).ToList();
-            return filteredBooks;   
+            List<BookViewModel> filteredModels = new List<BookViewModel>();
+            foreach (Book book in filteredBooks)
+            {
+                filteredModels.Add(_mapper.Map<BookViewModel>(book));
+            }
+            return filteredModels;   
         }
     }
 }
