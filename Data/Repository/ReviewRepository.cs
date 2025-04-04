@@ -8,7 +8,7 @@ namespace Bookly.Data.Repository
     public class ReviewRepository: Repository, IReviewRepository
     {
         private readonly IUserRepository _iuserRepo;
-        public ReviewRepository(IConfiguration configuration, IUserRepository iuserRepo): base(configuration)
+        public ReviewRepository(IConfiguration configuration, IUserRepository iuserRepo) : base(configuration)
         {
             this._iuserRepo = iuserRepo;
         }
@@ -38,7 +38,7 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public List<Review> GetBookReviews(int bookId)
+        public List<Review> GetBookReviews(Book book)
         {
             try
             {
@@ -51,18 +51,19 @@ namespace Bookly.Data.Repository
                                     WHERE isArchived = @isArchived AND BookId = @BookId";
                 using SqlCommand command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@isArchived", 0);
-                command.Parameters.AddWithValue("@BookId", bookId);
+                command.Parameters.AddWithValue("@BookId", book.Id);
 
                 using SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
                     reviews.Add(new Review
-                    {
-                        Id = reader.GetInt32(0),
-                        Description = reader.GetString(1),
-                        Date = reader.GetDateTime(2),
-                        User = _iuserRepo.GetUserById(reader.GetInt32(3))
-                    });
+                        (
+                            reader.GetInt32(0),
+                            reader.GetString(1),
+                            reader.GetDateTime(2),
+                           _iuserRepo.GetUserById(reader.GetInt32(3)),
+                            book
+                        ));
                 }
                 return reviews;
             }

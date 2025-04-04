@@ -10,5 +10,6 @@ namespace Bookly.Business_logic.InterfacesServices
         BookViewModel? GetBookById(int id);
         void RemoveBook(int id);
         List<SelectListItem> GetAllGenres();
+        BookDetailsViewModel GetBookDetails(int bookId);
     }
 }

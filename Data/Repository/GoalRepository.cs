@@ -8,9 +8,11 @@ namespace Bookly.Data.Repository
 {
     public class GoalRepository: Repository, IGoalRepository
     {
-        public GoalRepository(IConfiguration configuration): base(configuration) { }
+        public GoalRepository(IConfiguration configuration): base(configuration) 
+        {    
+        }
 
-        public bool CreateGoal(Goal goal, int userId)
+        public bool CreateGoal(Goal goal)
         {
             try
             {
@@ -24,8 +26,8 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("@End", goal.End.Date);
                 command.Parameters.AddWithValue("@ReadingGoal", goal.ReadingGoal);
                 command.Parameters.AddWithValue("@CurrentProgress", 0);
-                command.Parameters.AddWithValue("@Status", Status.Not_started.ToString());
-                command.Parameters.AddWithValue("@UserId", userId);
+                command.Parameters.AddWithValue("@Status", goal.Status.ToString());
+                command.Parameters.AddWithValue("@UserId", goal.User.Id);
 
                 command.ExecuteNonQuery();
                 return true;
@@ -36,7 +38,7 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public List<Goal> GetPersonalGoals(int id)
+        public List<Goal> GetPersonalGoals(User user)
         {
             try
             {
@@ -48,21 +50,22 @@ namespace Bookly.Data.Repository
                                 FROM Goals
                                 WHERE UserId=@Id and isArchived=@isArchived";
                 using SqlCommand command = new SqlCommand(sql, connection);
-                command.Parameters.AddWithValue("@Id", id);
+                command.Parameters.AddWithValue("@Id", user.Id);
                 command.Parameters.AddWithValue("@isArchived",0);
 
                 using SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
                     goals.Add(new Goal
-                    {
-                        Id = reader.GetInt32(0),
-                        Start = reader.GetDateTime(1),
-                        End = reader.GetDateTime(2),
-                        ReadingGoal = reader.GetInt32(3),
-                        CurrentProgress = reader.GetInt32(4),
-                        Status = (Status)Enum.Parse(typeof(Status), reader.GetString(5))
-                    });
+                        (
+                                reader.GetInt32(0),
+                                reader.GetDateTime(1),
+                                reader.GetDateTime(2),
+                                reader.GetInt32(3),
+                                reader.GetInt32(4),
+                                (Status)Enum.Parse(typeof(Status), reader.GetString(5)),
+                                user
+                        ));
                 }
                 return goals;
             }
@@ -72,7 +75,7 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public Goal? GetNewestGoal(bool isIncreasing)
+        public Goal? GetNewestGoal(bool isIncreasing, User user)
         {
             try
             {
@@ -107,14 +110,15 @@ namespace Bookly.Data.Repository
                 if (reader.Read())
                 {
                     goal = new Goal
-                    {
-                        Id = reader.GetInt32(0),
-                        Start = reader.GetDateTime(1),
-                        End = reader.GetDateTime(2),
-                        ReadingGoal = reader.GetInt32(3),
-                        CurrentProgress = reader.GetInt32(4),
-                        Status = (Status)Enum.Parse(typeof(Status), reader.GetString(5))
-                    };
+                        (
+                                reader.GetInt32(0),
+                                reader.GetDateTime(1),
+                                reader.GetDateTime(2),
+                                reader.GetInt32(3),
+                                reader.GetInt32(4),
+                                (Status)Enum.Parse(typeof(Status), reader.GetString(5)),
+                                user
+                        );
                 }
                 reader.Close();
 
@@ -131,15 +135,16 @@ namespace Bookly.Data.Repository
                     using SqlDataReader completedReader = completeCommand.ExecuteReader();
                     if (completedReader.Read())
                     {
-                         goal = new Goal
-                        {
-                            Id = completedReader.GetInt32(0),
-                            Start = completedReader.GetDateTime(1),
-                            End = completedReader.GetDateTime(2),
-                            ReadingGoal = completedReader.GetInt32(3),
-                            CurrentProgress = completedReader.GetInt32(4),
-                            Status = (Status)Enum.Parse(typeof(Status), completedReader.GetString(5))
-                        };
+                        goal = new Goal
+                            (
+                                completedReader.GetInt32(0),
+                                completedReader.GetDateTime(1),
+                                completedReader.GetDateTime(2),
+                                completedReader.GetInt32(3),
+                                completedReader.GetInt32(4),
+                                (Status)Enum.Parse(typeof(Status), completedReader.GetString(5)),
+                                user
+                            );
                     }
                 }
 

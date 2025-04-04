@@ -23,9 +23,5 @@
             this.User = user;
             this.Book = book;
         }
-        public Review() 
-        {
-            this.Date = DateTime.Today;
-        }
     }
 }

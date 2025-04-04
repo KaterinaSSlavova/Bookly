@@ -8,9 +8,11 @@ namespace Bookly.Bookly.Controllers
     public class UserController : Controller
     {
         private readonly IUserServices _iuserService;
-        public UserController(IUserServices iuserServices)
+        private readonly IShelfServices _shelfService;
+        public UserController(IUserServices iuserServices, IShelfServices shelfService)
         {
             this._iuserService = iuserServices;
+            _shelfService = shelfService;
         }
 
         [HttpGet]
@@ -26,6 +28,7 @@ namespace Bookly.Bookly.Controllers
             {
                 if (_iuserService.Register(user))
                 {
+                    _shelfService.CreateDefaultShelf();
                     return RedirectToAction("LogIn", "User");
                 }
             }
@@ -65,24 +68,20 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult ViewProfile()
         {
-            string? currentUser = HttpContext.Session.GetString("Username");
-            ViewBag.Username=currentUser;
-            User? user = _iuserService.LoadUser(currentUser);
+            User? user = _iuserService.LoadUser();
             return View(user);
         }
 
         [HttpPost]
         public IActionResult EditProfile()
         {
-            ViewBag.Username = HttpContext.Session.GetString("Username");
             return View();
         }
 
         [HttpPost]
         public IActionResult SaveChanges(IFormFile picture, string username, int age, string email, string password)
         {
-            string? currentUsername= HttpContext.Session.GetString("Username");
-            User? user = _iuserService.LoadUser(currentUsername);
+            User? user = _iuserService.LoadUser();
             if(_iuserService.UpdateProfile(user, picture, username, age, email,password))
             {
                 return RedirectToAction("ViewProfile", "User");

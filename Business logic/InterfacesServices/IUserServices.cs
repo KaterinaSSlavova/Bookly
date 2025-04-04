@@ -9,7 +9,7 @@ namespace Bookly.Business_logic.InterfacesServices
     {
         bool Register(AccountRegister model);
         User? LogIn(AccountLogIn model);
-        User? LoadUser(string username);
+        User? LoadUser();
         bool UpdateProfile(User user, IFormFile picture, string newUsername, int age, string email, string password);
     }
 }

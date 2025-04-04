@@ -18,17 +18,14 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult ShelfOverview()
         {
-            string? username = HttpContext.Session.GetString("Username");
-            ViewBag.Username =username;
-            User? user = _iuserService.LoadUser(username);
+            User? user = _iuserService.LoadUser();
             List<ShelfViewModel> myShelves = _ishelfService.GetUserShelves(user.Id);
             return View(myShelves);
         }
 
         [HttpGet]
         public IActionResult CreateShelf()
-        {
-            ViewBag.Username = HttpContext.Session.GetString("Username");
+        { 
             return View();
         }
 
@@ -41,9 +38,7 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult CreateNewShelf(ShelfViewModel shelfModel)
         {
-            string? username = HttpContext.Session.GetString("Username");
-            User? user = _iuserService.LoadUser(username);
-            if (!_ishelfService.CreateShelf(shelfModel, user.Id)) 
+            if (!_ishelfService.CreateShelf(shelfModel)) 
             {
                 ViewBag.ErrorMessage = "The shelf was not created!";
             }
@@ -54,7 +49,6 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult ShelfDetails(int id)
         {
-            ViewBag.Username = HttpContext.Session.GetString("Username");
             ShelfViewModel shelfModel=_ishelfService.GetShelfById(id);
             shelfModel.BooksOnShelf = _ishelfService.GetBooksFromShelf(id);
             return View(shelfModel);
@@ -75,8 +69,8 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult RemoveFromShelf(int bookId, int shelfId)
         {
-            User? user = _iuserService.LoadUser(HttpContext.Session.GetString("Username"));
-            if(_ishelfService.RemoveBookFromShelf(user.Id, bookId, shelfId))
+            User? user = _iuserService.LoadUser();
+            if(_ishelfService.RemoveBookFromShelf(bookId, shelfId))
             {
                 TempData["Confirmation"] = "Book was removed successfully!";
             }

@@ -2,25 +2,29 @@
 using Bookly.Data.InterfacesRepo;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Models.Enums;
+using Models.Entities;
 
 namespace Business_logic.Services
 {
     public class RatingServices : IRatingServices
     {
         private readonly IRatingRepostiory _ratingRepository;
-        public RatingServices(IRatingRepostiory ratingRepository)
+        private readonly IUserServices _userServices;
+        public RatingServices(IRatingRepostiory ratingRepository, IUserServices userServices)
         {
             _ratingRepository = ratingRepository;
+            _userServices = userServices;
         }
 
-        public bool RateBook(int userId, int bookId, int ratingId)
+        public bool RateBook(int bookId, int ratingId)
         {
-            int previousRatingCount = _ratingRepository.CheckForRating(userId, bookId);
+            User user = GetUser();
+            int previousRatingCount = _ratingRepository.CheckForRating(user.Id, bookId);
             if (previousRatingCount > 0)
             {
-                _ratingRepository.RemoveRating(userId, bookId, ratingId);
+                _ratingRepository.RemoveRating(user.Id, bookId, ratingId);
             }
-            if (_ratingRepository.RateBook(bookId, ratingId) && _ratingRepository.ConnectUserWithRating(userId, ratingId))
+            if (_ratingRepository.RateBook(bookId, ratingId) && _ratingRepository.ConnectUserWithRating(user.Id, ratingId))
             {
                 return true;
             }
@@ -32,9 +36,10 @@ namespace Business_logic.Services
             return _ratingRepository.GetAllRatingsForBook(bookId);
         }
 
-        public Ratings? GetUserRatingForBook(int userId, int bookId)
+        public Ratings? GetUserRatingForBook(int bookId)
         {
-            return _ratingRepository.GetUserRatingForBook(userId, bookId);
+            User user = GetUser();
+            return _ratingRepository.GetUserRatingForBook(user.Id, bookId);
         }
 
         public List<SelectListItem> GetAllRatings()
@@ -58,6 +63,9 @@ namespace Business_logic.Services
             return rating;
         }
 
-
+        private User GetUser()
+        {
+            return _userServices.LoadUser();
+        }
     }
 }

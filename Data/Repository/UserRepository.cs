@@ -64,14 +64,14 @@ namespace Bookly.Data.Repository
                 if (reader.Read())
                 {
                     return new User
-                    {
-                        Id = reader.GetInt32(0),
-                        Picture = reader.IsDBNull(1) ? null : Convert.ToBase64String(reader.GetSqlBinary(1).Value),
-                        Username = reader.GetString(2),
-                        Age = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
-                        Email = reader.GetString(4),
-                        Password = reader.GetString(5)
-                    };
+                        (
+                              reader.GetInt32(0),
+                              reader.IsDBNull(1) ? null : Convert.ToBase64String(reader.GetSqlBinary(1).Value),
+                              reader.GetString(2),
+                              reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
+                              reader.GetString(4),
+                              reader.GetString(5)
+                        );
                 }
                 return null;
             }
@@ -97,14 +97,14 @@ namespace Bookly.Data.Repository
                 if (reader.Read())
                 {
                     return new User
-                    {
-                        Id = reader.GetInt32(0),
-                        Picture = reader.IsDBNull(1) ? null : Convert.ToBase64String(reader.GetSqlBinary(1).Value),
-                        Username = reader.GetString(2),
-                        Age = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
-                        Email = reader.GetString(4),
-                        Password = reader.GetString(5)
-                    };
+                        (
+                              reader.GetInt32(0),
+                              reader.IsDBNull(1) ? null : Convert.ToBase64String(reader.GetSqlBinary(1).Value),
+                              reader.GetString(2),
+                              reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
+                              reader.GetString(4),
+                              reader.GetString(5)
+                        );
                 }
                 return null;
             }
@@ -131,14 +131,14 @@ namespace Bookly.Data.Repository
                 if (reader.Read())
                 {
                     return new User
-                    {
-                        Id = reader.GetInt32(0),
-                        Picture = reader.IsDBNull(1) ? null : Convert.ToBase64String(reader.GetSqlBinary(1).Value),
-                        Username = reader.GetString(2),
-                        Age = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
-                        Email = reader.GetString(4),
-                        Password = reader.GetString(5)
-                    };
+                        (
+                              reader.GetInt32(0),
+                              reader.IsDBNull(1) ? null : Convert.ToBase64String(reader.GetSqlBinary(1).Value),
+                              reader.GetString(2),
+                              reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
+                              reader.GetString(4),
+                              reader.GetString(5)
+                        );
                 }
                 return null;
             }

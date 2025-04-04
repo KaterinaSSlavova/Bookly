@@ -11,19 +11,32 @@ namespace Bookly.Business_logic.Services
     {
         private readonly IShelfRepository _ishelfRepo;
         private readonly IGoalServices _igoalService;
+        private readonly IUserServices _userServices;
         private readonly IMapper _mapper;
         private int progress;
-        public ShelfServices(IShelfRepository ishelfRepo, IGoalServices igoalSrevice, IMapper mapper) 
+        public ShelfServices(IShelfRepository ishelfRepo, IGoalServices igoalSrevice, IMapper mapper, IUserServices userServices) 
         {
             this._ishelfRepo = ishelfRepo;
             _igoalService = igoalSrevice;
             _mapper = mapper;
+            _userServices = userServices;
         }
 
-        public bool CreateShelf(ShelfViewModel shelfModel, int id)
+        public bool CreateShelf(ShelfViewModel shelfModel)
         {
+            User user = GetUser();
             Shelf shelf = _mapper.Map<Shelf>(shelfModel);
-            return _ishelfRepo.CreateShelf(shelf, id);
+            return _ishelfRepo.CreateShelf(shelf, user.Id);
+        }
+
+        public void CreateDefaultShelf()
+        {
+            User user = GetUser();
+            ShelfViewModel shelf = new ShelfViewModel()
+            {
+                Name = "Have Read"
+            };
+            CreateShelf(shelf);
         }
 
         public List<ShelfViewModel> GetUserShelves(int id)
@@ -53,32 +66,35 @@ namespace Bookly.Business_logic.Services
             return shelfModel;
         }
 
-        public bool AddBookToShelf(int bookId, int shelfId, int userId)
+        public bool AddBookToShelf(int bookId, int shelfId)
         {
+            User user = GetUser();
             if (GetShelfById(shelfId)?.Name == "Have Read" && !CheckForBook(shelfId, bookId))
             {
-                Goal? goal = _mapper.Map<Goal>(_igoalService.GetNewestGoal(true));
+                Goal? goal = _igoalService.GetNewestGoal(true);
+               
                 if(goal!=null)
                 {
                     progress = ++ goal.CurrentProgress;
-                    SetStatus(progress, goal, userId);
+                    SetStatus(progress, goal);
                 }
             } 
-            return _ishelfRepo.AddBookToShelf(bookId, shelfId, userId);
+            return _ishelfRepo.AddBookToShelf(bookId, shelfId, user.Id);
         }
 
-        public bool RemoveBookFromShelf(int userId, int bookId, int shelfId)
-        {     
+        public bool RemoveBookFromShelf(int bookId, int shelfId)
+        {   
+            User user = GetUser();
             if (GetShelfById(shelfId)?.Name == "Have Read" && CheckForBook(shelfId, bookId))
             {
-                Goal? goal = _mapper.Map<Goal>(_igoalService.GetNewestGoal(true));
+                Goal? goal = _igoalService.GetNewestGoal(true);
                 if (goal != null && goal.CurrentProgress>0)
                 {
                     progress = -- goal.CurrentProgress;
-                    SetStatus(progress, goal, userId);
+                    SetStatus(progress, goal);
                 }
             }
-            return _ishelfRepo.RemoveBookFromShelf(userId, bookId);
+            return _ishelfRepo.RemoveBookFromShelf(user.Id, bookId);
         }
 
         public void RemoveShelf(int id)
@@ -98,9 +114,9 @@ namespace Bookly.Business_logic.Services
             return false;
         }
 
-        public void SetStatus(int progress, Goal goal, int userId)
+        public void SetStatus(int progress, Goal goal)
         {
-            _igoalService.UpdateProgress(userId, goal.Id, progress);
+            _igoalService.UpdateProgress(goal.Id, progress);
             Status newStatus = Status.Not_started;
             if (goal.CurrentProgress > 0 && goal.CurrentProgress < goal.ReadingGoal)
             {
@@ -110,7 +126,12 @@ namespace Bookly.Business_logic.Services
             {
                 newStatus = Status.Completed;
             }
-            _igoalService.UpdateStatus(newStatus, goal.Id, userId);
+            _igoalService.UpdateStatus(newStatus, goal.Id);
+        }
+
+        private User GetUser()
+        {
+            return _userServices.LoadUser();
         }
     }
 }

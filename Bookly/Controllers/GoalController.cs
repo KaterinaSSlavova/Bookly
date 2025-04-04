@@ -1,5 +1,4 @@
-﻿using Models.Entities;
-using Bookly.Business_logic.InterfacesServices;
+﻿using Bookly.Business_logic.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
 using ViewModels.Model;
 
@@ -7,28 +6,22 @@ namespace Bookly.WebApp.Controllers
 {
     public class GoalController : Controller
     {
-
         private readonly IGoalServices _igoalService;
-        private readonly IUserServices _iuserService;
-        public GoalController(IGoalServices igoalService, IUserServices iuserService)
+        public GoalController(IGoalServices igoalService)
         {
             this._igoalService = igoalService;
-            this._iuserService = iuserService;
         }
 
         [HttpGet]
         public IActionResult GoalOverview()
         {
-            ViewBag.Username = HttpContext.Session.GetString("Username");
-            User user = _iuserService.LoadUser(ViewBag.Username);
-            List<GoalViewModel> personalGoals = _igoalService.GetPersonalGoals(user.Id);
+            List<GoalViewModel> personalGoals = _igoalService.GetPersonalGoals();
             return View(personalGoals);
         }
 
         [HttpGet]
         public IActionResult CreateGoal()
         {
-            ViewBag.Username = HttpContext.Session.GetString("Username");
             return View();
         }
 
@@ -41,8 +34,7 @@ namespace Bookly.WebApp.Controllers
         [HttpPost]
         public IActionResult SaveGoal(GoalViewModel goal)
         {
-            ViewBag.Username = HttpContext.Session.GetString("Username");
-            if (_igoalService.CreateGoal(goal, _iuserService.LoadUser(ViewBag.Username).Id))
+            if (_igoalService.CreateGoal(goal))
             {
                 return RedirectToAction("GoalOverview", "Goal");
             }

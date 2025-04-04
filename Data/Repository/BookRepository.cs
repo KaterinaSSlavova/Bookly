@@ -53,16 +53,15 @@ namespace Bookly.Data.Repository
                 using SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    books.Add(new Book
-                    {
-                        Id = reader.GetInt32(0),
-                        Picture = reader.GetString(1),
-                        Title = reader.GetString(2),
-                        Author = reader.GetString(3),
-                        Description = reader.GetString(4),
-                        ISBN = reader.GetString(5),
-                        Genre = (Genre)Enum.Parse(typeof(Genre), reader.GetString(6))
-                    });
+                    books.Add(new Book(
+                        reader.GetInt32(0),
+                        reader.GetString(1),
+                        reader.GetString(2),
+                        reader.GetString(3),
+                        reader.GetString(4),
+                        reader.GetString(5),
+                        (Genre)Enum.Parse(typeof(Genre), reader.GetString(6))
+                        ));
                 }
                 return books;
             }
@@ -88,16 +87,15 @@ namespace Bookly.Data.Repository
                 SqlDataReader reader = command.ExecuteReader();
                 if (reader.Read())
                 {
-                    return new Book
-                    {
-                        Id = reader.GetInt32(0),
-                        Picture = reader.GetString(1),
-                        Title = reader.GetString(2),
-                        Author = reader.GetString(3),
-                        Description = reader.GetString(4),
-                        ISBN = reader.GetString(5),
-                        Genre = (Genre)Enum.Parse(typeof(Genre), reader.GetString(6))
-                    };
+                    return new Book(
+                        reader.GetInt32(0),
+                        reader.GetString(1),
+                        reader.GetString(2),
+                        reader.GetString(3),
+                        reader.GetString(4),
+                        reader.GetString(5),
+                        (Genre)Enum.Parse(typeof(Genre), reader.GetString(6))
+                        );
                 }
                 return null;
             }

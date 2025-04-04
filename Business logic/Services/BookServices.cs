@@ -12,10 +12,18 @@ namespace Bookly.Business_logic.Services
     {
         private readonly IBookRepository _ibookRepo;
         private readonly IMapper _mapper;
-        public BookServices(IBookRepository ibookRepo, IMapper mapper)
+        private readonly IUserServices _userServices;
+        private readonly IShelfServices _shelfServices;
+        private readonly IRatingServices _ratingServices;
+        private readonly IReviewServices _reviewServices;
+        public BookServices(IBookRepository ibookRepo, IMapper mapper, IUserServices userServices, IShelfServices shelfServices, IRatingServices ratingServices, IReviewServices reviewServices)
         {
-            this._ibookRepo = ibookRepo;
-            this._mapper = mapper;
+            _ibookRepo = ibookRepo;
+            _mapper = mapper;
+            _userServices = userServices;
+            _shelfServices = shelfServices;
+            _ratingServices = ratingServices;
+            _reviewServices = reviewServices;
         }
 
         public bool AddBook(BookViewModel bookModel)
@@ -59,5 +67,14 @@ namespace Bookly.Business_logic.Services
             return genres;
         }
 
+        public BookDetailsViewModel GetBookDetails(int bookId)
+        {
+            User? user = _userServices.LoadUser();
+            BookViewModel? bookModel = GetBookById(bookId);
+            Ratings? rating = _ratingServices.GetUserRatingForBook(bookId);
+            List<ShelfViewModel> shelfViewModels = _shelfServices.GetUserShelves(user.Id);
+            List<ReviewViewModel> reviewViewModels = _reviewServices.GetBookReviews(bookModel);
+            return new BookDetailsViewModel(bookModel, shelfViewModels, reviewViewModels, rating.ToString());
+        }
     }
 }

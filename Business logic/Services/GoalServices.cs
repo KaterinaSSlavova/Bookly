@@ -1,7 +1,6 @@
 ﻿using Bookly.Business_logic.InterfacesServices;
 using Bookly.Data.InterfacesRepo;
 using Models.Entities;
-using Microsoft.AspNetCore.Http;
 using Models.Enums;
 using AutoMapper;
 using ViewModels.Model;
@@ -11,25 +10,27 @@ namespace Bookly.Business_logic.Services
     public class GoalServices : IGoalServices
     {
         private readonly IGoalRepository _igoalRepo;
-        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IUserServices _userServices;   
         private readonly IMapper _mapper;
-        public GoalServices(IGoalRepository igoalRepo, IHttpContextAccessor contextAccessor, IMapper mapper)
+        public GoalServices(IGoalRepository igoalRepo, IMapper mapper, IUserServices userServices)
         {
             this._igoalRepo = igoalRepo;
-            this._contextAccessor = contextAccessor;
             this._mapper = mapper;
+            this._userServices = userServices;
         }
 
-        public bool CreateGoal(GoalViewModel goalModel, int userId)
+        public bool CreateGoal(GoalViewModel goalModel)
         {
             Goal goal = _mapper.Map<Goal>(goalModel);
-            return _igoalRepo.CreateGoal(goal, userId);
+            goal.User = GetUser();
+            return _igoalRepo.CreateGoal(goal);
         }
 
-        public List<GoalViewModel> GetPersonalGoals(int id)
+        public List<GoalViewModel> GetPersonalGoals()
         {
             List<GoalViewModel> goals = new List<GoalViewModel>();
-            foreach (Goal goal in _igoalRepo.GetPersonalGoals(id))
+            User user = GetUser();
+            foreach (Goal goal in _igoalRepo.GetPersonalGoals(user))
             {
                 goals.Add(_mapper.Map<GoalViewModel>(goal));
             }
@@ -41,19 +42,27 @@ namespace Bookly.Business_logic.Services
             _igoalRepo.RemoveGoal(id);
         }
 
-        public GoalViewModel? GetNewestGoal(bool isIncreasing)
+        public Goal? GetNewestGoal(bool isIncreasing)
         {
-            GoalViewModel goal = _mapper.Map<GoalViewModel>(_igoalRepo.GetNewestGoal(isIncreasing));
+            User user = GetUser();
+            Goal goal = _igoalRepo.GetNewestGoal(isIncreasing, user);
             return goal;
         }
 
-        public void UpdateProgress(int userId, int goalId, int progress)
+        public void UpdateProgress(int goalId, int progress)
         {
-            _igoalRepo.UpdateProgress(userId, goalId, progress);    
+            User user = GetUser();
+            _igoalRepo.UpdateProgress(user.Id, goalId, progress);    
         }
-        public void UpdateStatus(Status status, int goalId, int userId)
+        public void UpdateStatus(Status status, int goalId)
         {
-            _igoalRepo.UpdateStatus(status, goalId, userId);    
+            User user = GetUser();
+            _igoalRepo.UpdateStatus(status, goalId, user.Id);    
+        }
+
+        private User GetUser()
+        {
+            return _userServices.LoadUser();
         }
     }
 }

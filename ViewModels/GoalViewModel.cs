@@ -10,5 +10,6 @@
         public int ReadingGoal {  get; set; }
         public int CurrentProgress { get; set; }
         public string Status { get; set; }
+        public int UserId { get; set; }
     }
 }

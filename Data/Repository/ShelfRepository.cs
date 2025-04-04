@@ -51,11 +51,10 @@ namespace Bookly.Data.Repository
                 while (reader.Read())
                 {
                     shelves.Add(
-                        new Shelf
-                        {
-                            Id = reader.GetInt32(0),
-                            Name = reader.GetString(1)
-                        });
+                        new Shelf(
+                            reader.GetInt32(0),
+                            reader.GetString(1)
+                        ));
                 }
                 return shelves;
             }
@@ -83,16 +82,15 @@ namespace Bookly.Data.Repository
                 using SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    books.Add(new Book
-                    {
-                        Id = reader.GetInt32(0),
-                        Picture = reader.GetString(1),
-                        Title = reader.GetString(2),
-                        Author = reader.GetString(3),
-                        Description = reader.GetString(4),
-                        ISBN = reader.GetString(5),
-                        Genre = (Genre)Enum.Parse(typeof(Genre), reader.GetString(6))
-                    });
+                    books.Add(new Book(
+                        reader.GetInt32(0),
+                        reader.GetString(1),
+                        reader.GetString(2),
+                        reader.GetString(3),
+                        reader.GetString(4),
+                        reader.GetString(5),
+                        (Genre)Enum.Parse(typeof(Genre), reader.GetString(6))
+                        ));
                 }
                 return books;
             }
@@ -117,11 +115,10 @@ namespace Bookly.Data.Repository
                 using SqlDataReader reader = command.ExecuteReader();
                 if (reader.Read())
                 {
-                    return new Shelf
-                    {
-                        Id = reader.GetInt32(0),
-                        Name = reader.GetString(1)
-                    };
+                    return new Shelf(
+                        reader.GetInt32(0),
+                        reader.GetString(1)
+                        );
                 }
                 return null;
             }

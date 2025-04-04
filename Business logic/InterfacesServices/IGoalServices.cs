@@ -1,17 +1,17 @@
-﻿using Models.Entities;
-using Models.Enums;
+﻿using Models.Enums;
+using Models.Entities;
 using ViewModels.Model;
 
 namespace Bookly.Business_logic.InterfacesServices
 {
     public interface IGoalServices
     {
-        bool CreateGoal(GoalViewModel goal, int userId);
-        List<GoalViewModel> GetPersonalGoals(int id);
+        bool CreateGoal(GoalViewModel goal);
+        List<GoalViewModel> GetPersonalGoals();
         void RemoveGoal(int id);
-        void UpdateProgress(int userId, int goalId, int progress);
-        void UpdateStatus(Status status, int goalId, int userId);
-        GoalViewModel? GetNewestGoal(bool isIncreasing);
+        void UpdateProgress(int goalId, int progress);
+        void UpdateStatus(Status status, int goalId);
+        Goal? GetNewestGoal(bool isIncreasing);
 
     }
 }
