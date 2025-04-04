@@ -1,4 +1,5 @@
-﻿@model User
+﻿@model EditProfileModel
+
 @{
     ViewData["Title"] = "Edit Profile";
 }
@@ -36,11 +37,6 @@
                 <label asp-for="Email" class="control-label">Email:</label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label">Password:</label>
-                <input asp-for="Password" type="password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save changes" class="btn btn-primary" />

@@ -7,11 +7,11 @@ namespace Bookly.Bookly.Controllers
 {
     public class UserController : Controller
     {
-        private readonly IUserServices _iuserService;
+        private readonly IUserServices _userService;
         private readonly IShelfServices _shelfService;
-        public UserController(IUserServices iuserServices, IShelfServices shelfService)
+        public UserController(IUserServices userServices, IShelfServices shelfService)
         {
-            this._iuserService = iuserServices;
+            _userService = userServices;
             _shelfService = shelfService;
         }
 
@@ -26,7 +26,7 @@ namespace Bookly.Bookly.Controllers
         {
             try
             {
-                if (_iuserService.Register(user))
+                if (_userService.Register(user))
                 {
                     _shelfService.CreateDefaultShelf();
                     return RedirectToAction("LogIn", "User");
@@ -48,7 +48,7 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult LogIn(AccountLogIn model)
         {
-            User? loggedUser = _iuserService.LogIn(model);
+            User? loggedUser = _userService.LogIn(model);
             if (loggedUser != null)
             {
                 HttpContext.Session.SetString("Username", loggedUser.Username);
@@ -68,7 +68,7 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult ViewProfile()
         {
-            User? user = _iuserService.LoadUser();
+            ProfileOverviewModel? user = _userService.LoadProfile();
             return View(user);
         }
 
@@ -79,10 +79,9 @@ namespace Bookly.Bookly.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveChanges(IFormFile picture, string username, int age, string email, string password)
+        public IActionResult SaveChanges(EditProfileModel editModel)
         {
-            User? user = _iuserService.LoadUser();
-            if(_iuserService.UpdateProfile(user, picture, username, age, email,password))
+            if(_userService.UpdateProfile(editModel))
             {
                 return RedirectToAction("ViewProfile", "User");
             }

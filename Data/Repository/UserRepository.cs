@@ -7,11 +7,9 @@ namespace Bookly.Data.Repository
 {
     public class UserRepository: Repository,IUserRepository
     {
-        private readonly IShelfRepository _ishelfRepo;
 
-        public UserRepository(IConfiguration configuration, IShelfRepository ishelfRepo) : base(configuration) 
+        public UserRepository(IConfiguration configuration) : base(configuration) 
         { 
-            this._ishelfRepo = ishelfRepo;
         }
 
         public bool Register(User user)
@@ -142,13 +140,13 @@ namespace Bookly.Data.Repository
                 }
                 return null;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new ApplicationException(ex.Message);
             }
         }
 
-        public bool UpdateProfile(User user, byte[] picture, string newUsername, int age, string email, string password)
+        public bool UpdateProfile(User newUser, byte[] image)
         {
             try
             {
@@ -159,17 +157,15 @@ namespace Bookly.Data.Repository
                                SET Picture = @Picture, 
                                 [Username] = @Username, 
                                 Age = @Age, 
-                                Email = @Email, 
-                                Password = @Password
+                                Email = @Email 
                                 WHERE Id=@Id";
                 using SqlCommand command = new SqlCommand(sql, connection);
 
-                command.Parameters.AddWithValue("@Picture", picture);
-                command.Parameters.AddWithValue("@Username", newUsername);
-                command.Parameters.AddWithValue("@Age", age);
-                command.Parameters.AddWithValue("@Email", email);
-                command.Parameters.AddWithValue("@Password", password);
-                command.Parameters.AddWithValue("@Id", user.Id);
+                command.Parameters.AddWithValue("@Picture", image);
+                command.Parameters.AddWithValue("@Username", newUser.Username);
+                command.Parameters.AddWithValue("@Age", newUser.Age);
+                command.Parameters.AddWithValue("@Email", newUser.Email);
+                command.Parameters.AddWithValue("@Id", newUser.Id);
 
                 command.ExecuteNonQuery();
                 return true;

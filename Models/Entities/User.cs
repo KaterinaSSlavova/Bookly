@@ -8,9 +8,6 @@
         public int Age { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        //public List<Shelf> Shelves { get; set; }
-        //public List<Goal> Goals { get; set; }
-        //public List<Review> Reviews { get; set; }
 
         public User(int id, string picture, string username, int age, string email, string password)
         {
@@ -22,22 +19,21 @@
             this.Password = password;
         }
 
-        public User(string picture, string username, int age, string email, string password)
+        public User(string picture, string username, int age, string email)
         {
             this.Picture = picture;
             this.Username = username;
             this.Age = age;
             this.Email = email;
-            this.Password = password;
         }
 
-        public User(string username, string password) 
+        public User(string username, string password)  //Log in
         {
             this.Username =username;
             this.Password =password;
         }
 
-        public User(string username,string email, string password)
+        public User(string username,string email, string password) //Register
         {
             this.Username = username;
             this.Email = email;

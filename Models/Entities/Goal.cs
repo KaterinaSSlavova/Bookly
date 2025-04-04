@@ -31,10 +31,5 @@ namespace Models.Entities
             this.Status = status;
             this.User = user;
         }
-
-        //public Goal()
-        //{
-
-        //}
     }
 }

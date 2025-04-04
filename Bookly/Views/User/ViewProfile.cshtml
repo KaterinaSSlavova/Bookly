@@ -1,4 +1,4 @@
-﻿@model User
+﻿@model ProfileOverviewModel
 @{
     ViewData["Title"] = "View Profile";
 }
@@ -19,7 +19,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group text-left">
-                    <img src="data:image/jpeg;base64,@Model.Picture" class="img-thumbnail" alt="@Model.Username" />
+                    <img src="data:image/jpg;base64,@Model.Picture" class="img-thumbnail" alt="@Model.Username" />
             </div>
             <div class="form-group text-left">
                 <label><strong>Username:</strong> @Model.Username</label>

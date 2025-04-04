@@ -10,30 +10,31 @@ namespace Bookly.Business_logic.Services
     public class UserServices: IUserServices
     {
         private readonly IUserRepository _iuserRepo;
-        private readonly IMapper _iMapper;
+        private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _contextAccessor;
-        public UserServices(IUserRepository iuserRepo, IMapper iMapper, IHttpContextAccessor contextAccessor)
+        public UserServices(IUserRepository iuserRepo, IMapper mapper, IHttpContextAccessor contextAccessor)
         {
             this._iuserRepo = iuserRepo;
-            this._iMapper = iMapper;
+            this._mapper = mapper;
             _contextAccessor = contextAccessor;
         }
 
         public bool Register(AccountRegister model)
         {
-            User user = _iMapper.Map<User>(model);
-            //ShelfViewModel shelf = new ShelfViewModel()
-            //{
-            //    Name = "Have Read"
-            //};
-            //_shelfServices.CreateShelf(shelf);
+            User user = _mapper.Map<User>(model);
             return _iuserRepo.Register(user);
         }
 
         public User? LogIn(AccountLogIn model)
         {
-            User user = _iMapper.Map<User>(model);
+            User user = _mapper.Map<User>(model);
             return _iuserRepo.LogIn(user);
+        }
+
+        public ProfileOverviewModel LoadProfile()
+        {
+            User user = LoadUser();
+            return _mapper.Map<ProfileOverviewModel>(user);
         }
 
         public User? LoadUser()
@@ -42,10 +43,13 @@ namespace Bookly.Business_logic.Services
             return _iuserRepo.LoadUser(username);    
         }
 
-        public bool UpdateProfile(User user, IFormFile picture, string newUsername, int age, string email, string password)
+        public bool UpdateProfile(EditProfileModel model)
         {
-            byte[] image = ConvertImageToBinary(picture);  
-            return _iuserRepo.UpdateProfile(user, image, newUsername, age, email, password);
+            _contextAccessor.HttpContext.Session.SetString("Username", model.Username);
+            byte[] image = ConvertImageToBinary(model.Picture);
+            User updatedUser = _mapper.Map<User>(model);
+            updatedUser.Id = LoadUser().Id;
+            return _iuserRepo.UpdateProfile(updatedUser, image);
         }
 
         private byte[] ConvertImageToBinary(IFormFile picture)

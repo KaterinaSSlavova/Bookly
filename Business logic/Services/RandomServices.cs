@@ -4,7 +4,6 @@ using Bookly.Business_logic.InterfacesServices;
 using Models.Enums;
 using ViewModels.Model;
 using AutoMapper;
-using Bookly.Business_logic.Services;
 using Newtonsoft.Json;
 
 namespace Business_logic.Services
