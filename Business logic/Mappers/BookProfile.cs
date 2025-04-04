@@ -2,6 +2,7 @@
 using Models.Enums;
 using AutoMapper;
 using ViewModels.Model;
+using Business_logic.DTOs;
 
 namespace Business_logic.Mappers
 {
@@ -14,6 +15,11 @@ namespace Business_logic.Mappers
                 .ForMember(dest => dest.Genre, opt => opt.MapFrom(src => src.Genre.ToString()))
                 .ReverseMap()
                 .ForMember(dest => dest.Genre, opt => opt.MapFrom(src => Enum.Parse(typeof(Genre), src.Genre)));
+
+            CreateMap<BookDetailsDTO, BookDetailsViewModel>()
+                .ForMember(dest => dest.RatingFromUser, opt => opt.MapFrom(src => src.RatingFromUser.ToString()))
+                .ReverseMap()
+                .ForMember(dest => dest.RatingFromUser, opt => opt.MapFrom(src => src.RatingFromUser));
         }
     }
 }

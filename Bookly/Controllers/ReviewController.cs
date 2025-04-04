@@ -18,8 +18,7 @@ namespace Bookly.Controllers
         [HttpPost]
         public IActionResult CreateReview(string description, int bookId)
         {
-            BookViewModel book = _bookServices.GetBookById(bookId);
-            if(_services.AddReview(description, book))
+            if(_services.AddReview(description, bookId))
             {
                 TempData["Review"] = "Review was successfully created!";
             }

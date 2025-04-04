@@ -27,7 +27,7 @@ namespace Business_logic.Services
         private List<BookViewModel>? GetHaveReadShelf()
         {
             User user = GetUser();
-            foreach(ShelfViewModel shelf in _ishelfService.GetUserShelves(user.Id))
+            foreach(Shelf shelf in _ishelfService.GetUserShelves())
             {
                 if(shelf.Name == "Have Read")
                 {
@@ -68,19 +68,11 @@ namespace Business_logic.Services
 
         public List<BookViewModel> FilterBooks(Genre genre, Ratings rating)
         {
-            List<Book> filteredBooks = new List<Book>();
             List<BookViewModel> unreadBooks = GetUnreadBooks();
-            foreach (BookViewModel book in unreadBooks)
-            {
-                filteredBooks.Add(_mapper.Map<Book>(book));
-            }
+            List<Book> filteredBooks = _mapper.Map<List<Book>>(unreadBooks);
             filteredBooks = filteredBooks.Where(b => b.Genre == genre).ToList();
             filteredBooks = filteredBooks.Where(b => _ratingServices.GetMostPopularRating(b.Id) == rating).ToList();
-            List<BookViewModel> filteredModels = new List<BookViewModel>();
-            foreach (Book book in filteredBooks)
-            {
-                filteredModels.Add(_mapper.Map<BookViewModel>(book));
-            }
+            List<BookViewModel> filteredModels =_mapper.Map<List<BookViewModel>>(filteredBooks);
             return filteredModels;   
         }
 

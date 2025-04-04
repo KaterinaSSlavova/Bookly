@@ -12,18 +12,10 @@ namespace Bookly.Business_logic.Services
     {
         private readonly IBookRepository _ibookRepo;
         private readonly IMapper _mapper;
-        private readonly IUserServices _userServices;
-        private readonly IShelfServices _shelfServices;
-        private readonly IRatingServices _ratingServices;
-        private readonly IReviewServices _reviewServices;
-        public BookServices(IBookRepository ibookRepo, IMapper mapper, IUserServices userServices, IShelfServices shelfServices, IRatingServices ratingServices, IReviewServices reviewServices)
+        public BookServices(IBookRepository ibookRepo, IMapper mapper)
         {
             _ibookRepo = ibookRepo;
             _mapper = mapper;
-            _userServices = userServices;
-            _shelfServices = shelfServices;
-            _ratingServices = ratingServices;
-            _reviewServices = reviewServices;
         }
 
         public bool AddBook(BookViewModel bookModel)
@@ -34,19 +26,14 @@ namespace Bookly.Business_logic.Services
 
         public List<BookViewModel> LoadBooks()
         {
-            List<BookViewModel> books = new List<BookViewModel>();
-            foreach(Book book in _ibookRepo.LoadBooks())
-            {
-                books.Add(_mapper.Map<BookViewModel>(book));
-            }
-            return books;    
+            List<Book> books = _ibookRepo.LoadBooks();
+            List<BookViewModel> booksModel = _mapper.Map<List<BookViewModel>>(books);
+            return booksModel;    
         }
 
-        public BookViewModel? GetBookById(int id)
-        {
-            Book book = _ibookRepo.GetBookById(id);
-            BookViewModel bookModel = _mapper.Map<BookViewModel>(book);    
-            return bookModel;
+        public Book? GetBookById(int id)
+        {  
+            return _ibookRepo.GetBookById(id);
         }
 
         public void RemoveBook(int id)
@@ -67,14 +54,5 @@ namespace Bookly.Business_logic.Services
             return genres;
         }
 
-        public BookDetailsViewModel GetBookDetails(int bookId)
-        {
-            User? user = _userServices.LoadUser();
-            BookViewModel? bookModel = GetBookById(bookId);
-            Ratings? rating = _ratingServices.GetUserRatingForBook(bookId);
-            List<ShelfViewModel> shelfViewModels = _shelfServices.GetUserShelves(user.Id);
-            List<ReviewViewModel> reviewViewModels = _reviewServices.GetBookReviews(bookModel);
-            return new BookDetailsViewModel(bookModel, shelfViewModels, reviewViewModels, rating.ToString());
-        }
     }
 }

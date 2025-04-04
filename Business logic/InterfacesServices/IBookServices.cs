@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using ViewModels.Model;
+using Models.Entities;
 
 namespace Bookly.Business_logic.InterfacesServices
 {
@@ -7,9 +8,8 @@ namespace Bookly.Business_logic.InterfacesServices
     {
         bool AddBook(BookViewModel bookModel);
         List<BookViewModel> LoadBooks();
-        BookViewModel? GetBookById(int id);
+        Book? GetBookById(int id);
         void RemoveBook(int id);
         List<SelectListItem> GetAllGenres();
-        BookDetailsViewModel GetBookDetails(int bookId);
     }
 }

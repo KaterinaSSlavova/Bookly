@@ -36,6 +36,7 @@ namespace WebApp
             builder.Services.AddScoped<IRandomServices, RandomServices>();
             builder.Services.AddScoped<IReviewServices, ReviewServices>();
             builder.Services.AddScoped<IRatingServices, RatingServices>();
+            builder.Services.AddScoped<IBookDetailsService, BookDetailsServices>();
 
             var app = builder.Build();
 

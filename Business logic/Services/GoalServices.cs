@@ -28,13 +28,10 @@ namespace Bookly.Business_logic.Services
 
         public List<GoalViewModel> GetPersonalGoals()
         {
-            List<GoalViewModel> goals = new List<GoalViewModel>();
             User user = GetUser();
-            foreach (Goal goal in _igoalRepo.GetPersonalGoals(user))
-            {
-                goals.Add(_mapper.Map<GoalViewModel>(goal));
-            }
-            return goals;
+            List<Goal> goals = _igoalRepo.GetPersonalGoals(user);
+            List<GoalViewModel> goalsModel = _mapper.Map<List<GoalViewModel>>(goals);
+            return goalsModel;
         }
 
         public void RemoveGoal(int id)

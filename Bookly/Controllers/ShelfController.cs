@@ -18,8 +18,7 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult ShelfOverview()
         {
-            User? user = _iuserService.LoadUser();
-            List<ShelfViewModel> myShelves = _ishelfService.GetUserShelves(user.Id);
+            List<ShelfViewModel> myShelves = _ishelfService.GetUserShelfModel();
             return View(myShelves);
         }
 

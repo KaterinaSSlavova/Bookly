@@ -11,32 +11,28 @@ namespace Bookly.Business_logic.Services
         private readonly IReviewRepository _reviewRepo;
         private readonly IMapper _mapper;
         private readonly IUserServices _userServices;
+        private readonly IBookServices _bookServices;
 
-        public ReviewServices(IReviewRepository reviewRepo, IMapper mapper, IUserServices userServices)
+        public ReviewServices(IReviewRepository reviewRepo, IMapper mapper, IUserServices userServices, IBookServices bookServices)
         {
             _reviewRepo = reviewRepo;
             _mapper = mapper;
             _userServices = userServices;
+            _bookServices = bookServices;
         }
 
-        public bool AddReview(string description, BookViewModel bookModel)
+        public bool AddReview(string description, int bookId)
         {
             User user = _userServices.LoadUser();
-            Book book = _mapper.Map<Book>(bookModel);
+            Book book = _bookServices.GetBookById(bookId);
             Review review = new Review(description, user, book);
             return _reviewRepo.AddReview(review);    
         }
 
-        public List<ReviewViewModel> GetBookReviews(BookViewModel model)
+        public List<Review> GetBookReviews(Book book)
         {
-            Book book = _mapper.Map<Book>(model);
             List<Review> reviews = _reviewRepo.GetBookReviews(book);
-            List<ReviewViewModel> reviewViewModels = new List<ReviewViewModel>();
-            foreach (Review review in reviews)
-            {
-                reviewViewModels.Add(_mapper.Map<ReviewViewModel>(review));
-            }
-            return reviewViewModels;
+            return reviews;
         }
     }
 }

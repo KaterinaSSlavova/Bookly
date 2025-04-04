@@ -10,16 +10,16 @@ namespace Bookly.Business_logic.Services
     public class ShelfServices: IShelfServices
     {
         private readonly IShelfRepository _ishelfRepo;
-        private readonly IGoalServices _igoalService;
+        private readonly IGoalServices _goalService;
         private readonly IUserServices _userServices;
         private readonly IMapper _mapper;
         private int progress;
-        public ShelfServices(IShelfRepository ishelfRepo, IGoalServices igoalSrevice, IMapper mapper, IUserServices userServices) 
-        {
-            this._ishelfRepo = ishelfRepo;
-            _igoalService = igoalSrevice;
+        public ShelfServices(IShelfRepository ishelfRepo, IMapper mapper, IUserServices userServices, IGoalServices goalService)
+        { 
+            _ishelfRepo = ishelfRepo;
             _mapper = mapper;
             _userServices = userServices;
+            _goalService = goalService;
         }
 
         public bool CreateShelf(ShelfViewModel shelfModel)
@@ -39,23 +39,21 @@ namespace Bookly.Business_logic.Services
             CreateShelf(shelf);
         }
 
-        public List<ShelfViewModel> GetUserShelves(int id)
+        public List<Shelf> GetUserShelves()
         {
-            List<ShelfViewModel> shelves = new List<ShelfViewModel>();
-            foreach (Shelf shelf in _ishelfRepo.GetUserShelves(id))
-            {
-                shelves.Add(_mapper.Map<ShelfViewModel>(shelf));
-            }
-            return shelves;
+            return _ishelfRepo.GetUserShelves(GetUser().Id);
+        }
+
+        public List<ShelfViewModel> GetUserShelfModel()
+        {
+            List<Shelf> shelves = GetUserShelves();
+            return _mapper.Map<List<ShelfViewModel>>(shelves);
         }
 
         public List<BookViewModel> GetBooksFromShelf(int id)
         {
-            List<BookViewModel> bookModels = new List<BookViewModel>();
-            foreach(Book book in _ishelfRepo.GetBooksFromShelf(id))
-            {
-                bookModels.Add(_mapper.Map<BookViewModel>(book));
-            }
+            List<Book> books = _ishelfRepo.GetBooksFromShelf(id);
+            List<BookViewModel> bookModels = _mapper.Map<List<BookViewModel>>(books);
             return bookModels;
         }
 
@@ -71,7 +69,7 @@ namespace Bookly.Business_logic.Services
             User user = GetUser();
             if (GetShelfById(shelfId)?.Name == "Have Read" && !CheckForBook(shelfId, bookId))
             {
-                Goal? goal = _igoalService.GetNewestGoal(true);
+                Goal? goal = _goalService.GetNewestGoal(true);
                
                 if(goal!=null)
                 {
@@ -87,7 +85,7 @@ namespace Bookly.Business_logic.Services
             User user = GetUser();
             if (GetShelfById(shelfId)?.Name == "Have Read" && CheckForBook(shelfId, bookId))
             {
-                Goal? goal = _igoalService.GetNewestGoal(true);
+                Goal? goal = _goalService.GetNewestGoal(true);
                 if (goal != null && goal.CurrentProgress>0)
                 {
                     progress = -- goal.CurrentProgress;
@@ -116,7 +114,7 @@ namespace Bookly.Business_logic.Services
 
         public void SetStatus(int progress, Goal goal)
         {
-            _igoalService.UpdateProgress(goal.Id, progress);
+            _goalService.UpdateProgress(goal.Id, progress);
             Status newStatus = Status.Not_started;
             if (goal.CurrentProgress > 0 && goal.CurrentProgress < goal.ReadingGoal)
             {
@@ -126,7 +124,7 @@ namespace Bookly.Business_logic.Services
             {
                 newStatus = Status.Completed;
             }
-            _igoalService.UpdateStatus(newStatus, goal.Id);
+            _goalService.UpdateStatus(newStatus, goal.Id);
         }
 
         private User GetUser()

@@ -1,4 +1,5 @@
 ﻿using ViewModels.Model;
+using Models.Entities;
 
 namespace Bookly.Business_logic.InterfacesServices
 {
@@ -6,7 +7,8 @@ namespace Bookly.Business_logic.InterfacesServices
     {
         bool CreateShelf(ShelfViewModel shelfModel);
         void CreateDefaultShelf();
-        List<ShelfViewModel> GetUserShelves(int id);
+        List<Shelf> GetUserShelves();
+        List<ShelfViewModel> GetUserShelfModel();
         List<BookViewModel> GetBooksFromShelf(int id);
         ShelfViewModel? GetShelfById(int id);
         bool AddBookToShelf(int bookId, int shelfId);
