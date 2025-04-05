@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-
-namespace ViewModels.Model
+﻿namespace ViewModels.Model
 {
     public class BookViewModel
     {
@@ -11,6 +9,5 @@ namespace ViewModels.Model
         public string Description { get; set; }
         public string ISBN { get; set; }
         public string Genre { get; set; }
-        public List<SelectListItem> Genres { get; set; } = new List<SelectListItem>();
     }
 }

@@ -1,4 +1,4 @@
-﻿@model BookViewModel
+﻿@model AddBookModel
 
 @{
     ViewData["Title"] = "Add new book";
@@ -45,7 +45,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Genre" class="control-label">Genre:</label>
-                <select asp-for="Genre" asp-items="Model.Genres" class="form-select">
+                <select asp-for="Genre" asp-items="@Model.Genres" class="form-select">
                     <option value="">Select a Genre</option>
                 </select>
                 <span asp-validation-for="Genre" class="text-danger"></span>

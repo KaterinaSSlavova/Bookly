@@ -24,7 +24,7 @@ namespace Business_logic.Services
             _userServices = userServices;
         }
 
-        private List<BookViewModel>? GetHaveReadShelf()
+        private List<Book>? GetHaveReadShelf()
         {
             User user = GetUser();
             foreach(Shelf shelf in _ishelfService.GetUserShelves())
@@ -37,15 +37,15 @@ namespace Business_logic.Services
             return null;
         }
 
-        public List<BookViewModel> GetUnreadBooks()
+        public List<Book> GetUnreadBooks()
         {
-            List<BookViewModel>? readBooks = GetHaveReadShelf();
-            List<BookViewModel> allBooks = _ibookService.LoadBooks();
+            List<Book>? readBooks = GetHaveReadShelf();
+            List<Book> allBooks = _ibookService.LoadBooks();
             if(readBooks != null)
             {
-                List<BookViewModel> unreadBooks = new List<BookViewModel>();
+                List<Book> unreadBooks = new List<Book>();
                 List<int> readBooksId = readBooks.Select(x => x.Id).ToList();   
-                foreach(BookViewModel book in allBooks)
+                foreach(Book book in allBooks)
                 {
                     if(!readBooksId.Contains(book.Id))
                     {
@@ -56,35 +56,28 @@ namespace Business_logic.Services
             }
             return allBooks;
         }
-
-        public BookViewModel RandomResult() 
+        
+        public List<BookViewModel> GetUnreadBooksModel()
         {
-            List<BookViewModel> books = GetUnreadBooks();
+            List<Book> books = GetUnreadBooks();
+            return _mapper.Map<List<BookViewModel>>(books);
+        }
+
+        public Book RandomResult() 
+        {
+            List<Book> books = GetUnreadBooks();
             Random random = new Random();
             int index = random.Next(books.Count);
-            BookViewModel randomBook = books[index];
+            Book randomBook = books[index];
             return randomBook;
         }
 
-        public List<BookViewModel> FilterBooks(Genre genre, Ratings rating)
+        public List<Book> FilterBooks(Genre genre, Ratings rating)
         {
-            List<BookViewModel> unreadBooks = GetUnreadBooks();
-            List<Book> filteredBooks = _mapper.Map<List<Book>>(unreadBooks);
+            List<Book> filteredBooks = GetUnreadBooks();
             filteredBooks = filteredBooks.Where(b => b.Genre == genre).ToList();
             filteredBooks = filteredBooks.Where(b => _ratingServices.GetMostPopularRating(b.Id) == rating).ToList();
-            List<BookViewModel> filteredModels =_mapper.Map<List<BookViewModel>>(filteredBooks);
-            return filteredModels;   
-        }
-
-        public DateWithABookViewModel DateWithBook(string filteredJson)
-        {
-            List<BookViewModel> filteredBooks = filteredJson != null ? JsonConvert.DeserializeObject<List<BookViewModel>>(filteredJson) : new List<BookViewModel>();
-            return new DateWithABookViewModel()
-            {
-                filteredBooksModel = filteredBooks,
-                Genres = _ibookService.GetAllGenres(),
-                Ratings = _ratingServices.GetAllRatings()
-            };
+            return filteredBooks;   
         }
 
         private User GetUser()

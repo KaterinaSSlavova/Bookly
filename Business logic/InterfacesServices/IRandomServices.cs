@@ -1,13 +1,14 @@
 ﻿using Models.Enums;
+using Models.Entities;
 using ViewModels.Model;
 
 namespace Business_logic.InterfacesServices
 {
     public interface IRandomServices
     {
-        List<BookViewModel> GetUnreadBooks();
-        BookViewModel RandomResult();
-        List<BookViewModel> FilterBooks(Genre genre, Ratings rating);
-        DateWithABookViewModel DateWithBook(string filteredJson);
+        List<Book> GetUnreadBooks();
+        Book RandomResult();
+        List<Book> FilterBooks(Genre genre, Ratings rating);
+        List<BookViewModel> GetUnreadBooksModel();
     }
 }

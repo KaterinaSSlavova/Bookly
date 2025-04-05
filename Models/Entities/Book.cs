@@ -1,4 +1,5 @@
-﻿using Models.Enums;
+﻿using System.Text.Json.Serialization;
+using Models.Enums;
 
 namespace Models.Entities
 {
@@ -11,8 +12,8 @@ namespace Models.Entities
         public string Description { get; set; }
         public string ISBN { get; set; }
         public Genre Genre { get; set; }
-        //public List<Review> Reviews{ get; set; }
 
+        [JsonConstructor]
         public Book(int id, string picture, string title, string author, string description, string isbn, Genre genre)
         {
             this.Id = id;
@@ -23,7 +24,6 @@ namespace Models.Entities
             this.ISBN = isbn;
             this.Genre = genre;
         }
-
         public Book(string picture, string title, string author, string description, string isbn, Genre genre)
         {
             this.Picture = picture;
@@ -33,5 +33,7 @@ namespace Models.Entities
             this.ISBN = isbn;
             this.Genre = genre;
         }
+      
+        public Book() { }   
     }
 }

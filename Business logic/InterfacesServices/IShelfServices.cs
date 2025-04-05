@@ -9,7 +9,8 @@ namespace Bookly.Business_logic.InterfacesServices
         void CreateDefaultShelf();
         List<Shelf> GetUserShelves();
         List<ShelfViewModel> GetUserShelfModel();
-        List<BookViewModel> GetBooksFromShelf(int id);
+        List<BookViewModel> GetBooksOnShelfModel(int id);
+        List<Book> GetBooksFromShelf(int id);
         ShelfViewModel? GetShelfById(int id);
         bool AddBookToShelf(int bookId, int shelfId);
         bool RemoveBookFromShelf(int bookId, int shelfId);

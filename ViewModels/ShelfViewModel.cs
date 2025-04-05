@@ -1,6 +1,4 @@
-﻿using ViewModels.Model;
-
-namespace ViewModels.Model
+﻿namespace ViewModels.Model
 {
     public class ShelfViewModel
     {

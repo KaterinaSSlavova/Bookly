@@ -7,9 +7,9 @@
 <h1>Random Date With A Book</h1>
 <hr />
 
-@if (Model.filteredBooksModel != null && Model.filteredBooksModel.Any())
+@if (Model.FilteredBooks != null && Model.FilteredBooks.Any())
 {
-    foreach (BookViewModel book  in Model.filteredBooksModel)
+    foreach (BookViewModel book in Model.FilteredBooks)
     {
         <label>@book.Description</label>
     }

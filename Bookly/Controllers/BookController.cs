@@ -7,20 +7,20 @@ namespace Bookly.Bookly.Controllers
     public class BookController : Controller
     {
         private readonly IBookServices _bookService;
-        private readonly IBookDetailsService _bookDTOService;
+        private readonly IBookDetailsService _bookDetailsDTOService;
         private readonly IShelfServices _shelfService;
 
         public BookController(IBookDetailsService bookDTOService, IShelfServices shelfService, IBookServices bookService)
         {
             _bookService = bookService;
-            _bookDTOService = bookDTOService;
+            _bookDetailsDTOService = bookDTOService;
             _shelfService = shelfService;
         }
 
         [HttpGet]
         public IActionResult BookDetails(int bookId)   
         {
-            BookDetailsViewModel model = _bookDTOService.GetBookDetails(bookId);
+            BookDetailsViewModel model = _bookDetailsDTOService.GetBookDetails(bookId);
             return View(model);
         }
 
@@ -48,12 +48,9 @@ namespace Bookly.Bookly.Controllers
 
         [HttpGet]
         public IActionResult AddBookPage()
-        {
-            BookViewModel bookModel = new BookViewModel()
-            {
-                Genres = _bookService.GetAllGenres(),  
-            };  
-            return View(bookModel);
+        { 
+            var model = new AddBookModel();
+            return View(model);
         }
 
         [HttpPost]
@@ -63,7 +60,7 @@ namespace Bookly.Bookly.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddBook(BookViewModel bookModel)
+        public IActionResult AddBook(AddBookModel bookModel)
         {
             _bookService.AddBook(bookModel);
             return RedirectToAction("Index","Home");

@@ -20,7 +20,7 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            List<BookViewModel> books = _ibookServices.LoadBooks();
+            List<BookViewModel> books = _ibookServices.GetAllBooksViewModel();  
             return View(books);
         }
 

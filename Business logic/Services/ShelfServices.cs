@@ -50,11 +50,16 @@ namespace Bookly.Business_logic.Services
             return _mapper.Map<List<ShelfViewModel>>(shelves);
         }
 
-        public List<BookViewModel> GetBooksFromShelf(int id)
+        public List<Book> GetBooksFromShelf(int id)
         {
             List<Book> books = _ishelfRepo.GetBooksFromShelf(id);
-            List<BookViewModel> bookModels = _mapper.Map<List<BookViewModel>>(books);
-            return bookModels;
+            return books;
+        }
+
+        public List<BookViewModel> GetBooksOnShelfModel(int id)
+        {
+            List<Book> books = GetBooksFromShelf(id);
+            return _mapper.Map<List<BookViewModel>>(books);
         }
 
         public ShelfViewModel? GetShelfById(int id)
@@ -102,7 +107,7 @@ namespace Bookly.Business_logic.Services
 
         public bool CheckForBook(int shelfId, int bookId)
         {
-            foreach(BookViewModel book in GetBooksFromShelf(shelfId))
+            foreach(Book book in GetBooksFromShelf(shelfId))
             {
                 if(book.Id == bookId)
                 {

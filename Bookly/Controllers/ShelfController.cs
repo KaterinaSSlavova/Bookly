@@ -49,7 +49,7 @@ namespace Bookly.Bookly.Controllers
         public IActionResult ShelfDetails(int id)
         {
             ShelfViewModel shelfModel=_ishelfService.GetShelfById(id);
-            shelfModel.BooksOnShelf = _ishelfService.GetBooksFromShelf(id);
+            shelfModel.BooksOnShelf = _ishelfService.GetBooksOnShelfModel(id);
             return View(shelfModel);
         } 
 

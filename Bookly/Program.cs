@@ -22,6 +22,7 @@ namespace WebApp
             builder.Services.AddAutoMapper(typeof(ReviewProfile));
             builder.Services.AddAutoMapper(typeof(BookProfile));
             builder.Services.AddAutoMapper(typeof(ShelfProfile));
+            builder.Services.AddAutoMapper(typeof(GoalProfile));
 
             builder.Services.AddScoped<IGoalRepository, GoalRepository>();
             builder.Services.AddScoped<IShelfRepository, ShelfRepository>();
@@ -37,6 +38,7 @@ namespace WebApp
             builder.Services.AddScoped<IReviewServices, ReviewServices>();
             builder.Services.AddScoped<IRatingServices, RatingServices>();
             builder.Services.AddScoped<IBookDetailsService, BookDetailsServices>();
+            builder.Services.AddScoped<IDateWithBookService, DateWithABookServices>();
 
             var app = builder.Build();
 
