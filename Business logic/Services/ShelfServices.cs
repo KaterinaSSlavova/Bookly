@@ -78,7 +78,8 @@ namespace Bookly.Business_logic.Services
                
                 if(goal!=null)
                 {
-                    progress = ++ goal.CurrentProgress;
+                    progress = goal.CurrentProgress + 1;
+                    goal.SetCurrentProgress(progress);  
                     SetStatus(progress, goal);
                 }
             } 
@@ -93,7 +94,8 @@ namespace Bookly.Business_logic.Services
                 Goal? goal = _goalService.GetNewestGoal(true);
                 if (goal != null && goal.CurrentProgress>0)
                 {
-                    progress = -- goal.CurrentProgress;
+                    progress = goal.CurrentProgress - 1;
+                    goal.SetCurrentProgress(progress);
                     SetStatus(progress, goal);
                 }
             }

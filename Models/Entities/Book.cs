@@ -1,19 +1,17 @@
-﻿using System.Text.Json.Serialization;
-using Models.Enums;
+﻿using Models.Enums;
 
 namespace Models.Entities
 {
     public class Book
     {
-        public int Id { get; set; }
-        public string Picture { get; set; }
-        public string Title { get; set; }
-        public string Author { get; set; }
-        public string Description { get; set; }
-        public string ISBN { get; set; }
-        public Genre Genre { get; set; }
+        public int Id { get; }
+        public string Picture { get; }
+        public string Title { get; }
+        public string Author { get; }
+        public string Description { get; }
+        public string ISBN { get; }
+        public Genre Genre { get; }
 
-        [JsonConstructor]
         public Book(int id, string picture, string title, string author, string description, string isbn, Genre genre)
         {
             this.Id = id;

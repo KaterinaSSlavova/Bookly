@@ -22,7 +22,7 @@ namespace Bookly.Business_logic.Services
         public bool CreateGoal(GoalViewModel goalModel)
         {
             Goal goal = _mapper.Map<Goal>(goalModel);
-            goal.User = GetUser();
+            goal.SetUser(GetUser());
             return _igoalRepo.CreateGoal(goal);
         }
 

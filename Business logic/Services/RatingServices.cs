@@ -1,6 +1,5 @@
 ﻿using Bookly.Business_logic.InterfacesServices;
 using Bookly.Data.InterfacesRepo;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Models.Enums;
 using Models.Entities;
 
@@ -40,19 +39,6 @@ namespace Business_logic.Services
         {
             User user = GetUser();
             return _ratingRepository.GetUserRatingForBook(user.Id, bookId);
-        }
-
-        public List<SelectListItem> GetAllRatings()
-        {
-            List<SelectListItem> ratings = Enum.GetValues(typeof(Ratings))
-                .Cast<Ratings>()
-                .Select(r => new SelectListItem
-                {
-                    Value = r.ToString(),
-                    Text = r.ToString()
-                })
-                .ToList();
-            return ratings;
         }
 
         public Ratings GetMostPopularRating(int bookId)

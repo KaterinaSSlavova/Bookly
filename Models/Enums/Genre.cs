@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-namespace Models.Enums
+﻿namespace Models.Enums
 {
     public enum Genre
     {

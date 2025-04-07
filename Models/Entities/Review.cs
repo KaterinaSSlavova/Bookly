@@ -2,11 +2,11 @@
 {
     public class Review
     {
-        public int Id { get; set; }
-        public string Description { get; set; }
-        public DateTime Date { get; set; }
-        public User User { get; set; }
-        public Book Book { get; set; }
+        public int Id { get; }
+        public string Description { get; }
+        public DateTime Date { get; }
+        public User User { get; }
+        public Book Book { get; }
 
         public Review(string description, User user, Book book)
         {

@@ -48,7 +48,7 @@ namespace Bookly.Business_logic.Services
             _contextAccessor.HttpContext.Session.SetString("Username", model.Username);
             byte[] image = ConvertImageToBinary(model.Picture);
             User updatedUser = _mapper.Map<User>(model);
-            updatedUser.Id = LoadUser().Id;
+            updatedUser.SetId(LoadUser().Id);
             return _iuserRepo.UpdateProfile(updatedUser, image);
         }
 
