@@ -105,7 +105,7 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public void RemoveBook(int id)
+        public bool RemoveBook(int id)
         {
             try
             {
@@ -120,7 +120,7 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("@Id", id);
 
                 command.ExecuteNonQuery();
-
+                return true;
             }
             catch (Exception ex)
             {

@@ -9,6 +9,6 @@ namespace Bookly.Business_logic.InterfacesServices
         List<Book> LoadBooks();
         List<BookViewModel> GetAllBooksViewModel();
         Book? GetBookById(int id);
-        void RemoveBook(int id);
+        bool RemoveBook(int id);
     }
 }

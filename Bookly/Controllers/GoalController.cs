@@ -38,13 +38,21 @@ namespace Bookly.WebApp.Controllers
             {
                 return RedirectToAction("GoalOverview", "Goal");
             }
+            TempData["InvalidGoal"] = "Please enter valid data!";
             return RedirectToAction("CreateGoal","Goal");
         }
 
         [HttpPost]
         public IActionResult RemoveGoal(int id)
         {
-            _igoalService.RemoveGoal(id);
+            if(!_igoalService.RemoveGoal(id))
+            {
+                TempData["GoalError"] = "Cannot remove this goal!";
+            }
+            else
+            {
+                TempData["GoalSuccess"] = "Goal was removed successfully!";
+            }
             return RedirectToAction("GoalOverview", "Goal");
         }
     }

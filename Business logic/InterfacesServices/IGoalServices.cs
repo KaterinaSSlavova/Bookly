@@ -1,5 +1,4 @@
-﻿using Models.Enums;
-using Models.Entities;
+﻿using Models.Entities;
 using ViewModels.Model;
 
 namespace Bookly.Business_logic.InterfacesServices
@@ -8,9 +7,8 @@ namespace Bookly.Business_logic.InterfacesServices
     {
         bool CreateGoal(GoalViewModel goal);
         List<GoalViewModel> GetPersonalGoals();
-        void RemoveGoal(int id);
-        void UpdateProgress(int goalId, int progress);
-        void UpdateStatus(Status status, int goalId);
+        void SetStatus(Goal goal, int progress);
+        bool RemoveGoal(int id);
         Goal? GetNewestGoal(bool isIncreasing);
 
     }

@@ -15,10 +15,17 @@
         </div>
     }
 
-    @if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage))
+    @if (TempData["Warning"] != null)
+    {
+        <div class="alert alert-warning" role="alert">
+            <strong>@TempData["Warning"]</strong>
+        </div>
+    }
+
+    @if (TempData["BookCatalogError"] != null)
     {
         <div class="alert alert-danger" role="alert">
-            <strong>@ViewBag.ErrorMessage</strong>
+            <strong>@TempData["BookCatalogError"]</strong>
         </div>
     }
 
@@ -39,7 +46,7 @@
                 <input type="hidden" name="bookId" value="@Model.Book.Id" />
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Select a shelf
+                        Select shelf
                     </button>
                     <ul class="dropdown-menu w-100">
                         @foreach (ShelfViewModel shelf in Model.Shelves)

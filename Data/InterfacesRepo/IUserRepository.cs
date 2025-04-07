@@ -9,5 +9,7 @@ namespace Bookly.Data.InterfacesRepo
         User? LoadUser(string username);
         bool UpdateProfile(User newUser, byte[] image);
         User? GetUserById(int id);
+        List<string> GetAllUsernames(User user);
+        List<string> GetAllEmails(User user);
     }
 }

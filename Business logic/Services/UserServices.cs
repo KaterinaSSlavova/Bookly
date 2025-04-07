@@ -4,6 +4,7 @@ using ViewModels.Model;
 using Bookly.Business_logic.InterfacesServices;
 using Microsoft.AspNetCore.Http;
 using AutoMapper;
+using System.Net.Http.Headers;
 
 namespace Bookly.Business_logic.Services
 {
@@ -45,11 +46,25 @@ namespace Bookly.Business_logic.Services
 
         public bool UpdateProfile(EditProfileModel model)
         {
+            if(!ValidateUser(model))
+            {
+                return false;
+            }
             _contextAccessor.HttpContext.Session.SetString("Username", model.Username);
             byte[] image = ConvertImageToBinary(model.Picture);
             User updatedUser = _mapper.Map<User>(model);
             updatedUser.SetId(LoadUser().Id);
             return _iuserRepo.UpdateProfile(updatedUser, image);
+        }
+
+        private bool ValidateUser(EditProfileModel model)
+        {
+            if (model == null) return false;
+            List<string> usernames = _iuserRepo.GetAllUsernames(LoadUser());
+            List<string> emails = _iuserRepo.GetAllEmails(LoadUser());
+            if (usernames.Contains(model.Username) || emails.Contains(model.Email)) return false;
+
+            return true;
         }
 
         private byte[] ConvertImageToBinary(IFormFile picture)

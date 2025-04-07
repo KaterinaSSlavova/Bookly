@@ -7,10 +7,10 @@
 <h1 class="mb-4">New Shelf</h1>
 <hr />
 
-@if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage))
+@if (TempData["ShelfError"] != null)
 {
     <div class="alert alert-danger" role="alert">
-        <strong>@ViewBag.ErrorMessage</strong>
+        <strong>@TempData["ShelfError"]</strong>
     </div>
 }
 

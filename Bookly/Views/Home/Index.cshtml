@@ -7,13 +7,12 @@
 <h1>Books</h1>
 <hr />
 
-@if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage))
+@if (TempData["BookCatalogSuccess"] != null)
 {
-    <div class="alert alert-danger" role="alert">
-        <strong>@ViewBag.ErrorMessage</strong>
+    <div class="alert alert-success" role="alert">
+        <strong>@TempData["BookCatalogSuccess"]</strong>
     </div>
 }
-
 <form asp-controller="Book" asp-action="GoToAddBook" method="post">
     <input type="submit" value="Add new book" class="btn btn-primary" />
 </form>

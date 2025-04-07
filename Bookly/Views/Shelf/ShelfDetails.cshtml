@@ -7,17 +7,17 @@
 <h1>@Model.Name</h1>
 <hr />
 
-@if (TempData["Confirmation"] != null)
+@if (TempData["RemoveBookSuccess"] != null)
 {
     <div class="alert alert-success" role="alert">
-        <strong>@TempData["Confirmation"]</strong>
+        <strong>@TempData["RemoveBookSuccess"]</strong>
     </div>
 }
 
-@if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage))
+@if (TempData["RemoveBookError"] != null)
 {
     <div class="alert alert-danger" role="alert">
-        <strong>@ViewBag.ErrorMessage</strong>
+        <strong>@TempData["RemoveBookError"]</strong>
     </div>
 }
 

@@ -19,6 +19,7 @@ namespace Bookly.Business_logic.Services
         public bool AddBook(AddBookModel bookModel)
         {
             Book book = _mapper.Map<Book>(bookModel);
+            if (ValidateBook(book)) return false;
             return _ibookRepo.AddBook(book); 
         }
 
@@ -40,9 +41,21 @@ namespace Bookly.Business_logic.Services
             return _ibookRepo.GetBookById(id);
         }
 
-        public void RemoveBook(int id)
+        public bool ValidateBook(Book newBook)
         {
-            _ibookRepo.RemoveBook(id);
+            if (newBook == null) return false;
+            List<Book> allBooks = LoadBooks();
+            foreach(Book book in allBooks)
+            {
+                if (newBook.Picture == book.Picture && newBook.Title == book.Title && newBook.Author == book.Author) return false;
+                if (newBook.ISBN == book.ISBN) return false;
+            }
+            return true;
+        }
+
+        public bool RemoveBook(int id)
+        {
+            return _ibookRepo.RemoveBook(id);
         }
 
     }

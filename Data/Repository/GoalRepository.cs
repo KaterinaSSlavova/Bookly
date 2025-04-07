@@ -23,7 +23,7 @@ namespace Bookly.Data.Repository
                             VALUES (@Start, @End, @ReadingGoal, @CurrentProgress, @Status, @UserId)";
                 using SqlCommand command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@Start", goal.Start.Date);
-                command.Parameters.AddWithValue("@End", goal.End.Date);
+                command.Parameters.AddWithValue("@End", goal.End);
                 command.Parameters.AddWithValue("@ReadingGoal", goal.ReadingGoal);
                 command.Parameters.AddWithValue("@CurrentProgress", 0);
                 command.Parameters.AddWithValue("@Status", goal.Status.ToString());
@@ -33,6 +33,43 @@ namespace Bookly.Data.Repository
                 return true;
             }
             catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public Goal GetGoalById(User user, int goalId)
+        {
+            try
+            {
+                using SqlConnection connection = GetSqlConnection();
+                connection.Open();
+
+                string sql = @"SELECT Id, [Start], [End], ReadingGoal, CurrentProgress, [Status], UserId
+                                FROM Goals
+                                WHERE isArchived = @isArchived and UserId = @UserId and Id = @Id";
+                using SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@isArchived", 0);
+                command.Parameters.AddWithValue("@UserId", user.Id);
+                command.Parameters.AddWithValue("@Id", goalId);
+
+                using SqlDataReader reader = command.ExecuteReader();
+                if(reader.Read())
+                {
+                    return new Goal
+                        (
+                                reader.GetInt32(0),
+                                reader.GetDateTime(1),
+                                reader.GetDateTime(2),
+                                reader.GetInt32(3),
+                                reader.GetInt32(4),
+                                (Status)Enum.Parse(typeof(Status), reader.GetString(5)),
+                                user
+                        );
+                }
+                return null;
+            }
+            catch(Exception ex) 
             {
                 throw new Exception(ex.Message);
             }
@@ -84,18 +121,19 @@ namespace Bookly.Data.Repository
 
                 string sql = @"SELECT TOP 1 Id, [Start], [End], ReadingGoal, CurrentProgress, [Status]
                                 FROM Goals
-                                WHERE isArchived=@isArchived";
+                                WHERE isArchived=@isArchived AND UserId = @Id";
                 if (isIncreasing)
                 {
-                    sql += @" and [Status] <> @Status";
+                    sql += @" AND [Status] <> @Status";
                 }
                 if(!isIncreasing)
                 {
-                    sql += @" and [Status] = @Status";
+                    sql += @" AND [Status] = @Status";
                 }
                 sql += @" ORDER BY [END] ASC";
                 using SqlCommand command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@isArchived", 0);
+                command.Parameters.AddWithValue("@Id", user.Id);
                 if (isIncreasing)
                 {
                     command.Parameters.AddWithValue("@Status", Status.Completed.ToString());
@@ -105,11 +143,10 @@ namespace Bookly.Data.Repository
                     command.Parameters.AddWithValue("@Status", Status.In_progress.ToString());
                 }
 
-                using SqlDataReader reader= command.ExecuteReader();
-                Goal goal= null;    
+                using SqlDataReader reader= command.ExecuteReader(); 
                 if (reader.Read())
                 {
-                    goal = new Goal
+                         return new Goal
                         (
                                 reader.GetInt32(0),
                                 reader.GetDateTime(1),
@@ -120,35 +157,7 @@ namespace Bookly.Data.Repository
                                 user
                         );
                 }
-                reader.Close();
-
-                if(!isIncreasing && goal == null)
-                {
-                    sql = @"SELECT TOP 1 Id, [Start], [End], ReadingGoal, CurrentProgress, [Status]
-                                    FROM Goals
-                                    WHERE isArchived = @isArchived AND [Status] = @CompletedStatus
-                                    ORDER BY [End] ASC";
-                    using SqlCommand completeCommand = new SqlCommand(sql, connection);
-                    completeCommand.Parameters.AddWithValue("@isArchived", 0);
-                    completeCommand.Parameters.AddWithValue("@CompletedStatus", Status.Completed.ToString());
-
-                    using SqlDataReader completedReader = completeCommand.ExecuteReader();
-                    if (completedReader.Read())
-                    {
-                        goal = new Goal
-                            (
-                                completedReader.GetInt32(0),
-                                completedReader.GetDateTime(1),
-                                completedReader.GetDateTime(2),
-                                completedReader.GetInt32(3),
-                                completedReader.GetInt32(4),
-                                (Status)Enum.Parse(typeof(Status), completedReader.GetString(5)),
-                                user
-                            );
-                    }
-                }
-
-                return goal;
+                return null;
             }
             catch (Exception ex)
             {
@@ -156,7 +165,44 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public void UpdateProgress(int userId, int goalId, int progress)
+        public Goal? GetLatestCompletedGoal(User user)
+        {
+            try
+            {
+                using SqlConnection connection = GetSqlConnection();
+                connection.Open();
+                string sql = @"SELECT TOP 1 Id, [Start], [End], ReadingGoal, CurrentProgress, [Status]
+                                    FROM Goals
+                                    WHERE isArchived = @isArchived AND [Status] = @CompletedStatus AND UserId = @Id
+                                    ORDER BY [End] ASC";
+                using SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@isArchived", 0);
+                command.Parameters.AddWithValue("@Id", user.Id);
+                command.Parameters.AddWithValue("@CompletedStatus", Status.Completed.ToString());
+
+                using SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    return new Goal
+                    (
+                        reader.GetInt32(0),
+                        reader.GetDateTime(1),
+                        reader.GetDateTime(2),
+                        reader.GetInt32(3),
+                        reader.GetInt32(4),
+                        (Status)Enum.Parse(typeof(Status), reader.GetString(5)),
+                        user
+                    );
+                }
+                return null;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public void UpdateProgress(int userId, Goal goal, int progress)
         {
             try
             {
@@ -168,7 +214,7 @@ namespace Bookly.Data.Repository
                                 WHERE Id=@goalId and UserId=@UserId and CurrentProgress <= ReadingGoal";
                 using SqlCommand command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@Progress", progress);
-                command.Parameters.AddWithValue("@goalId", goalId);
+                command.Parameters.AddWithValue("@goalId", goal.Id);
                 command.Parameters.AddWithValue("@UserId", userId);
 
                 command.ExecuteNonQuery();
@@ -202,7 +248,7 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public void RemoveGoal(int id)
+        public bool RemoveGoal(int id)
         {
             try
             {
@@ -217,7 +263,7 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("@isArchived", 1);
 
                 command.ExecuteNonQuery();
-
+                return true;
             }
             catch (Exception ex)
             {

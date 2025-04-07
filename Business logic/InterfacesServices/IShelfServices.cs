@@ -14,6 +14,6 @@ namespace Bookly.Business_logic.InterfacesServices
         ShelfViewModel? GetShelfById(int id);
         bool AddBookToShelf(int bookId, int shelfId);
         bool RemoveBookFromShelf(int bookId, int shelfId);
-        void RemoveShelf(int id);
+        bool RemoveShelf(int id);
     }
 }

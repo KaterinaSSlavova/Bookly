@@ -7,10 +7,17 @@
 <h1>Add New Book</h1>
 <hr />
 
-@if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage))
+@if (TempData["BookSuccess"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        <strong>@TempData["BookSuccess"]</strong>
+    </div>
+}
+
+@if (TempData["BookError"] != null)
 {
     <div class="alert alert-danger" role="alert">
-        <strong>@ViewBag.ErrorMessage</strong>
+        <strong>@TempData["BookError"]</strong>
     </div>
 }
 

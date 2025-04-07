@@ -2,6 +2,7 @@
 using Models.Entities;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Identity.Client;
 
 namespace Bookly.Data.Repository
 {
@@ -173,6 +174,62 @@ namespace Bookly.Data.Repository
             catch (Exception ex)
             {
                 throw new ApplicationException(ex.Message);
+            }
+        }
+        
+        public List<string> GetAllUsernames(User user)
+        {
+            try
+            {
+                List<string> usernames = new List<string>();
+                using SqlConnection connection = GetSqlConnection();
+                connection.Open();
+
+                string sql = @"SELECT Username 
+                                FROM Users
+                                WHERE Id <> @Id";
+
+                using SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@Id", user.Id);
+
+                using SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    usernames.Add(reader.GetString(0));
+                }
+                return usernames;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public List<string> GetAllEmails(User user)
+        {
+            try
+            {
+                List<string> emails = new List<string>();
+                using SqlConnection connection = GetSqlConnection();
+                connection.Open();
+
+                string sql = @"SELECT Email 
+                                FROM Users
+                                WHERE Id <> @Id";
+
+                using SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@Id", user.Id);
+
+                using SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    emails.Add(reader.GetString(0));
+                }
+                return emails;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
     }

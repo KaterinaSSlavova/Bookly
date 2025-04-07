@@ -7,6 +7,6 @@ namespace Bookly.Data.InterfacesRepo
         bool AddBook(Book book);
         List<Book> LoadBooks();
         Book? GetBookById(int id);
-        void RemoveBook(int id);
+        bool RemoveBook(int id);
     }
 }

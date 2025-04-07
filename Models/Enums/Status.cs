@@ -4,6 +4,7 @@
     {
         Not_started,
         In_progress,
-        Completed
+        Completed,
+        Expired
     }
 }

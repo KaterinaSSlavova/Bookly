@@ -177,7 +177,7 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public void RemoveShelf(int id)
+        public bool RemoveShelf(int id)
         {
             try
             {
@@ -192,6 +192,7 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("@Id",id);
 
                 command.ExecuteNonQuery();
+                return true;
             }
             catch (Exception ex)
             {

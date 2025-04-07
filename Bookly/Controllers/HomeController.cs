@@ -9,18 +9,18 @@ namespace Bookly.Bookly.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IBookServices _ibookServices;
+        private readonly IBookServices _bookServices;
 
-        public HomeController(ILogger<HomeController> logger, IBookServices ibookServices)
+        public HomeController(ILogger<HomeController> logger, IBookServices bookServices)
         {
             _logger = logger;
-            _ibookServices = ibookServices;
+            _bookServices = bookServices;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            List<BookViewModel> books = _ibookServices.GetAllBooksViewModel();  
+            List<BookViewModel> books = _bookServices.GetAllBooksViewModel();  
             return View(books);
         }
 

@@ -37,6 +37,10 @@ namespace Bookly.Bookly.Controllers
             {
                 TempData["Message"] = "Book added to shelf!";
             }
+            else
+            {
+                TempData["Warning"] = "This book is already placed on that shelf!";
+            }
             return RedirectToAction("BookDetails", "Book",new { bookId=bookId });
         }
 
@@ -62,15 +66,31 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult AddBook(AddBookModel bookModel)
         {
-            _bookService.AddBook(bookModel);
-            return RedirectToAction("Index","Home");
+            if(!_bookService.AddBook(bookModel))
+            {
+                TempData["BookError"] = "Invalid data! Book must be unique!";
+                return RedirectToAction("AddBookPage", "Book");
+            }
+            else
+            {
+                TempData["BookSuccess"] = "Book added successfully!";
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
         public IActionResult RemoveBook(int id)
         {
-            _bookService.RemoveBook(id);
-            return RedirectToAction("Index", "Home");
+            if(!_bookService.RemoveBook(id))
+            {
+                TempData["BookCatalogError"] = "Cannot remove this book!";
+                return RedirectToAction("BookDetails", "Book");
+            }
+            else
+            {
+                TempData["BookCatalogSuccess"] = "Book was removed successfully!";
+                return RedirectToAction("Index", "Home");
+            }
         }
     }
 }

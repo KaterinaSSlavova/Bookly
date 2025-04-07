@@ -8,9 +8,11 @@ namespace Bookly.Data.InterfacesRepo
         bool CreateGoal(Goal goal);
         List<Goal> GetPersonalGoals(User user);
         Goal? GetNewestGoal(bool isIncreasing, User user);
-        void UpdateProgress(int userId, int goalId, int progress);
+        Goal? GetLatestCompletedGoal(User user);
+        void UpdateProgress(int userId, Goal goal, int progress);
         void UpdateStatus(Status status, int goalId, int userId);
-        void RemoveGoal(int id);
+        Goal GetGoalById(User user, int goalId);
+        bool RemoveGoal(int id);
 
     }
 }

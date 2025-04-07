@@ -6,10 +6,10 @@
 <h1>Profile</h1>
 <hr />
 
-@if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage))
+@if (TempData["ProfileUpdated"] != null)
 {
-    <div class="alert alert-danger" role="alert">
-        <strong>@ViewBag.ErrorMessage</strong>
+    <div class="alert alert-success" role="alert">
+        <strong>@TempData["ProfileUpdated"]</strong>
     </div>
 }
 
@@ -33,7 +33,7 @@
 
             <input type="hidden" name="UserId" value="@Model.Id" />
         </form>
-        <form asp-controller="User" asp-action="EditProfile">
+        <form asp-controller="User" asp-action="GoToEdit" method="post">
             <div class="form-group text-left">
                 <input type="submit" value="Edit" class="btn btn-primary" />
             </div>

@@ -4,6 +4,13 @@
     ViewData["Title"] = "Create Goal";
 }
 
+@if (TempData["InvalidGoal"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        <strong>@TempData["InvalidGoal"]</strong>
+    </div>
+}
+
 <h1>Create Goal</h1>
 <hr />
 

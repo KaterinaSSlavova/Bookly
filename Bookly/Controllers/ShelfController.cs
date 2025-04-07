@@ -39,7 +39,8 @@ namespace Bookly.Bookly.Controllers
         {
             if (!_ishelfService.CreateShelf(shelfModel)) 
             {
-                ViewBag.ErrorMessage = "The shelf was not created!";
+                TempData["ShelfError"] = "Invalid data! Shelf name must be unique!";
+                return RedirectToAction("CreateShelf", "Shelf");
             }
             return RedirectToAction("ShelfOverview", "Shelf");
         }
@@ -69,9 +70,13 @@ namespace Bookly.Bookly.Controllers
         public IActionResult RemoveFromShelf(int bookId, int shelfId)
         {
             User? user = _iuserService.LoadUser();
-            if(_ishelfService.RemoveBookFromShelf(bookId, shelfId))
+            if(!_ishelfService.RemoveBookFromShelf(bookId, shelfId))
             {
-                TempData["Confirmation"] = "Book was removed successfully!";
+                TempData["RemoveBookError"] = "Book cannot be removed!";
+            }
+            else
+            {
+                TempData["RemoveBookSuccess"] = "Book was removed successfully!";
             }
             return RedirectToAction("ShelfDetails", "Shelf", new { id=shelfId });
         }
@@ -79,7 +84,14 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult RemoveShelf(int id)
         {
-            _ishelfService.RemoveShelf(id);
+            if(!_ishelfService.RemoveShelf(id))
+            {
+                TempData["ShelfError"] = "Shelf cannot be removed!";
+            }
+            else
+            {
+                TempData["ShelfSuccess"] = "Shelf was removed successfully!";
+            }
             return RedirectToAction("ShelfOverview","Shelf");
         }
     }

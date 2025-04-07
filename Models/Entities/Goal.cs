@@ -27,22 +27,32 @@ namespace Models.Entities
 
         public Goal(int id, DateTime start, DateTime end, int readingGoal, int currentGoal, Status status, User user)
         {
-            this. Id = id;
-            this. Start = start;
-            this. End = end;
-            this. ReadingGoal = readingGoal;
-            this.CurrentProgress = currentGoal;
-            this.Status = status;
-            this.User = user;
-        }
-        public Goal(DateTime start, DateTime end, int readingGoal, int currentGoal, Status status, User user)
-        {
+            this.Id = id;
             this.Start = start;
             this.End = end;
             this.ReadingGoal = readingGoal;
             this.CurrentProgress = currentGoal;
             this.Status = status;
             this.User = user;
+        }
+
+        public Goal(DateTime start, DateTime end, int readingGoal, Status status, User user)
+        {
+            this.Start = start;
+            this.End = end;
+            this.ReadingGoal = readingGoal;
+            this.CurrentProgress = 0;
+            this.Status = status;
+            this.User = user;
+        }
+
+        public Goal(DateTime start, DateTime end, int readingGoal, Status status) // for creating goal
+        {
+            this.Start = start;
+            this.End = end.AddHours(23).AddMinutes(59);
+            this.ReadingGoal = readingGoal;
+            this.CurrentProgress = 0;
+            this.Status = status;
         }
     }
 }

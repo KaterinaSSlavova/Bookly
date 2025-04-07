@@ -10,7 +10,7 @@ namespace Bookly.Data.InterfacesRepo
         Shelf? GetShelfById(int id);
         bool AddBookToShelf(int bookId, int shelfId, int userId);
         bool RemoveBookFromShelf(int userId, int bookId);
-        void RemoveShelf(int id);
+        bool RemoveShelf(int id);
 
     }
 }

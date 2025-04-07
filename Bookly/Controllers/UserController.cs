@@ -72,10 +72,16 @@ namespace Bookly.Bookly.Controllers
             return View(user);
         }
 
-        [HttpPost]
+        [HttpGet]
         public IActionResult EditProfile()
         {
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult GoToEdit()
+        {
+            return RedirectToAction("EditProfile", "User");
         }
 
         [HttpPost]
@@ -83,10 +89,14 @@ namespace Bookly.Bookly.Controllers
         {
             if(_userService.UpdateProfile(editModel))
             {
+                TempData["ProfileUpdated"] = "Profile updated successfully!";
                 return RedirectToAction("ViewProfile", "User");
             }
-            ViewBag.ErrorMessage="Profile was not updated!";
-            return RedirectToAction("EditProfile", "User");
+            else
+            {
+                TempData["ProfileError"] = "Invalid data! Username and email must be unique!";
+                return RedirectToAction("EditProfile", "User");
+            }
         }
     }
 }

@@ -7,10 +7,17 @@
 <h1 class="mb-4">Goals</h1>
 <hr />
 
-@if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage))
+@if (TempData["GoalSuccess"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        <strong>@TempData["GoalSuccess"]</strong>
+    </div>
+}
+
+@if (TempData["GoalError"] != null)
 {
     <div class="alert alert-danger" role="alert">
-        <strong>@ViewBag.ErrorMessage</strong>
+        <strong>@TempData["GoalError"]</strong>
     </div>
 }
 
@@ -27,8 +34,8 @@
                 <div class="card h-100 shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title">Reading Goal: @goal.ReadingGoal books</h5>
-                        <p class="card-text">Start: <strong>@goal.FormattedStartDate</strong></p>
-                        <p class="card-text">End: <strong>@goal.FormattedEndDate</strong></p>
+                        <p class="card-text">Start: <strong>@goal.Start</strong></p>
+                        <p class="card-text">End: <strong>@goal.End</strong></p>
 
                         <div class="progress mb-2">
                             <div class="progress-bar @(goal.CurrentProgress >= goal.ReadingGoal ? "bg-success" : "bg-info")"
@@ -50,9 +57,13 @@
                             {
                                 <span class="badge bg-warning text-dark">⌛ In Progress</span>
                             }
-                            else
+                            else if(goal.Status == "Not_started")
                             {
                                 <span class="badge bg-secondary">🔧 Not Started</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">⏰ Expired</span>
                             }
                         </p>
 
