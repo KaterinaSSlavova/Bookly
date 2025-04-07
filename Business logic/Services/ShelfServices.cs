@@ -78,18 +78,24 @@ namespace Bookly.Business_logic.Services
                 return false;
             }
             User user = GetUser();
+            CheckForPreviousShelf(bookId);
             if (GetShelfById(shelfId)?.Name == "Have Read" && !CheckForBook(shelfId, bookId))
             {
                 Goal? goal = _goalService.GetNewestGoal(true);
-               
-                if(goal!=null)
-                {
-                    progress = goal.CurrentProgress + 1;
-                    goal.SetCurrentProgress(progress);  
-                    _goalService.SetStatus(goal, progress);
-                }
+                IncreaseProgress(goal);
             } 
             return _ishelfRepo.AddBookToShelf(bookId, shelfId, user.Id);
+        }
+
+        private void CheckForPreviousShelf(int bookId)
+        {
+            User user = GetUser();
+            Shelf oldShelf = _ishelfRepo.GetShelfContainingBook(bookId, user.Id);
+            if (oldShelf != null && oldShelf.Name == "Have Read")
+            {
+                Goal? goal = _goalService.GetNewestGoal(false);
+                DecreaseProgress(goal);
+            }
         }
 
         public bool RemoveBookFromShelf(int bookId, int shelfId)
@@ -98,14 +104,29 @@ namespace Bookly.Business_logic.Services
             if (GetShelfById(shelfId)?.Name == "Have Read" && CheckForBook(shelfId, bookId))
             {
                 Goal? goal = _goalService.GetNewestGoal(false);
-                if (goal != null && goal.CurrentProgress>0)
-                {
-                    progress = goal.CurrentProgress - 1;
-                    goal.SetCurrentProgress(progress);
-                    _goalService.SetStatus(goal, progress);
-                }
+                DecreaseProgress(goal);
             }
             return _ishelfRepo.RemoveBookFromShelf(user.Id, bookId);
+        }
+
+        private void DecreaseProgress(Goal goal)
+        {
+            if (goal != null && goal.CurrentProgress > 0)
+            {
+                progress = goal.CurrentProgress - 1;
+                goal.SetCurrentProgress(progress);
+                _goalService.SetStatus(goal, progress);
+            }
+        }
+
+        private void IncreaseProgress(Goal goal)
+        {
+            if (goal != null)
+            {
+                progress = goal.CurrentProgress + 1;
+                goal.SetCurrentProgress(progress);
+                _goalService.SetStatus(goal, progress);
+            }
         }
 
         public bool RemoveShelf(int id)

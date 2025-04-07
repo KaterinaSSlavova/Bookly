@@ -152,6 +152,39 @@ namespace Bookly.Data.Repository
             }
         }
 
+        public Shelf GetShelfContainingBook(int bookId, int userId)
+        {
+            try
+            {
+                using SqlConnection connection = GetSqlConnection();
+                connection.Open();
+
+                string sql = @"SELECT s.Id, s.Name
+                                FROM Shelves as s
+                                INNER JOIN ShelfBook as sb
+                                ON sb.ShelfId = s.Id
+                                WHERE s.UserId = @UserId and sb.BookId=@BookId and s.isArchived = @isArchived";
+                using SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@UserId", userId);
+                command.Parameters.AddWithValue("@BookId", bookId);
+                command.Parameters.AddWithValue("@isArchived", 0);
+
+                using SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    return new Shelf(
+                        reader.GetInt32(0),
+                        reader.GetString(1)
+                        );
+                }
+                return null;
+            }
+            catch(Exception ex) 
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public bool RemoveBookFromShelf(int userId, int bookId)
         {
             try
