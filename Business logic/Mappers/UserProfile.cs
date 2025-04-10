@@ -1,6 +1,7 @@
 ﻿using Models.Entities;
 using AutoMapper;
 using ViewModels.Model;
+using Business_logic.DTOs;
 
 namespace Business_logic.Mappers
 {
@@ -11,8 +12,7 @@ namespace Business_logic.Mappers
             CreateMap<User, AccountLogIn>().ReverseMap();
             CreateMap<User, AccountRegister>().ReverseMap();
             CreateMap<User, ProfileOverviewModel>();
-            CreateMap<EditProfileModel, User>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
+            CreateMap<UserDTO, User>()
                 .ForMember(dest => dest.Picture, opt => opt.Ignore());
         }
     }

@@ -42,7 +42,7 @@
                 </div>
             </div>
 
-            <form asp-controller="Book" asp-action="MoveToShelf" class="mb-2">
+            <form asp-controller="Shelf" asp-action="MoveToShelf" class="mb-2">
                 <input type="hidden" name="bookId" value="@Model.Book.Id" />
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">

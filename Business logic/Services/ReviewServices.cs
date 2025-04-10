@@ -23,8 +23,8 @@ namespace Bookly.Business_logic.Services
 
         public bool AddReview(string description, int bookId)
         {
-            User user = _userServices.LoadUser();
-            Book book = _bookServices.GetBookById(bookId);
+            User? user = _userServices.LoadUser();
+            Book? book = _bookServices.GetBookById(bookId);
             Review review = new Review(description, user, book);
             return _reviewRepo.AddReview(review);    
         }

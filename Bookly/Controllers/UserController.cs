@@ -2,6 +2,8 @@
 using Models.Entities;
 using ViewModels.Model;
 using Bookly.Business_logic.InterfacesServices;
+using Business_logic.DTOs;
+using AutoMapper;
 
 namespace Bookly.Bookly.Controllers
 {
@@ -9,10 +11,12 @@ namespace Bookly.Bookly.Controllers
     {
         private readonly IUserServices _userService;
         private readonly IShelfServices _shelfService;
-        public UserController(IUserServices userServices, IShelfServices shelfService)
+        private readonly IMapper _mapper;
+        public UserController(IUserServices userServices, IShelfServices shelfService, IMapper mapper)
         {
             _userService = userServices;
             _shelfService = shelfService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -22,10 +26,11 @@ namespace Bookly.Bookly.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register(AccountRegister user)
+        public IActionResult Register(AccountRegister model)
         {
             try
             {
+                User user = _mapper.Map<User>(model);
                 if (_userService.Register(user))
                 {
                     _shelfService.CreateDefaultShelf();
@@ -36,7 +41,7 @@ namespace Bookly.Bookly.Controllers
             {
                 ViewBag.ErrorMessage = ex.Message;
             }
-            return View(user);
+            return View(model);
         }
 
         [HttpGet]
@@ -48,7 +53,8 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult LogIn(AccountLogIn model)
         {
-            User? loggedUser = _userService.LogIn(model);
+            User user = _mapper.Map<User>(model);
+            User? loggedUser = _userService.LogIn(user);
             if (loggedUser != null)
             {
                 HttpContext.Session.SetString("Username", loggedUser.Username);
@@ -68,8 +74,9 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult ViewProfile()
         {
-            ProfileOverviewModel? user = _userService.LoadProfile();
-            return View(user);
+            User user = _userService.LoadUser();
+            ProfileOverviewModel? viewModel = _mapper.Map<ProfileOverviewModel>(user);
+            return View(viewModel);
         }
 
         [HttpGet]
@@ -85,9 +92,10 @@ namespace Bookly.Bookly.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveChanges(EditProfileModel editModel)
+        public IActionResult SaveChanges(EditProfileModel model)
         {
-            if(_userService.UpdateProfile(editModel))
+            UserDTO user = new UserDTO(model.Picture, model.Username, model.Age, model.Email);
+            if(_userService.UpdateProfile(user))
             {
                 TempData["ProfileUpdated"] = "Profile updated successfully!";
                 return RedirectToAction("ViewProfile", "User");

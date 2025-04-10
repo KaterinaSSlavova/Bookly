@@ -22,10 +22,9 @@ namespace Bookly.Business_logic.Services
             _goalService = goalService;
         }
 
-        public bool CreateShelf(ShelfViewModel shelfModel)
+        public bool CreateShelf(Shelf shelf)
         {
             User user = GetUser();
-            Shelf shelf = _mapper.Map<Shelf>(shelfModel);
             if (!ValidateShelf(shelf, user)) return false;
 
             return _ishelfRepo.CreateShelf(shelf, user.Id);
@@ -34,10 +33,7 @@ namespace Bookly.Business_logic.Services
         public void CreateDefaultShelf()
         {
             User user = GetUser();
-            ShelfViewModel shelf = new ShelfViewModel()
-            {
-                Name = "Have Read"
-            };
+            Shelf shelf = new Shelf("Have Read");
             CreateShelf(shelf);
         }
 
@@ -46,29 +42,16 @@ namespace Bookly.Business_logic.Services
             return _ishelfRepo.GetUserShelves(GetUser().Id);
         }
 
-        public List<ShelfViewModel> GetUserShelfModel()
-        {
-            List<Shelf> shelves = GetUserShelves();
-            return _mapper.Map<List<ShelfViewModel>>(shelves);
-        }
-
         public List<Book> GetBooksFromShelf(int id)
         {
             List<Book> books = _ishelfRepo.GetBooksFromShelf(id);
             return books;
         }
 
-        public List<BookViewModel> GetBooksOnShelfModel(int id)
-        {
-            List<Book> books = GetBooksFromShelf(id);
-            return _mapper.Map<List<BookViewModel>>(books);
-        }
-
-        public ShelfViewModel? GetShelfById(int id)
+        public Shelf? GetShelfById(int id)
         {
             Shelf? shelf = _ishelfRepo.GetShelfById(id);
-            ShelfViewModel shelfModel = _mapper.Map<ShelfViewModel>(shelf);
-            return shelfModel;
+            return shelf;
         }
 
         public bool AddBookToShelf(int bookId, int shelfId)

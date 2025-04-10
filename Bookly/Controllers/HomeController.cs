@@ -3,6 +3,7 @@ using Bookly.Business_logic.InterfacesServices;
 using Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using ViewModels.Model;
+using AutoMapper;
 
 namespace Bookly.Bookly.Controllers
 {
@@ -10,18 +11,21 @@ namespace Bookly.Bookly.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IBookServices _bookServices;
+        private readonly IMapper _mapper;
 
-        public HomeController(ILogger<HomeController> logger, IBookServices bookServices)
+        public HomeController(ILogger<HomeController> logger, IBookServices bookServices, IMapper mapper)
         {
             _logger = logger;
             _bookServices = bookServices;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            List<BookViewModel> books = _bookServices.GetAllBooksViewModel();  
-            return View(books);
+            List<Book> books = _bookServices.LoadBooks();
+            List<BookViewModel> booksModel = _mapper.Map<List<BookViewModel>>(books);  
+            return View(booksModel);
         }
 
         [HttpPost]

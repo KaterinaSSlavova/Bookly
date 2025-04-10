@@ -1,14 +1,16 @@
 ﻿using ViewModels.Model;
 using Models.Entities;
+using Business_logic.DTOs;
+using System.Net;
 
 namespace Bookly.Business_logic.InterfacesServices
 {
     public interface IBookServices
     {
-        bool AddBook(AddBookModel bookModel);
+        bool AddBook(Book book);
         List<Book> LoadBooks();
-        List<BookViewModel> GetAllBooksViewModel();
-        Book? GetBookById(int id);
+        Book GetBookById(int bookId);
         bool RemoveBook(int id);
+        DateWithABookDTO CreateDateDTO(string filteredJson);
     }
 }

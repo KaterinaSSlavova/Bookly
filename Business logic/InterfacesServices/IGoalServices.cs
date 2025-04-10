@@ -5,8 +5,8 @@ namespace Bookly.Business_logic.InterfacesServices
 {
     public interface IGoalServices
     {
-        bool CreateGoal(GoalViewModel goal);
-        List<GoalViewModel> GetPersonalGoals();
+        bool CreateGoal(Goal goal);
+        List<Goal> GetPersonalGoals();
         void SetStatus(Goal goal, int progress);
         bool RemoveGoal(int id);
         Goal? GetNewestGoal(bool isIncreasing);

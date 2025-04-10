@@ -124,7 +124,7 @@ namespace Bookly.Data.Repository
                                 WHERE isArchived=@isArchived AND UserId = @Id";
                 if (isIncreasing)
                 {
-                    sql += @" AND [Status] <> @Status";
+                    sql += @" AND [Status] <> @Status AND [Status] <> @StatusExp";
                 }
                 if(!isIncreasing)
                 {
@@ -137,6 +137,7 @@ namespace Bookly.Data.Repository
                 if (isIncreasing)
                 {
                     command.Parameters.AddWithValue("@Status", Status.Completed.ToString());
+                    command.Parameters.AddWithValue("@StatusExp", Status.Expired.ToString());
                 }
                 if (!isIncreasing)
                 {

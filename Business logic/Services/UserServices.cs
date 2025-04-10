@@ -3,8 +3,8 @@ using Bookly.Data.InterfacesRepo;
 using ViewModels.Model;
 using Bookly.Business_logic.InterfacesServices;
 using Microsoft.AspNetCore.Http;
+using Business_logic.DTOs;
 using AutoMapper;
-using System.Net.Http.Headers;
 
 namespace Bookly.Business_logic.Services
 {
@@ -20,15 +20,13 @@ namespace Bookly.Business_logic.Services
             _contextAccessor = contextAccessor;
         }
 
-        public bool Register(AccountRegister model)
+        public bool Register(User user)
         {
-            User user = _mapper.Map<User>(model);
             return _iuserRepo.Register(user);
         }
 
-        public User? LogIn(AccountLogIn model)
+        public User? LogIn(User user)
         {
-            User user = _mapper.Map<User>(model);
             return _iuserRepo.LogIn(user);
         }
 
@@ -44,38 +42,27 @@ namespace Bookly.Business_logic.Services
             return _iuserRepo.LoadUser(username);    
         }
 
-        public bool UpdateProfile(EditProfileModel model)
+        public bool UpdateProfile(UserDTO userDTO)
         {
-            if(!ValidateUser(model))
+            User user = _mapper.Map<User>(userDTO);
+            byte[] image = userDTO.Picture;
+            _contextAccessor.HttpContext.Session.SetString("Username", user.Username);
+            user.SetId(LoadUser().Id);
+            if(!ValidateUser(user))
             {
                 return false;
             }
-            _contextAccessor.HttpContext.Session.SetString("Username", model.Username);
-            byte[] image = ConvertImageToBinary(model.Picture);
-            User updatedUser = _mapper.Map<User>(model);
-            updatedUser.SetId(LoadUser().Id);
-            return _iuserRepo.UpdateProfile(updatedUser, image);
+            return _iuserRepo.UpdateProfile(user, image);
         }
 
-        private bool ValidateUser(EditProfileModel model)
+        private bool ValidateUser(User user)
         {
-            if (model == null) return false;
+            if (user == null) return false;
             List<string> usernames = _iuserRepo.GetAllUsernames(LoadUser());
             List<string> emails = _iuserRepo.GetAllEmails(LoadUser());
-            if (usernames.Contains(model.Username) || emails.Contains(model.Email)) return false;
+            if (usernames.Contains(user.Username) || emails.Contains(user.Email)) return false;
 
             return true;
-        }
-
-        private byte[] ConvertImageToBinary(IFormFile picture)
-        {
-            if(picture != null)
-            {
-                using MemoryStream mStream = new MemoryStream();
-                picture.CopyTo(mStream);
-                return mStream.ToArray();
-            }
-            return null;
         }
     }
 }

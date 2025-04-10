@@ -19,9 +19,8 @@ namespace Bookly.Business_logic.Services
             this._userServices = userServices;
         }
 
-        public bool CreateGoal(GoalViewModel goalModel)
+        public bool CreateGoal(Goal goal)
         {
-            Goal goal = _mapper.Map<Goal>(goalModel);
             if(!ValidateGoal(goal))
             {
                 return false;
@@ -30,13 +29,13 @@ namespace Bookly.Business_logic.Services
             return _goalRepo.CreateGoal(goal);
         }
 
-        public List<GoalViewModel> GetPersonalGoals()
+        public List<Goal> GetPersonalGoals()
         {
             User user = GetUser();
             List<Goal> goals = _goalRepo.GetPersonalGoals(user);
             CheckForExpired(goals);
-            List<GoalViewModel> goalsModel = _mapper.Map<List<GoalViewModel>>(goals);
-            return goalsModel;
+            goals = _goalRepo.GetPersonalGoals(user);
+            return goals;
         }
 
         public bool RemoveGoal(int id)

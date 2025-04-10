@@ -40,6 +40,13 @@
             this.Password = password;
         }
 
+        public User(string username, int age, string email) //dto
+        {
+            this.Username = username;
+            this.Age = age;
+            this.Email = email;
+        }
+
         public void SetId(int id)
         {
             this.Id = id;

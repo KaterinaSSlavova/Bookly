@@ -3,7 +3,7 @@ using Bookly.Data.InterfacesRepo;
 using Models.Enums;
 using Models.Entities;
 
-namespace Business_logic.Services
+namespace Bookly.Business_logic.Services
 {
     public class RatingServices : IRatingServices
     {

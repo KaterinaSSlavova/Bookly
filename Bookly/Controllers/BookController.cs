@@ -1,26 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Bookly.Business_logic.InterfacesServices;
 using ViewModels.Model;
+using Business_logic.DTOs;
+using AutoMapper;
+using Models.Entities;
 
 namespace Bookly.Bookly.Controllers
 {
     public class BookController : Controller
     {
         private readonly IBookServices _bookService;
-        private readonly IBookDetailsService _bookDetailsDTOService;
-        private readonly IShelfServices _shelfService;
+        private readonly IBookDetailsService _bookDetailsService;
+        private readonly IMapper _mapper;
 
-        public BookController(IBookDetailsService bookDTOService, IShelfServices shelfService, IBookServices bookService)
+        public BookController(IBookServices bookService, IMapper mapper, IBookDetailsService bookDetailsService)
         {
             _bookService = bookService;
-            _bookDetailsDTOService = bookDTOService;
-            _shelfService = shelfService;
+            _mapper = mapper;
+            _bookDetailsService = bookDetailsService;
         }
 
         [HttpGet]
         public IActionResult BookDetails(int bookId)   
         {
-            BookDetailsViewModel model = _bookDetailsDTOService.GetBookDetails(bookId);
+            BookDetailsDTO bookDTO = _bookDetailsService.CreateDetailsDTO(bookId);
+            BookDetailsViewModel model = _mapper.Map<BookDetailsViewModel>(bookDTO);
             return View(model);
         }
 
@@ -28,20 +32,6 @@ namespace Bookly.Bookly.Controllers
         public IActionResult GoBack()
         {
             return RedirectToAction("Index", "Home");
-        }
-
-        [HttpPost]
-        public IActionResult MoveToShelf(int bookId, int shelfId)
-        {
-            if (_shelfService.AddBookToShelf(bookId, shelfId))
-            {
-                TempData["Message"] = "Book added to shelf!";
-            }
-            else
-            {
-                TempData["Warning"] = "This book is already placed on that shelf!";
-            }
-            return RedirectToAction("BookDetails", "Book",new { bookId=bookId });
         }
 
         [HttpPost]
@@ -66,7 +56,8 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult AddBook(AddBookModel bookModel)
         {
-            if(!_bookService.AddBook(bookModel))
+            Book book = _mapper.Map<Book>(bookModel);
+            if (!_bookService.AddBook(book))
             {
                 TempData["BookError"] = "Invalid data! Book must be unique!";
                 return RedirectToAction("AddBookPage", "Book");

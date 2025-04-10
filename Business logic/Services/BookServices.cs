@@ -1,8 +1,9 @@
 ﻿using Bookly.Data.InterfacesRepo;
 using Models.Entities;
 using Bookly.Business_logic.InterfacesServices;
-using ViewModels.Model;
 using AutoMapper;
+using Business_logic.DTOs;
+using Newtonsoft.Json;
 
 namespace Bookly.Business_logic.Services
 {
@@ -16,10 +17,9 @@ namespace Bookly.Business_logic.Services
             _mapper = mapper;
         }
 
-        public bool AddBook(AddBookModel bookModel)
+        public bool AddBook(Book book)
         {
-            Book book = _mapper.Map<Book>(bookModel);
-            if (ValidateBook(book)) return false;
+            if (!ValidateBook(book)) return false;
             return _ibookRepo.AddBook(book); 
         }
 
@@ -27,13 +27,6 @@ namespace Bookly.Business_logic.Services
         {
             List<Book> books = _ibookRepo.LoadBooks();
             return books;   
-        }
-
-        public List<BookViewModel> GetAllBooksViewModel()
-        {
-            List<Book> books = LoadBooks();
-            List<BookViewModel> model =_mapper.Map<List<BookViewModel>>(books);
-            return model;
         }
 
         public Book? GetBookById(int id)
@@ -56,6 +49,12 @@ namespace Bookly.Business_logic.Services
         public bool RemoveBook(int id)
         {
             return _ibookRepo.RemoveBook(id);
+        }
+
+        public DateWithABookDTO CreateDateDTO(string filteredJson) //date with a book
+        {
+            List<Book> filteredBooks = filteredJson != null ? JsonConvert.DeserializeObject<List<Book>>(filteredJson) : new List<Book>();
+            return new DateWithABookDTO(filteredBooks);
         }
 
     }

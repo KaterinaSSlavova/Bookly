@@ -1,14 +1,14 @@
 ﻿using Models.Entities;
+using Business_logic.DTOs;
 using ViewModels.Model;
 
 namespace Bookly.Business_logic.InterfacesServices
 {
     public interface IUserServices
     {
-        bool Register(AccountRegister model);
-        User? LogIn(AccountLogIn model);
+        bool Register(User user);
+        User? LogIn(User user);
         User? LoadUser();
-        bool UpdateProfile(EditProfileModel editModel);
-        ProfileOverviewModel LoadProfile();
+        bool UpdateProfile(UserDTO User);
     }
 }

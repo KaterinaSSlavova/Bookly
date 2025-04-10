@@ -5,23 +5,26 @@ using Newtonsoft.Json;
 using ViewModels.Model;
 using Models.Entities;
 using Bookly.Business_logic.InterfacesServices;
+using Business_logic.DTOs;
+using AutoMapper;
 
 namespace Bookly.Controllers
 {
     public class RandomController : Controller
     {
         private readonly IRandomServices _iRandomServices;
-        private readonly IDateWithBookService _dateService;
-        public RandomController(IRandomServices iRandomServices, IDateWithBookService dateService)
+        private readonly IBookServices _bookServices;
+        private readonly IMapper _mapper;
+        public RandomController(IRandomServices iRandomServices, IBookServices bookServices, IMapper mapper)
         {
             _iRandomServices = iRandomServices;
-            _dateService = dateService;
+            _bookServices = bookServices;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult SpinTheWheel()
         {
-            List<Book> unreadBooks = _iRandomServices.GetUnreadBooks();
             return View();
         }
 
@@ -36,7 +39,8 @@ namespace Bookly.Controllers
         public IActionResult DateWithABook()
         {
             var filteredBooksJson = TempData["Filtered"] as string;
-            DateWithABookViewModel model = _dateService.GetDateWithABookModel(filteredBooksJson);
+            DateWithABookDTO bookDTO = _bookServices.CreateDateDTO(filteredBooksJson);
+            DateWithABookViewModel model = _mapper.Map<DateWithABookViewModel>(bookDTO);
             return View(model);
         }
 
