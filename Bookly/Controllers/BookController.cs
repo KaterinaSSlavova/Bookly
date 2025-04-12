@@ -4,6 +4,7 @@ using ViewModels.Model;
 using Business_logic.DTOs;
 using AutoMapper;
 using Models.Entities;
+using Bookly.Business_logic.Services;
 
 namespace Bookly.Bookly.Controllers
 {
@@ -18,6 +19,20 @@ namespace Bookly.Bookly.Controllers
             _bookService = bookService;
             _mapper = mapper;
             _bookDetailsService = bookDetailsService;
+        }
+
+        [HttpGet]
+        public IActionResult Index()
+        {
+            List<Book> books = _bookService.LoadBooks();
+            List<BookViewModel> booksModel = _mapper.Map<List<BookViewModel>>(books);
+            return View(booksModel);
+        }
+
+        [HttpPost]
+        public IActionResult ViewBook(int id)
+        {
+            return RedirectToAction("BookDetails", "Book", new { bookId = id });
         }
 
         [HttpGet]

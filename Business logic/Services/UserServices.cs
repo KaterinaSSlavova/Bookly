@@ -30,12 +30,6 @@ namespace Bookly.Business_logic.Services
             return _iuserRepo.LogIn(user);
         }
 
-        public ProfileOverviewModel LoadProfile()
-        {
-            User user = LoadUser();
-            return _mapper.Map<ProfileOverviewModel>(user);
-        }
-
         public User? LoadUser()
         {
             string username = _contextAccessor.HttpContext.Session.GetString("Username");

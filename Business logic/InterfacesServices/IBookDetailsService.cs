@@ -4,6 +4,6 @@ namespace Bookly.Business_logic.InterfacesServices
 {
     public interface IBookDetailsService
     {
-        public BookDetailsDTO CreateDetailsDTO(int bookId);
+        BookDetailsDTO CreateDetailsDTO(int bookId);
     }
 }

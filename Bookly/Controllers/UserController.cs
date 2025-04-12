@@ -58,7 +58,7 @@ namespace Bookly.Bookly.Controllers
             if (loggedUser != null)
             {
                 HttpContext.Session.SetString("Username", loggedUser.Username);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Book");
             }
             ViewBag.ErrorMessage = "Invalid username or password! Please try again!";
             return View(loggedUser);
