@@ -1,9 +1,6 @@
 using System.Diagnostics;
-using Bookly.Business_logic.InterfacesServices;
 using Models.Entities;
 using Microsoft.AspNetCore.Mvc;
-using ViewModels.Model;
-using AutoMapper;
 
 namespace Bookly.Bookly.Controllers
 {

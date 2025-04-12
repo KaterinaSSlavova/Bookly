@@ -51,11 +51,5 @@ namespace Bookly.Business_logic.Services
             return _ibookRepo.RemoveBook(id);
         }
 
-        public DateWithABookDTO CreateDateDTO(string filteredJson) //date with a book
-        {
-            List<Book> filteredBooks = filteredJson != null ? JsonConvert.DeserializeObject<List<Book>>(filteredJson) : new List<Book>();
-            return new DateWithABookDTO(filteredBooks);
-        }
-
     }
 }

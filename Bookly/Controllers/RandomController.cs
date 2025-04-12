@@ -7,6 +7,7 @@ using Models.Entities;
 using Bookly.Business_logic.InterfacesServices;
 using Business_logic.DTOs;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Bookly.Controllers
 {
@@ -39,8 +40,9 @@ namespace Bookly.Controllers
         public IActionResult DateWithABook()
         {
             var filteredBooksJson = TempData["Filtered"] as string;
-            DateWithABookDTO bookDTO = _bookServices.CreateDateDTO(filteredBooksJson);
-            DateWithABookViewModel model = _mapper.Map<DateWithABookViewModel>(bookDTO);
+            DateWithABookDTO bookDTO = _iRandomServices.CreateDateDTO(filteredBooksJson);
+            List<BookViewModel> bookModel = _mapper.Map<List<BookViewModel>>(bookDTO.FilteredBooks);
+            DateWithABookViewModel model = new DateWithABookViewModel(bookModel, MapGenres(bookDTO.Genres), MapRatings(bookDTO.Ratings));
             return View(model);
         }
 
@@ -50,6 +52,24 @@ namespace Bookly.Controllers
             List<Book> filteredBooks = _iRandomServices.FilterBooks(genre, ratings);
             TempData["Filtered"] = JsonConvert.SerializeObject(filteredBooks);  
             return RedirectToAction("DateWithABook", "Random");
+        }
+
+        private List<SelectListItem> MapGenres(List<Genre> genres)
+        {
+            return genres.Select(g => new SelectListItem
+            {
+                Value = g.ToString(),
+                Text = g.ToString()
+            }).ToList();
+        }
+
+        private List<SelectListItem> MapRatings(List<Ratings> ratings)
+        {
+            return ratings.Select(r => new SelectListItem
+            {
+                Value = r.ToString(),
+                Text = r.ToString()
+            }).ToList();
         }
     }
 }

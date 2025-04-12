@@ -11,6 +11,5 @@ namespace Bookly.Business_logic.InterfacesServices
         List<Book> LoadBooks();
         Book GetBookById(int bookId);
         bool RemoveBook(int id);
-        DateWithABookDTO CreateDateDTO(string filteredJson);
     }
 }

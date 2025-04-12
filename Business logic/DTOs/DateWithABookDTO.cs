@@ -9,11 +9,11 @@ namespace Business_logic.DTOs
         public List<Genre> Genres { get; set; }
         public List<Ratings> Ratings { get; set; }
 
-        public DateWithABookDTO(List<Book> books)
+        public DateWithABookDTO(List<Book> books, List<Genre> genres, List<Ratings> ratings)
         {
             this.FilteredBooks = books;
-            this.Genres = new List<Genre>();   
-            this.Ratings = new List<Ratings>();
+            this.Genres = genres;
+            this.Ratings = ratings;
         }
     }
 }

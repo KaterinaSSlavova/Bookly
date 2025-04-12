@@ -1,6 +1,7 @@
 ﻿using Models.Enums;
 using Models.Entities;
 using ViewModels.Model;
+using Business_logic.DTOs;
 
 namespace Business_logic.InterfacesServices
 {
@@ -9,6 +10,6 @@ namespace Business_logic.InterfacesServices
         List<Book> GetUnreadBooks();
         Book RandomResult();
         List<Book> FilterBooks(Genre genre, Ratings rating);
-        List<BookViewModel> GetUnreadBooksModel();
+        DateWithABookDTO CreateDateDTO(string filteredJson);
     }
 }
