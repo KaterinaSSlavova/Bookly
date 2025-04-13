@@ -2,6 +2,7 @@
 using Models.Entities;
 using Bookly.Business_logic.InterfacesServices;
 using ViewModels.Model;
+using Business_logic.DTOs;
 using AutoMapper;
 
 namespace Bookly.Bookly.Controllers
@@ -21,7 +22,7 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult ShelfOverview()
         {
-            List<Shelf> myShelves = _ishelfService.GetUserShelves();
+            List<ShelfDTO> myShelves = _ishelfService.GetUserShelves();
             List<ShelfViewModel> model = _mapper.Map<List<ShelfViewModel>>(myShelves);    
             return View(model);
         }
@@ -41,7 +42,7 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult CreateNewShelf(ShelfViewModel shelfModel)
         {
-            Shelf shelf = _mapper.Map<Shelf>(shelfModel);   
+            ShelfDTO shelf = _mapper.Map<ShelfDTO>(shelfModel);   
             if (!_ishelfService.CreateShelf(shelf)) 
             {
                 TempData["ShelfError"] = "Invalid data! Shelf name must be unique!";
@@ -54,10 +55,8 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult ShelfDetails(int id)
         {
-            Shelf shelf=_ishelfService.GetShelfById(id);
-            List<Book> books = _ishelfService.GetBooksFromShelf(id);
+            ShelfDTO shelf=_ishelfService.GetShelfById(id);
             ShelfViewModel shelfModel = _mapper.Map<ShelfViewModel>(shelf);
-            shelfModel.BooksOnShelf = _mapper.Map<List<BookViewModel>>(books);
             return View(shelfModel);
         } 
 

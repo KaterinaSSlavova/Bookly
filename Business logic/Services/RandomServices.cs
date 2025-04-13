@@ -22,10 +22,10 @@ namespace Business_logic.Services
             _userServices = userServices;
         }
 
-        private List<Book>? GetHaveReadShelf()
+        private List<BookDTO>? GetHaveReadShelf()
         {
             User user = GetUser();
-            foreach(Shelf shelf in _ishelfService.GetUserShelves())
+            foreach(ShelfDTO shelf in _ishelfService.GetUserShelves())
             {
                 if(shelf.Name == "Have Read")
                 {
@@ -35,15 +35,15 @@ namespace Business_logic.Services
             return null;
         }
 
-        public List<Book> GetUnreadBooks()
+        public List<BookDTO> GetUnreadBooks()
         {
-            List<Book>? readBooks = GetHaveReadShelf();
-            List<Book> allBooks = _ibookService.LoadBooks();
+            List<BookDTO>? readBooks = GetHaveReadShelf();
+            List<BookDTO> allBooks = _ibookService.LoadBooks();
             if(readBooks != null)
             {
-                List<Book> unreadBooks = new List<Book>();
+                List<BookDTO> unreadBooks = new List<BookDTO>();
                 List<int> readBooksId = readBooks.Select(x => x.Id).ToList();   
-                foreach(Book book in allBooks)
+                foreach(BookDTO book in allBooks)
                 {
                     if(!readBooksId.Contains(book.Id))
                     {
@@ -55,18 +55,18 @@ namespace Business_logic.Services
             return allBooks;
         }
 
-        public Book RandomResult() 
+        public BookDTO RandomResult() 
         {
-            List<Book> books = GetUnreadBooks();
+            List<BookDTO> books = GetUnreadBooks();
             Random random = new Random();
             int index = random.Next(books.Count);
-            Book randomBook = books[index];
+            BookDTO randomBook = books[index];
             return randomBook;
         }
 
-        public List<Book> FilterBooks(Genre genre, Ratings rating)
+        public List<BookDTO> FilterBooks(Genre genre, Ratings rating)
         {
-            List<Book> filteredBooks = GetUnreadBooks();
+            List<BookDTO> filteredBooks = GetUnreadBooks();
             filteredBooks = filteredBooks.Where(b => b.Genre == genre).ToList();
             filteredBooks = filteredBooks.Where(b => _ratingServices.GetMostPopularRating(b.Id) == rating).ToList();
             return filteredBooks;   
@@ -74,7 +74,7 @@ namespace Business_logic.Services
 
         public DateWithABookDTO CreateDateDTO(string filteredJson) 
         {
-            List<Book> filteredBooks = filteredJson != null ? JsonConvert.DeserializeObject<List<Book>>(filteredJson) : new List<Book>();
+            List<BookDTO> filteredBooks = filteredJson != null ? JsonConvert.DeserializeObject<List<BookDTO>>(filteredJson) : new List<BookDTO>();
             return new DateWithABookDTO(filteredBooks, GetGenres(), GetRatings());
         }
 

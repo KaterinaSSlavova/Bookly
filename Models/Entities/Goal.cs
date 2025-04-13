@@ -4,26 +4,26 @@ namespace Models.Entities
 {
     public class Goal
     {
-        public int Id { get; }
-        public DateTime Start { get; }
-        public DateTime End { get; }
-        public int ReadingGoal { get; }
+        public int Id { get; private set; }
+        public DateTime Start { get; private set; }
+        public DateTime End { get; private set; }
+        public int ReadingGoal { get; private set; }
         public int CurrentProgress { get; private set; }
-        public Status Status { get; }
+        public Status Status { get; private set; }
         public User User { get; private set; }
 
-        public void SetCurrentProgress(int progress)
-        {
-            if(CurrentProgress >= 0 &&  progress <=  ReadingGoal)
-            {
-                CurrentProgress = progress;
-            }
-        }
+        //public void SetCurrentProgress(int progress)
+        //{
+        //    if(CurrentProgress >= 0 &&  progress <=  ReadingGoal)
+        //    {
+        //        CurrentProgress = progress;
+        //    }
+        //}
 
-        public void SetUser(User user)
-        {
-            this.User = user;
-        }
+        //public void SetUser(User user)
+        //{
+        //    this.User = user;
+        //}
 
         public Goal(int id, DateTime start, DateTime end, int readingGoal, int currentGoal, Status status, User user)
         {

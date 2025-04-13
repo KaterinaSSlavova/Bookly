@@ -3,7 +3,6 @@ using Models.Entities;
 using Bookly.Business_logic.InterfacesServices;
 using AutoMapper;
 using Business_logic.DTOs;
-using Newtonsoft.Json;
 
 namespace Bookly.Business_logic.Services
 {
@@ -17,28 +16,30 @@ namespace Bookly.Business_logic.Services
             _mapper = mapper;
         }
 
-        public bool AddBook(Book book)
+        public bool AddBook(BookDTO bookDTO)
         {
-            if (!ValidateBook(book)) return false;
+            if (!ValidateBook(bookDTO)) return false;
+            Book book = _mapper.Map<Book>(bookDTO);
             return _ibookRepo.AddBook(book); 
         }
 
-        public List<Book> LoadBooks()
+        public List<BookDTO> LoadBooks()
         {
             List<Book> books = _ibookRepo.LoadBooks();
-            return books;   
+            return _mapper.Map<List<BookDTO>>(books);
         }
 
-        public Book? GetBookById(int id)
+        public BookDTO? GetBookById(int id)
         {  
-            return _ibookRepo.GetBookById(id);
+            Book? book = _ibookRepo.GetBookById(id);
+            return _mapper.Map<BookDTO>(book);
         }
 
-        public bool ValidateBook(Book newBook)
+        public bool ValidateBook(BookDTO newBook)
         {
             if (newBook == null) return false;
-            List<Book> allBooks = LoadBooks();
-            foreach(Book book in allBooks)
+            List<BookDTO> allBooks = LoadBooks();
+            foreach(BookDTO book in allBooks)
             {
                 if (newBook.Picture == book.Picture && newBook.Title == book.Title && newBook.Author == book.Author) return false;
                 if (newBook.ISBN == book.ISBN) return false;

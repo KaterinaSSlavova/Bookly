@@ -3,7 +3,6 @@ using Models.Enums;
 using AutoMapper;
 using ViewModels.Model;
 using Business_logic.DTOs;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Business_logic.Mappers
 {
@@ -11,7 +10,9 @@ namespace Business_logic.Mappers
     {
         public BookProfile()
         {
-            CreateMap<Book, BookViewModel>()
+            CreateMap<Book, BookDTO>().ReverseMap();
+
+            CreateMap<BookDTO, BookViewModel>()
                 .ForMember(dest => dest.Genre, opt => opt.MapFrom(src => src.Genre.ToString()))
                 .ReverseMap()
                 .ForMember(dest => dest.Genre, opt => opt.MapFrom(src => Enum.Parse(typeof(Genre), src.Genre)));

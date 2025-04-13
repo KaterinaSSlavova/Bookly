@@ -203,7 +203,7 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public void UpdateProgress(int userId, Goal goal, int progress)
+        public void UpdateProgress(int userId, Goal goal)
         {
             try
             {
@@ -212,9 +212,9 @@ namespace Bookly.Data.Repository
 
                 string sql = @"UPDATE Goals
                                 SET CurrentProgress=@Progress
-                                WHERE Id=@goalId and UserId=@UserId and CurrentProgress <= ReadingGoal";
+                                WHERE Id=@goalId and UserId=@UserId";
                 using SqlCommand command = new SqlCommand(sql, connection);
-                command.Parameters.AddWithValue("@Progress", progress);
+                command.Parameters.AddWithValue("@Progress", goal.CurrentProgress);
                 command.Parameters.AddWithValue("@goalId", goal.Id);
                 command.Parameters.AddWithValue("@UserId", userId);
 

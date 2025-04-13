@@ -1,6 +1,7 @@
 ﻿using Bookly.Business_logic.InterfacesServices;
 using Models.Entities;
 using Bookly.Data.InterfacesRepo;
+using Business_logic.DTOs;
 using AutoMapper;
 
 namespace Bookly.Business_logic.Services
@@ -20,36 +21,37 @@ namespace Bookly.Business_logic.Services
             _goalService = goalService;
         }
 
-        public bool CreateShelf(Shelf shelf)
+        public bool CreateShelf(ShelfDTO shelfDTO)
         {
             User user = GetUser();
-            if (!ValidateShelf(shelf, user)) return false;
-
+            if (!ValidateShelf(shelfDTO)) return false;
+            Shelf shelf = _mapper.Map<Shelf>(shelfDTO);
             return _ishelfRepo.CreateShelf(shelf, user.Id);
         }
 
         public void CreateDefaultShelf()
         {
             User user = GetUser();
-            Shelf shelf = new Shelf("Have Read");
+            ShelfDTO shelf = new ShelfDTO("Have Read", new List<BookDTO>());
             CreateShelf(shelf);
         }
 
-        public List<Shelf> GetUserShelves()
+        public List<ShelfDTO> GetUserShelves()
         {
-            return _ishelfRepo.GetUserShelves(GetUser().Id);
+            List<Shelf> shelf = _ishelfRepo.GetUserShelves(GetUser().Id);
+            return ConvertListToDTO(shelf);
         }
 
-        public List<Book> GetBooksFromShelf(int id)
+        public List<BookDTO> GetBooksFromShelf(int id)
         {
             List<Book> books = _ishelfRepo.GetBooksFromShelf(id);
-            return books;
+            return _mapper.Map<List<BookDTO>>(books);
         }
 
-        public Shelf? GetShelfById(int id)
+        public ShelfDTO? GetShelfById(int id)
         {
             Shelf? shelf = _ishelfRepo.GetShelfById(id);
-            return shelf;
+            return ConvertToDTO(shelf);
         }
 
         public bool AddBookToShelf(int bookId, int shelfId)
@@ -62,7 +64,7 @@ namespace Bookly.Business_logic.Services
             CheckForPreviousShelf(bookId);
             if (GetShelfById(shelfId)?.Name == "Have Read" && !CheckForBook(shelfId, bookId))
             {
-                Goal? goal = _goalService.GetNewestGoal(true);
+                GoalDTO? goal = _goalService.GetNewestGoal(true);
                 IncreaseProgress(goal);
             } 
             return _ishelfRepo.AddBookToShelf(bookId, shelfId, user.Id);
@@ -74,7 +76,7 @@ namespace Bookly.Business_logic.Services
             Shelf oldShelf = _ishelfRepo.GetShelfContainingBook(bookId, user.Id);
             if (oldShelf != null && oldShelf.Name == "Have Read")
             {
-                Goal? goal = _goalService.GetNewestGoal(false);
+                GoalDTO? goal = _goalService.GetNewestGoal(false);
                 DecreaseProgress(goal);
             }
         }
@@ -84,29 +86,27 @@ namespace Bookly.Business_logic.Services
             User user = GetUser();
             if (GetShelfById(shelfId)?.Name == "Have Read" && CheckForBook(shelfId, bookId))
             {
-                Goal? goal = _goalService.GetNewestGoal(false);
+                GoalDTO? goal = _goalService.GetNewestGoal(false);
                 DecreaseProgress(goal);
             }
             return _ishelfRepo.RemoveBookFromShelf(user.Id, bookId);
         }
 
-        private void DecreaseProgress(Goal goal)
+        private void DecreaseProgress(GoalDTO goal)
         {
             if (goal != null && goal.CurrentProgress > 0)
             {
-                progress = goal.CurrentProgress - 1;
-                goal.SetCurrentProgress(progress);
-                _goalService.SetStatus(goal, progress);
+                goal.CurrentProgress--;
+                _goalService.UpdateGoal(goal);
             }
         }
 
-        private void IncreaseProgress(Goal goal)
+        private void IncreaseProgress(GoalDTO goal)
         {
             if (goal != null)
             {
-                progress = goal.CurrentProgress + 1;
-                goal.SetCurrentProgress(progress);
-                _goalService.SetStatus(goal, progress);
+                 goal.CurrentProgress ++;
+                _goalService.UpdateGoal(goal);
             }
         }
 
@@ -117,7 +117,7 @@ namespace Bookly.Business_logic.Services
 
         public bool CheckForBook(int shelfId, int bookId)
         {
-            foreach (Book book in GetBooksFromShelf(shelfId))
+            foreach (BookDTO book in GetBooksFromShelf(shelfId))
             {
                 if (book.Id == bookId)
                 {
@@ -127,11 +127,11 @@ namespace Bookly.Business_logic.Services
             return false;
         }
 
-        public bool ValidateShelf(Shelf shelf, User user)
+        public bool ValidateShelf(ShelfDTO shelf)
         {
             if(shelf.Name == null) return false;
-            List<Shelf> shelves = _ishelfRepo.GetUserShelves(user.Id);
-            foreach (Shelf userShelf in shelves)
+            List<ShelfDTO> shelves = GetUserShelves();
+            foreach (ShelfDTO userShelf in shelves)
             {
                 if (shelf.Name.Equals(userShelf.Name, StringComparison.OrdinalIgnoreCase)) return false;
             }
@@ -141,6 +141,21 @@ namespace Bookly.Business_logic.Services
         private User GetUser()
         {
             return _userServices.LoadUser();
+        }
+
+        private ShelfDTO ConvertToDTO(Shelf shelf)
+        {
+            return new ShelfDTO(shelf.Id, shelf.Name, GetBooksFromShelf(shelf.Id));
+        }
+
+        private List<ShelfDTO> ConvertListToDTO(List<Shelf> shelfs)
+        {
+            List<ShelfDTO> shelfDTOs = new List<ShelfDTO>();
+            foreach(Shelf shelf in shelfs)
+            {
+                shelfDTOs.Add(new ShelfDTO(shelf.Id, shelf.Name, GetBooksFromShelf(shelf.Id)));
+            }
+            return shelfDTOs;
         }
     }
 }

@@ -1,15 +1,14 @@
-﻿using Models.Entities;
-using ViewModels.Model;
+﻿using Business_logic.DTOs;
 
 namespace Bookly.Business_logic.InterfacesServices
 {
     public interface IGoalServices
     {
-        bool CreateGoal(Goal goal);
-        List<Goal> GetPersonalGoals();
-        void SetStatus(Goal goal, int progress);
+        bool CreateGoal(GoalDTO goal);
+        List<GoalDTO> GetPersonalGoals();
+        void UpdateGoal(GoalDTO goal);
         bool RemoveGoal(int id);
-        Goal? GetNewestGoal(bool isIncreasing);
+        GoalDTO? GetNewestGoal(bool isIncreasing);
 
     }
 }

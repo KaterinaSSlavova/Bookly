@@ -2,7 +2,7 @@
 using Bookly.Business_logic.InterfacesServices;
 using Bookly.Data.InterfacesRepo;
 using Models.Entities;
-using ViewModels.Model;
+using Business_logic.DTOs;
 
 namespace Bookly.Business_logic.Services
 {
@@ -24,14 +24,14 @@ namespace Bookly.Business_logic.Services
         public bool AddReview(string description, int bookId)
         {
             User? user = _userServices.LoadUser();
-            Book? book = _bookServices.GetBookById(bookId);
-            Review review = new Review(description, user, book);
+            BookDTO? book = _bookServices.GetBookById(bookId);
+            Review review = new Review(description, user, _mapper.Map<Book>(book));
             return _reviewRepo.AddReview(review);    
         }
 
-        public List<Review> GetBookReviews(Book book)
+        public List<Review> GetBookReviews(BookDTO book)
         {
-            List<Review> reviews = _reviewRepo.GetBookReviews(book);
+            List<Review> reviews = _reviewRepo.GetBookReviews(_mapper.Map<Book>(book));
             return reviews;
         }
     }

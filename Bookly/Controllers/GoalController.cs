@@ -1,7 +1,7 @@
 ﻿using Bookly.Business_logic.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
 using ViewModels.Model;
-using Models.Entities;
+using Business_logic.DTOs;
 using AutoMapper;
 
 namespace Bookly.WebApp.Controllers
@@ -19,7 +19,7 @@ namespace Bookly.WebApp.Controllers
         [HttpGet]
         public IActionResult GoalOverview()
         {
-            List<Goal> goals = _igoalService.GetPersonalGoals();
+            List<GoalDTO> goals = _igoalService.GetPersonalGoals();
             List<GoalViewModel> personalGoals = _mapper.Map<List<GoalViewModel>>(goals);
             return View(personalGoals);
         }
@@ -39,7 +39,7 @@ namespace Bookly.WebApp.Controllers
         [HttpPost]
         public IActionResult SaveGoal(GoalViewModel goalModel)
         {
-            Goal goal = _mapper.Map<Goal>(goalModel);
+            GoalDTO goal = _mapper.Map<GoalDTO>(goalModel);
             if (_igoalService.CreateGoal(goal))
             {
                 return RedirectToAction("GoalOverview", "Goal");

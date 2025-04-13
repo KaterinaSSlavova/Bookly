@@ -24,7 +24,7 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            List<Book> books = _bookService.LoadBooks();
+            List<BookDTO> books = _bookService.LoadBooks();
             List<BookViewModel> booksModel = _mapper.Map<List<BookViewModel>>(books);
             return View(booksModel);
         }
@@ -71,7 +71,7 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult AddBook(AddBookModel bookModel)
         {
-            Book book = _mapper.Map<Book>(bookModel);
+            BookDTO book = _mapper.Map<BookDTO>(bookModel);
             if (!_bookService.AddBook(book))
             {
                 TempData["BookError"] = "Invalid data! Book must be unique!";

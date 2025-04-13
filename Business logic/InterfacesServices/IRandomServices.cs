@@ -7,9 +7,9 @@ namespace Business_logic.InterfacesServices
 {
     public interface IRandomServices
     {
-        List<Book> GetUnreadBooks();
-        Book RandomResult();
-        List<Book> FilterBooks(Genre genre, Ratings rating);
+        List<BookDTO> GetUnreadBooks();
+        BookDTO RandomResult();
+        List<BookDTO> FilterBooks(Genre genre, Ratings rating);
         DateWithABookDTO CreateDateDTO(string filteredJson);
     }
 }

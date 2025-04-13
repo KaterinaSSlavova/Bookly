@@ -49,7 +49,7 @@ namespace Bookly.Controllers
         [HttpPost]
         public IActionResult FilterBooks(Ratings ratings, Genre genre)
         {
-            List<Book> filteredBooks = _iRandomServices.FilterBooks(genre, ratings);
+            List<BookDTO> filteredBooks = _iRandomServices.FilterBooks(genre, ratings);
             TempData["Filtered"] = JsonConvert.SerializeObject(filteredBooks);  
             return RedirectToAction("DateWithABook", "Random");
         }

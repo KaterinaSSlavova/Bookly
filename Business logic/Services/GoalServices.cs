@@ -3,7 +3,7 @@ using Bookly.Business_logic.InterfacesServices;
 using Bookly.Data.InterfacesRepo;
 using Models.Entities;
 using Models.Enums;
-using ViewModels.Model;
+using Business_logic.DTOs;
 
 namespace Bookly.Business_logic.Services
 {
@@ -19,23 +19,25 @@ namespace Bookly.Business_logic.Services
             this._userServices = userServices;
         }
 
-        public bool CreateGoal(Goal goal)
+        public bool CreateGoal(GoalDTO goalDTO)
         {
-            if(!ValidateGoal(goal))
+            if(!ValidateGoal(goalDTO))
             {
                 return false;
             }
-            goal.SetUser(GetUser());
+            goalDTO.User = GetUser();
+            Goal goal = _mapper.Map<Goal>(goalDTO);
             return _goalRepo.CreateGoal(goal);
         }
 
-        public List<Goal> GetPersonalGoals()
+        public List<GoalDTO> GetPersonalGoals()
         {
             User user = GetUser();
             List<Goal> goals = _goalRepo.GetPersonalGoals(user);
-            CheckForExpired(goals);
+            List<GoalDTO> goalDTOs = _mapper.Map<List<GoalDTO>>(goals);
+            CheckForExpired(goalDTOs);
             goals = _goalRepo.GetPersonalGoals(user);
-            return goals;
+            return _mapper.Map<List<GoalDTO>>(goals);
         }
 
         public bool RemoveGoal(int id)
@@ -43,7 +45,7 @@ namespace Bookly.Business_logic.Services
             return _goalRepo.RemoveGoal(id);
         }
 
-        public Goal? GetNewestGoal(bool isIncreasing)
+        public GoalDTO? GetNewestGoal(bool isIncreasing)
         {
             User user = GetUser();
             Goal? goal = _goalRepo.GetNewestGoal(isIncreasing, user);
@@ -51,13 +53,15 @@ namespace Bookly.Business_logic.Services
             {
                 goal = _goalRepo.GetLatestCompletedGoal(user);
             }
-            return goal;
+            GoalDTO goalDTO = _mapper.Map<GoalDTO>(goal);
+            return goalDTO;
         }
 
-        private void UpdateProgress(Goal goal, int progress)
+        private void UpdateProgress(GoalDTO goalDTO)
         {
             User user = GetUser();
-            _goalRepo.UpdateProgress(user.Id, goal, progress);
+            Goal goal = _mapper.Map<Goal>(goalDTO);
+            _goalRepo.UpdateProgress(user.Id, goal);
         }
         private void UpdateStatus(Status status, int goalId)
         {
@@ -65,15 +69,11 @@ namespace Bookly.Business_logic.Services
             _goalRepo.UpdateStatus(status, goalId, user.Id);
         }
 
-        public void SetStatus(Goal goal, int progress)
+        public void UpdateGoal(GoalDTO goal)
         {
             Status newStatus = Status.Not_started;
-            if(goal.End < DateTime.Now)
-            {
-                newStatus = Status.Expired;
-            }
+            UpdateProgress(goal);
 
-            UpdateProgress(goal, progress);
             if (goal.CurrentProgress > 0 && goal.CurrentProgress < goal.ReadingGoal)
             {
                 newStatus = Status.In_progress;
@@ -85,7 +85,7 @@ namespace Bookly.Business_logic.Services
             UpdateStatus(newStatus, goal.Id);
         }
 
-        private bool ValidateGoal(Goal goal)
+        private bool ValidateGoal(GoalDTO goal)
         {
             if (goal == null) return false;
             if (goal.ReadingGoal <= 0) return false;
@@ -95,11 +95,14 @@ namespace Bookly.Business_logic.Services
             return true;
         }
 
-        private void CheckForExpired(List<Goal> goals)
+        private void CheckForExpired(List<GoalDTO> goals)
         {
-            foreach (Goal goal in goals)
+            foreach (GoalDTO goal in goals)
             {
-                SetStatus(goal, goal.CurrentProgress);
+                if(goal.End < DateTime.Now)
+                {
+                    UpdateStatus(Status.Expired, goal.Id);
+                }
             }
         }
 

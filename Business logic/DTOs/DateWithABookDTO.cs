@@ -5,11 +5,11 @@ namespace Business_logic.DTOs
 {
     public class DateWithABookDTO
     {
-        public List<Book> FilteredBooks { get; set; }
+        public List<BookDTO> FilteredBooks { get; set; }
         public List<Genre> Genres { get; set; }
         public List<Ratings> Ratings { get; set; }
 
-        public DateWithABookDTO(List<Book> books, List<Genre> genres, List<Ratings> ratings)
+        public DateWithABookDTO(List<BookDTO> books, List<Genre> genres, List<Ratings> ratings)
         {
             this.FilteredBooks = books;
             this.Genres = genres;
