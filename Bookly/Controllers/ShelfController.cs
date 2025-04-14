@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Models.Entities;
 using Bookly.Business_logic.InterfacesServices;
 using ViewModels.Model;
 using Business_logic.DTOs;
@@ -42,6 +41,12 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult CreateNewShelf(ShelfViewModel shelfModel)
         {
+            if (shelfModel.Name==null)
+            {
+                TempData["ShelfError"] = "Please fill all fields!";
+                return RedirectToAction("CreateShelf", "Shelf");
+            }
+
             ShelfDTO shelf = _mapper.Map<ShelfDTO>(shelfModel);   
             if (!_ishelfService.CreateShelf(shelf)) 
             {

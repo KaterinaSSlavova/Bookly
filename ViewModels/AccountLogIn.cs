@@ -4,10 +4,10 @@ namespace ViewModels.Model
 {
     public class AccountLogIn
     {
-        [Required]
+        [Required(ErrorMessage = "Username is required")]
         public string Username { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
     }
 }

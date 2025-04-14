@@ -23,7 +23,7 @@ namespace Business_logic.Mappers
                 .ReverseMap()
                 .ForMember(dest => dest.RatingFromUser, opt => opt.MapFrom(src => src.RatingFromUser));
 
-            CreateMap<AddBookModel, Book>()
+            CreateMap<AddBookModel, BookDTO>()
                 .ForMember(dest => dest.Genre, opt => opt.MapFrom(src => Enum.Parse(typeof(Genre), src.Genre)))
                 .ForSourceMember(src => src.Genres, opt => opt.DoNotValidate());
         }

@@ -29,11 +29,11 @@ namespace Bookly.Business_logic.Services
             return _ishelfRepo.CreateShelf(shelf, user.Id);
         }
 
-        public void CreateDefaultShelf()
+        public void CreateDefaultShelf(string username)
         {
-            UserDTO user = GetUser();
+            UserDTO? user = _userServices.GetUserByUsername(username);
             ShelfDTO shelf = new ShelfDTO("Have Read", new List<BookDTO>());
-            CreateShelf(shelf);
+            _ishelfRepo.CreateShelf(_mapper.Map<Shelf>(shelf), user.Id);
         }
 
         public List<ShelfDTO> GetUserShelves()

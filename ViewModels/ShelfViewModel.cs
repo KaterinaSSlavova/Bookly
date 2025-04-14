@@ -1,4 +1,6 @@
-﻿namespace ViewModels.Model
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ViewModels.Model
 {
     public class ShelfViewModel
     {

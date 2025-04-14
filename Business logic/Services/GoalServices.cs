@@ -25,14 +25,14 @@ namespace Bookly.Business_logic.Services
             {
                 return false;
             }
-            goalDTO.User = _mapper.Map<User>(GetUser());
+            goalDTO.User = _userServices.ConvertToEntity(GetUser());
             Goal goal = _mapper.Map<Goal>(goalDTO);
             return _goalRepo.CreateGoal(goal);
         }
 
         public List<GoalDTO> GetPersonalGoals()
         {
-            User user = _mapper.Map<User>(GetUser());
+            User user = _userServices.ConvertToEntity(GetUser());
             List<Goal> goals = _goalRepo.GetPersonalGoals(user);
             List<GoalDTO> goalDTOs = _mapper.Map<List<GoalDTO>>(goals);
             CheckForExpired(goalDTOs);
@@ -47,10 +47,10 @@ namespace Bookly.Business_logic.Services
 
         public GoalDTO? GetNewestGoal(bool isIncreasing)
         {
-            Goal? goal = _goalRepo.GetNewestGoal(isIncreasing, _mapper.Map<User>(GetUser()));
+            Goal? goal = _goalRepo.GetNewestGoal(isIncreasing, _userServices.ConvertToEntity(GetUser()));
             if (goal == null && !isIncreasing)
             {
-                goal = _goalRepo.GetLatestCompletedGoal(_mapper.Map<User>(GetUser()));
+                goal = _goalRepo.GetLatestCompletedGoal(_userServices.ConvertToEntity(GetUser()));
             }
             GoalDTO goalDTO = _mapper.Map<GoalDTO>(goal);
             return goalDTO;

@@ -18,11 +18,6 @@
         <form asp-controller="User" asp-action="ViewProfile">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div>
-                <p>@Model.Picture</p> 
-            </div>
-
-
             <div class="form-group text-left">
                     <img src="data:image/jpg;base64,@Model.Picture" class="img-thumbnail" alt="@Model.Username" />
             </div>

@@ -21,12 +21,12 @@ namespace Bookly.Business_logic.Services
 
         public bool Register(UserDTO user)
         {
-            return _iuserRepo.Register(_mapper.Map<User>(user));
+            return _iuserRepo.Register(ConvertToEntity(user));
         }
 
         public bool LogIn(UserDTO user)
         {
-            if(_iuserRepo.LogIn(_mapper.Map<User>(user)) != null)
+            if(_iuserRepo.LogIn(ConvertToEntity(user)) != null)
             {
                 return true;
             }
@@ -37,26 +37,43 @@ namespace Bookly.Business_logic.Services
         {
             string username = _contextAccessor.HttpContext.Session.GetString("Username");
             User user = _iuserRepo.LoadUser(username);
-            return _mapper.Map<UserDTO>(user);  
+            return ConvertToDTO(user);  
+        }
+
+        public UserDTO? GetUserByUsername(string username)
+        {
+            User user = _iuserRepo.LoadUser(username);
+            return ConvertToDTO(user);
         }
 
         public bool UpdateProfile(UserDTO userDTO, IFormFile image)
-        {
-            userDTO.Id = LoadUser().Id;
-            userDTO.Picture = ConvertToString(image);
+        { 
             if (!ValidateUser(userDTO))
             {
                 return false;
             }
+            userDTO.Id = LoadUser().Id;
+            userDTO.Picture = ConvertToString(image);
             _contextAccessor.HttpContext.Session.SetString("Username", userDTO.Username);
-            User user = _mapper.Map<User>(userDTO);
-            return _iuserRepo.UpdateProfile(user);
+            return _iuserRepo.UpdateProfile(ConvertToEntity(userDTO));
+        }
+
+        private UserDTO ConvertToDTO(User user)
+        {
+            string picture = user.Picture !=null ? Convert.ToBase64String(user.Picture): null;
+            return new UserDTO(user.Id, picture, user.Username, user.Age, user.Email, user.Password);
+        }
+
+        public User ConvertToEntity(UserDTO user)
+        {
+            byte[] picture = user.Picture != null ? Convert.FromBase64String(user.Picture) : null;
+            return new User(user.Id, picture, user.Username, user.Age, user.Email, user.Password);
         }
 
         private bool ValidateUser(UserDTO userDTO)
         {
             if (userDTO == null) return false;
-            User user = _mapper.Map<User>(userDTO);
+            User user = ConvertToEntity(userDTO);
             List<string> usernames = _iuserRepo.GetAllUsernames(user);
             List<string> emails = _iuserRepo.GetAllEmails(user);
             if (usernames.Contains(userDTO.Username) || emails.Contains(userDTO.Email)) return false;

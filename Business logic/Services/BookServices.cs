@@ -41,7 +41,6 @@ namespace Bookly.Business_logic.Services
             List<BookDTO> allBooks = LoadBooks();
             foreach(BookDTO book in allBooks)
             {
-                if (newBook.Picture == book.Picture && newBook.Title == book.Title && newBook.Author == book.Author) return false;
                 if (newBook.ISBN == book.ISBN) return false;
             }
             return true;

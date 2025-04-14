@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ViewModels.Model;
+﻿using AutoMapper;
 using Bookly.Business_logic.InterfacesServices;
 using Business_logic.DTOs;
-using AutoMapper;
-using Bookly.Business_logic.Services;
+using Microsoft.AspNetCore.Mvc;
+using ViewModels.Model;
 
 namespace Bookly.Bookly.Controllers
 {
@@ -28,19 +27,18 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult Register(AccountRegister model)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                UserDTO user = _mapper.Map<UserDTO>(model);
-                if (_userService.Register(user))
-                {
-                    _shelfService.CreateDefaultShelf();
-                    return RedirectToAction("LogIn", "User");
-                }
+                return View(model);
             }
-            catch (ApplicationException ex)
+
+            UserDTO user = _mapper.Map<UserDTO>(model);
+            if (_userService.Register(user))
             {
-                ViewBag.ErrorMessage = ex.Message;
+                _shelfService.CreateDefaultShelf(user.Username);
+                return RedirectToAction("LogIn", "User");
             }
+            ViewBag.ErrorMessage = "There was an error while registering. Email and username must be unique.";
             return View(model);
         }
 
@@ -53,6 +51,11 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult LogIn(AccountLogIn model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             UserDTO user = _mapper.Map<UserDTO>(model);
             if (_userService.LogIn(user))
             {
@@ -60,7 +63,7 @@ namespace Bookly.Bookly.Controllers
                 return RedirectToAction("Index", "Book");
             }
             ViewBag.ErrorMessage = "Invalid username or password! Please try again!";
-            return View(user);
+            return View(model);
         }
 
         [HttpPost]
@@ -94,7 +97,7 @@ namespace Bookly.Bookly.Controllers
         public IActionResult SaveChanges(EditProfileModel model)
         {
             UserDTO user = _mapper.Map<UserDTO>(model);
-            if(_userService.UpdateProfile(user, model.Picture))
+            if (_userService.UpdateProfile(user, model.Picture))
             {
                 TempData["ProfileUpdated"] = "Profile updated successfully!";
                 return RedirectToAction("ViewProfile", "User");

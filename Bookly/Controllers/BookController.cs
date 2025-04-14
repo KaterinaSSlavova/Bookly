@@ -3,6 +3,7 @@ using Bookly.Business_logic.InterfacesServices;
 using ViewModels.Model;
 using Business_logic.DTOs;
 using AutoMapper;
+using System.Reflection;
 
 namespace Bookly.Bookly.Controllers
 {
@@ -69,6 +70,11 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult AddBook(AddBookModel bookModel)
         {
+            if (!ModelState.IsValid)
+            {
+                TempData["BookError"] = "Please fill all fields!";
+                return RedirectToAction("AddBookPage", "Book");
+            }
             BookDTO book = _mapper.Map<BookDTO>(bookModel);
             if (!_bookService.AddBook(book))
             {

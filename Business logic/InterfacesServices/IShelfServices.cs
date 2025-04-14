@@ -6,7 +6,7 @@ namespace Bookly.Business_logic.InterfacesServices
     public interface IShelfServices
     {
         bool CreateShelf(ShelfDTO shelf);
-        void CreateDefaultShelf();
+        void CreateDefaultShelf(string username);
         List<ShelfDTO> GetUserShelves();
         List<BookDTO> GetBooksFromShelf(int id);
         ShelfDTO? GetShelfById(int id);
