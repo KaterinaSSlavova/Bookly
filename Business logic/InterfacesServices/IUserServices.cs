@@ -1,14 +1,13 @@
-﻿using Models.Entities;
-using Business_logic.DTOs;
-using ViewModels.Model;
+﻿using Business_logic.DTOs;
+using Microsoft.AspNetCore.Http;
 
 namespace Bookly.Business_logic.InterfacesServices
 {
     public interface IUserServices
     {
-        bool Register(User user);
-        User? LogIn(User user);
-        User? LoadUser();
-        bool UpdateProfile(UserDTO User);
+        bool Register(UserDTO user);
+        bool LogIn(UserDTO user);
+        UserDTO? LoadUser();
+        bool UpdateProfile(UserDTO User, IFormFile image);
     }
 }

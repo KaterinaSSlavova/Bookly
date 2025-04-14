@@ -1,6 +1,5 @@
 ﻿using Models.Entities;
 using Bookly.Data.InterfacesRepo;
-using ViewModels.Model;
 using Bookly.Business_logic.InterfacesServices;
 using Microsoft.AspNetCore.Http;
 using Business_logic.DTOs;
@@ -20,43 +19,60 @@ namespace Bookly.Business_logic.Services
             _contextAccessor = contextAccessor;
         }
 
-        public bool Register(User user)
+        public bool Register(UserDTO user)
         {
-            return _iuserRepo.Register(user);
+            return _iuserRepo.Register(_mapper.Map<User>(user));
         }
 
-        public User? LogIn(User user)
+        public bool LogIn(UserDTO user)
         {
-            return _iuserRepo.LogIn(user);
+            if(_iuserRepo.LogIn(_mapper.Map<User>(user)) != null)
+            {
+                return true;
+            }
+            return false;
         }
 
-        public User? LoadUser()
+        public UserDTO? LoadUser()
         {
             string username = _contextAccessor.HttpContext.Session.GetString("Username");
-            return _iuserRepo.LoadUser(username);    
+            User user = _iuserRepo.LoadUser(username);
+            return _mapper.Map<UserDTO>(user);  
         }
 
-        public bool UpdateProfile(UserDTO userDTO)
+        public bool UpdateProfile(UserDTO userDTO, IFormFile image)
         {
-            User user = _mapper.Map<User>(userDTO);
-            byte[] image = userDTO.Picture;
-            _contextAccessor.HttpContext.Session.SetString("Username", user.Username);
-            user.SetId(LoadUser().Id);
-            if(!ValidateUser(user))
+            userDTO.Id = LoadUser().Id;
+            userDTO.Picture = ConvertToString(image);
+            if (!ValidateUser(userDTO))
             {
                 return false;
             }
-            return _iuserRepo.UpdateProfile(user, image);
+            _contextAccessor.HttpContext.Session.SetString("Username", userDTO.Username);
+            User user = _mapper.Map<User>(userDTO);
+            return _iuserRepo.UpdateProfile(user);
         }
 
-        private bool ValidateUser(User user)
+        private bool ValidateUser(UserDTO userDTO)
         {
-            if (user == null) return false;
-            List<string> usernames = _iuserRepo.GetAllUsernames(LoadUser());
-            List<string> emails = _iuserRepo.GetAllEmails(LoadUser());
-            if (usernames.Contains(user.Username) || emails.Contains(user.Email)) return false;
+            if (userDTO == null) return false;
+            User user = _mapper.Map<User>(userDTO);
+            List<string> usernames = _iuserRepo.GetAllUsernames(user);
+            List<string> emails = _iuserRepo.GetAllEmails(user);
+            if (usernames.Contains(userDTO.Username) || emails.Contains(userDTO.Email)) return false;
 
             return true;
+        }
+
+        private string ConvertToString(IFormFile image)
+        {
+            using (var ms = new MemoryStream())
+            {
+                image.CopyTo(ms);
+                byte[] imageBytes = ms.ToArray();
+                return Convert.ToBase64String(imageBytes);
+            }
+
         }
     }
 }

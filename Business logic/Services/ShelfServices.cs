@@ -23,7 +23,7 @@ namespace Bookly.Business_logic.Services
 
         public bool CreateShelf(ShelfDTO shelfDTO)
         {
-            User user = GetUser();
+            UserDTO user = GetUser();
             if (!ValidateShelf(shelfDTO)) return false;
             Shelf shelf = _mapper.Map<Shelf>(shelfDTO);
             return _ishelfRepo.CreateShelf(shelf, user.Id);
@@ -31,7 +31,7 @@ namespace Bookly.Business_logic.Services
 
         public void CreateDefaultShelf()
         {
-            User user = GetUser();
+            UserDTO user = GetUser();
             ShelfDTO shelf = new ShelfDTO("Have Read", new List<BookDTO>());
             CreateShelf(shelf);
         }
@@ -60,7 +60,7 @@ namespace Bookly.Business_logic.Services
             {
                 return false;
             }
-            User user = GetUser();
+            UserDTO user = GetUser();
             CheckForPreviousShelf(bookId);
             if (GetShelfById(shelfId)?.Name == "Have Read" && !CheckForBook(shelfId, bookId))
             {
@@ -72,7 +72,7 @@ namespace Bookly.Business_logic.Services
 
         private void CheckForPreviousShelf(int bookId)
         {
-            User user = GetUser();
+            UserDTO user = GetUser();
             Shelf oldShelf = _ishelfRepo.GetShelfContainingBook(bookId, user.Id);
             if (oldShelf != null && oldShelf.Name == "Have Read")
             {
@@ -83,7 +83,7 @@ namespace Bookly.Business_logic.Services
 
         public bool RemoveBookFromShelf(int bookId, int shelfId)
         {   
-            User user = GetUser();
+            UserDTO user = GetUser();
             if (GetShelfById(shelfId)?.Name == "Have Read" && CheckForBook(shelfId, bookId))
             {
                 GoalDTO? goal = _goalService.GetNewestGoal(false);
@@ -138,7 +138,7 @@ namespace Bookly.Business_logic.Services
             return true;
         }
 
-        private User GetUser()
+        private UserDTO GetUser()
         {
             return _userServices.LoadUser();
         }

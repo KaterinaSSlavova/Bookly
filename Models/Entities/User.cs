@@ -3,13 +3,13 @@
     public class User
     {
         public int Id { get; private set; }
-        public string Picture { get; }
-        public string Username { get; }
-        public int Age { get;  }
-        public string Email { get; }
-        public string Password { get; }
+        public byte[] Picture { get; private set; }
+        public string Username { get; private set; }
+        public int Age { get; private set; }
+        public string Email { get; private set; }
+        public string Password { get; private set; }
 
-        public User(int id, string picture, string username, int age, string email, string password)
+        public User(int id, byte[] picture, string username, int age, string email, string password)
         {
             this.Id = id;
             this.Picture = picture;
@@ -19,7 +19,7 @@
             this.Password = password;
         }
 
-        public User(string picture, string username, int age, string email)
+        public User(byte[] picture, string username, int age, string email)
         {
             this.Picture = picture;
             this.Username = username;

@@ -1,5 +1,4 @@
-﻿using Models.Entities;
-using Business_logic.InterfacesServices;
+﻿using Business_logic.InterfacesServices;
 using Bookly.Business_logic.InterfacesServices;
 using Models.Enums;
 using AutoMapper;
@@ -24,7 +23,6 @@ namespace Business_logic.Services
 
         private List<BookDTO>? GetHaveReadShelf()
         {
-            User user = GetUser();
             foreach(ShelfDTO shelf in _ishelfService.GetUserShelves())
             {
                 if(shelf.Name == "Have Read")
@@ -86,11 +84,6 @@ namespace Business_logic.Services
         private List<Ratings> GetRatings()
         {
             return Enum.GetValues(typeof(Ratings)).Cast<Ratings>().ToList();
-        }
-
-        private User GetUser()
-        {
-            return _userServices.LoadUser();
         }
     }
 }

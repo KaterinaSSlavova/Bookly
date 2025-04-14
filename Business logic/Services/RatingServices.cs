@@ -2,6 +2,7 @@
 using Bookly.Data.InterfacesRepo;
 using Models.Enums;
 using Models.Entities;
+using Business_logic.DTOs;
 
 namespace Bookly.Business_logic.Services
 {
@@ -17,7 +18,7 @@ namespace Bookly.Business_logic.Services
 
         public bool RateBook(int bookId, int ratingId)
         {
-            User user = GetUser();
+            UserDTO user = GetUser();
             int previousRatingCount = _ratingRepository.CheckForRating(user.Id, bookId);
             if (previousRatingCount > 0)
             {
@@ -37,7 +38,7 @@ namespace Bookly.Business_logic.Services
 
         public Ratings? GetUserRatingForBook(int bookId)
         {
-            User user = GetUser();
+            UserDTO user = GetUser();
             return _ratingRepository.GetUserRatingForBook(user.Id, bookId);
         }
 
@@ -49,7 +50,7 @@ namespace Bookly.Business_logic.Services
             return rating;
         }
 
-        private User GetUser()
+        private UserDTO GetUser()
         {
             return _userServices.LoadUser();
         }

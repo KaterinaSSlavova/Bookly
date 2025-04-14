@@ -12,19 +12,6 @@ namespace Models.Entities
         public Status Status { get; private set; }
         public User User { get; private set; }
 
-        //public void SetCurrentProgress(int progress)
-        //{
-        //    if(CurrentProgress >= 0 &&  progress <=  ReadingGoal)
-        //    {
-        //        CurrentProgress = progress;
-        //    }
-        //}
-
-        //public void SetUser(User user)
-        //{
-        //    this.User = user;
-        //}
-
         public Goal(int id, DateTime start, DateTime end, int readingGoal, int currentGoal, Status status, User user)
         {
             this.Id = id;

@@ -25,14 +25,14 @@ namespace Bookly.Business_logic.Services
             {
                 return false;
             }
-            goalDTO.User = GetUser();
+            goalDTO.User = _mapper.Map<User>(GetUser());
             Goal goal = _mapper.Map<Goal>(goalDTO);
             return _goalRepo.CreateGoal(goal);
         }
 
         public List<GoalDTO> GetPersonalGoals()
         {
-            User user = GetUser();
+            User user = _mapper.Map<User>(GetUser());
             List<Goal> goals = _goalRepo.GetPersonalGoals(user);
             List<GoalDTO> goalDTOs = _mapper.Map<List<GoalDTO>>(goals);
             CheckForExpired(goalDTOs);
@@ -47,11 +47,10 @@ namespace Bookly.Business_logic.Services
 
         public GoalDTO? GetNewestGoal(bool isIncreasing)
         {
-            User user = GetUser();
-            Goal? goal = _goalRepo.GetNewestGoal(isIncreasing, user);
+            Goal? goal = _goalRepo.GetNewestGoal(isIncreasing, _mapper.Map<User>(GetUser()));
             if (goal == null && !isIncreasing)
             {
-                goal = _goalRepo.GetLatestCompletedGoal(user);
+                goal = _goalRepo.GetLatestCompletedGoal(_mapper.Map<User>(GetUser()));
             }
             GoalDTO goalDTO = _mapper.Map<GoalDTO>(goal);
             return goalDTO;
@@ -59,13 +58,13 @@ namespace Bookly.Business_logic.Services
 
         private void UpdateProgress(GoalDTO goalDTO)
         {
-            User user = GetUser();
+            UserDTO user = GetUser();
             Goal goal = _mapper.Map<Goal>(goalDTO);
             _goalRepo.UpdateProgress(user.Id, goal);
         }
         private void UpdateStatus(Status status, int goalId)
         {
-            User user = GetUser();
+            UserDTO user = GetUser();
             _goalRepo.UpdateStatus(status, goalId, user.Id);
         }
 
@@ -106,7 +105,7 @@ namespace Bookly.Business_logic.Services
             }
         }
 
-        private User GetUser()
+        private UserDTO GetUser()
         {
             return _userServices.LoadUser();
         }

@@ -65,7 +65,7 @@ namespace Bookly.Data.Repository
                     return new User
                         (
                               reader.GetInt32(0),
-                              reader.IsDBNull(1) ? null : Convert.ToBase64String(reader.GetSqlBinary(1).Value),
+                              reader.IsDBNull(1) ? null : reader.GetSqlBinary(1).Value,
                               reader.GetString(2),
                               reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
                               reader.GetString(4),
@@ -80,7 +80,7 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public User? LoadUser(string username)
+        public User LoadUser(string username)
         {
             try
             {
@@ -98,7 +98,7 @@ namespace Bookly.Data.Repository
                     return new User
                         (
                               reader.GetInt32(0),
-                              reader.IsDBNull(1) ? null : Convert.ToBase64String(reader.GetSqlBinary(1).Value),
+                              reader.IsDBNull(1) ? null : reader.GetSqlBinary(1).Value,
                               reader.GetString(2),
                               reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
                               reader.GetString(4),
@@ -132,7 +132,7 @@ namespace Bookly.Data.Repository
                     return new User
                         (
                               reader.GetInt32(0),
-                              reader.IsDBNull(1) ? null : Convert.ToBase64String(reader.GetSqlBinary(1).Value),
+                              reader.IsDBNull(1) ? null : reader.GetSqlBinary(1).Value,
                               reader.GetString(2),
                               reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
                               reader.GetString(4),
@@ -147,7 +147,7 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public bool UpdateProfile(User newUser, byte[] image)
+        public bool UpdateProfile(User newUser)
         {
             try
             {
@@ -162,7 +162,7 @@ namespace Bookly.Data.Repository
                                 WHERE Id=@Id";
                 using SqlCommand command = new SqlCommand(sql, connection);
 
-                command.Parameters.AddWithValue("@Picture", image);
+                command.Parameters.AddWithValue("@Picture", newUser.Picture);
                 command.Parameters.AddWithValue("@Username", newUser.Username);
                 command.Parameters.AddWithValue("@Age", newUser.Age);
                 command.Parameters.AddWithValue("@Email", newUser.Email);

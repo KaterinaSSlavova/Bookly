@@ -4,13 +4,13 @@ namespace Models.Entities
 {
     public class Book
     {
-        public int Id { get; }
-        public string Picture { get; }
-        public string Title { get; }
-        public string Author { get; }
-        public string Description { get; }
-        public string ISBN { get; }
-        public Genre Genre { get; }
+        public int Id { get; private set; }
+        public string Picture { get; private set; }
+        public string Title { get; private set; }
+        public string Author { get; private set; }
+        public string Description { get; private set; }
+        public string ISBN { get; private set; }
+        public Genre Genre { get; private set; }
 
         public Book(int id, string picture, string title, string author, string description, string isbn, Genre genre)
         {

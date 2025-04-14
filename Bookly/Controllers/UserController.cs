@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Models.Entities;
 using ViewModels.Model;
 using Bookly.Business_logic.InterfacesServices;
 using Business_logic.DTOs;
 using AutoMapper;
+using Bookly.Business_logic.Services;
 
 namespace Bookly.Bookly.Controllers
 {
@@ -30,7 +30,7 @@ namespace Bookly.Bookly.Controllers
         {
             try
             {
-                User user = _mapper.Map<User>(model);
+                UserDTO user = _mapper.Map<UserDTO>(model);
                 if (_userService.Register(user))
                 {
                     _shelfService.CreateDefaultShelf();
@@ -53,15 +53,14 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult LogIn(AccountLogIn model)
         {
-            User user = _mapper.Map<User>(model);
-            User? loggedUser = _userService.LogIn(user);
-            if (loggedUser != null)
+            UserDTO user = _mapper.Map<UserDTO>(model);
+            if (_userService.LogIn(user))
             {
-                HttpContext.Session.SetString("Username", loggedUser.Username);
+                HttpContext.Session.SetString("Username", user.Username);
                 return RedirectToAction("Index", "Book");
             }
             ViewBag.ErrorMessage = "Invalid username or password! Please try again!";
-            return View(loggedUser);
+            return View(user);
         }
 
         [HttpPost]
@@ -74,7 +73,7 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult ViewProfile()
         {
-            User user = _userService.LoadUser();
+            UserDTO? user = _userService.LoadUser();
             ProfileOverviewModel? viewModel = _mapper.Map<ProfileOverviewModel>(user);
             return View(viewModel);
         }
@@ -94,8 +93,8 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult SaveChanges(EditProfileModel model)
         {
-            UserDTO user = new UserDTO(model.Picture, model.Username, model.Age, model.Email);
-            if(_userService.UpdateProfile(user))
+            UserDTO user = _mapper.Map<UserDTO>(model);
+            if(_userService.UpdateProfile(user, model.Picture))
             {
                 TempData["ProfileUpdated"] = "Profile updated successfully!";
                 return RedirectToAction("ViewProfile", "User");

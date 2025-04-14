@@ -3,8 +3,6 @@ using Bookly.Business_logic.InterfacesServices;
 using ViewModels.Model;
 using Business_logic.DTOs;
 using AutoMapper;
-using Models.Entities;
-using Bookly.Business_logic.Services;
 
 namespace Bookly.Bookly.Controllers
 {
@@ -46,7 +44,7 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult GoBack()
         {
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Book");
         }
 
         [HttpPost]
@@ -80,7 +78,7 @@ namespace Bookly.Bookly.Controllers
             else
             {
                 TempData["BookSuccess"] = "Book added successfully!";
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Book");
             }
         }
 
@@ -95,7 +93,7 @@ namespace Bookly.Bookly.Controllers
             else
             {
                 TempData["BookCatalogSuccess"] = "Book was removed successfully!";
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Book");
             }
         }
     }

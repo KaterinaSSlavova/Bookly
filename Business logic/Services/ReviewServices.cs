@@ -23,16 +23,16 @@ namespace Bookly.Business_logic.Services
 
         public bool AddReview(string description, int bookId)
         {
-            User? user = _userServices.LoadUser();
+            UserDTO? user = _userServices.LoadUser();
             BookDTO? book = _bookServices.GetBookById(bookId);
-            Review review = new Review(description, user, _mapper.Map<Book>(book));
-            return _reviewRepo.AddReview(review);    
+            ReviewDTO review = new ReviewDTO(description, _mapper.Map<User>(user), _mapper.Map<Book>(book));
+            return _reviewRepo.AddReview(_mapper.Map<Review>(review));    
         }
 
-        public List<Review> GetBookReviews(BookDTO book)
+        public List<ReviewDTO> GetBookReviews(BookDTO book)
         {
             List<Review> reviews = _reviewRepo.GetBookReviews(_mapper.Map<Book>(book));
-            return reviews;
+            return _mapper.Map<List<ReviewDTO>>(reviews);
         }
     }
 }

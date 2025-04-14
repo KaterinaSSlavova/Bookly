@@ -1,31 +1,51 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace Business_logic.DTOs
+﻿namespace Business_logic.DTOs
 {
     public class UserDTO
     {
-        public byte[] Picture { get; set; }
+        public int Id { get;  set; }
+        public string Picture { get;  set; }
         public string Username { get; set; }
         public int Age { get; set; }
         public string Email { get; set; }
+        public string Password { get; set; }
 
-        public UserDTO(IFormFile picture, string username, int age, string email)
+        public UserDTO(int id, string picture, string username, int age, string email, string password)
         {
-            this.Picture = ConvertImageToBinary(picture);
+            this.Id = id;
+            this.Picture = picture;
+            this.Username = username;
+            this.Age = age;
+            this.Email = email;
+            this.Password = password;
+        }
+
+        public UserDTO(string picture, string username, int age, string email, string password)
+        {
+            this.Picture = picture;
+            this.Username = username;
+            this.Age = age;
+            this.Email = email;
+            this.Password = password;
+        }
+
+        public UserDTO(string username, int age, string email) 
+        {
             this.Username = username;
             this.Age = age;
             this.Email = email;
         }
 
-        private byte[] ConvertImageToBinary(IFormFile picture)
+        public UserDTO(string username, string password)
         {
-            if (picture != null)
-            {
-                using MemoryStream mStream = new MemoryStream();
-                picture.CopyTo(mStream);
-                return mStream.ToArray();
-            }
-            return null;
+            this.Username=username;
+            this.Password = password;
+        }
+
+        public UserDTO(string username, string email, string password)
+        {
+            this.Username = username;
+            this.Email = email;
+            this.Password = password;
         }
     }
 }

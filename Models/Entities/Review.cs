@@ -2,16 +2,16 @@
 {
     public class Review
     {
-        public int Id { get; }
-        public string Description { get; }
-        public DateTime Date { get; }
-        public User User { get; }
-        public Book Book { get; }
+        public int Id { get; private set; }
+        public string Description { get; private set; }
+        public DateTime Date { get; private set; }
+        public User User { get; private set; }
+        public Book Book { get; private set; }
 
-        public Review(string description, User user, Book book)
+        public Review(string description, DateTime date, User user, Book book)
         {
             this.Description = description;
-            this.Date = DateTime.Today;
+            this.Date = date;
             this.User = user;
             this.Book = book;
         }
