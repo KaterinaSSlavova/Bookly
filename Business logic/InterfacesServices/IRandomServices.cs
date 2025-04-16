@@ -1,6 +1,4 @@
 ﻿using Models.Enums;
-using Models.Entities;
-using ViewModels.Model;
 using Business_logic.DTOs;
 
 namespace Business_logic.InterfacesServices

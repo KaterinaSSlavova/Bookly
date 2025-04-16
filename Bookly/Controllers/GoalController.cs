@@ -1,6 +1,6 @@
 ﻿using Bookly.Business_logic.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
-using ViewModels.Model;
+using Bookly.ViewModels;
 using Business_logic.DTOs;
 using AutoMapper;
 

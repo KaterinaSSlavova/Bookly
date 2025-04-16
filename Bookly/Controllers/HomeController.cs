@@ -1,6 +1,6 @@
 using System.Diagnostics;
-using Models.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Models.Entities;
 
 namespace Bookly.Bookly.Controllers
 {

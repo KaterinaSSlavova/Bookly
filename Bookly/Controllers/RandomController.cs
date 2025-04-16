@@ -2,8 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Models.Enums;
 using Newtonsoft.Json;
-using ViewModels.Model;
-using Models.Entities;
+using Bookly.ViewModels;
 using Bookly.Business_logic.InterfacesServices;
 using Business_logic.DTOs;
 using AutoMapper;

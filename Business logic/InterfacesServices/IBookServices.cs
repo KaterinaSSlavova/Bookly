@@ -1,7 +1,4 @@
-﻿using ViewModels.Model;
-using Models.Entities;
-using Business_logic.DTOs;
-using System.Net;
+﻿using Business_logic.DTOs;
 
 namespace Bookly.Business_logic.InterfacesServices
 {

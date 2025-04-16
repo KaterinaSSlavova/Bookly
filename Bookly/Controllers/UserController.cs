@@ -2,7 +2,7 @@
 using Bookly.Business_logic.InterfacesServices;
 using Business_logic.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using ViewModels.Model;
+using Bookly.ViewModels;
 
 namespace Bookly.Bookly.Controllers
 {

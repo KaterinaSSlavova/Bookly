@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Business_logic.DTOs;
 using Models.Enums;
-using ViewModels.Model;
+using Bookly.ViewModels;
 
 namespace Bookly.Mappers
 {
