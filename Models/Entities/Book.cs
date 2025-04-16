@@ -32,6 +32,9 @@ namespace Models.Entities
             this.Genre = genre;
         }
       
-        public Book() { }   
+        public Book()
+        {
+            
+        }
     }
 }

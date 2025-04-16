@@ -1,0 +1,14 @@
+﻿using AutoMapper;
+using Business_logic.DTOs;
+using Models.Entities;
+
+namespace Business_logic.Mappers
+{
+    public class GoalMapper: Profile
+    {
+        public GoalMapper()
+        {
+            CreateMap<Goal, GoalDTO>().ReverseMap();
+        }
+    }
+}

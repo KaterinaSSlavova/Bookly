@@ -1,21 +1,18 @@
-﻿using Models.Entities;
-using Models.Enums;
-using AutoMapper;
-using ViewModels.Model;
+﻿using AutoMapper;
 using Business_logic.DTOs;
+using Models.Enums;
+using ViewModels.Model;
 
-namespace Business_logic.Mappers
+namespace Bookly.Mappers
 {
-    public class BookProfile: Profile
+    public class BookModelMapper: Profile
     {
-        public BookProfile()
+        public BookModelMapper()
         {
-            CreateMap<Book, BookDTO>().ReverseMap();
-
             CreateMap<BookDTO, BookViewModel>()
-                .ForMember(dest => dest.Genre, opt => opt.MapFrom(src => src.Genre.ToString()))
-                .ReverseMap()
-                .ForMember(dest => dest.Genre, opt => opt.MapFrom(src => Enum.Parse(typeof(Genre), src.Genre)));
+            .ForMember(dest => dest.Genre, opt => opt.MapFrom(src => src.Genre.ToString()))
+            .ReverseMap()
+            .ForMember(dest => dest.Genre, opt => opt.MapFrom(src => Enum.Parse(typeof(Genre), src.Genre)));
 
 
             CreateMap<BookDetailsDTO, BookDetailsViewModel>()

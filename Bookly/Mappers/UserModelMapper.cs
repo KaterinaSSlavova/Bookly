@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
-using ViewModels.Model;
 using Business_logic.DTOs;
+using ViewModels.Model;
 
-namespace Business_logic.Mappers
+namespace Bookly.Mappers
 {
-    public class UserProfile : Profile
+    public class UserModelMapper: Profile
     {
-        public UserProfile()
+        public UserModelMapper()
         {
             CreateMap<UserDTO, AccountLogIn>().ReverseMap();
-            
+
             CreateMap<UserDTO, AccountRegister>().ReverseMap();
 
             CreateMap<EditProfileModel, UserDTO>()

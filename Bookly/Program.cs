@@ -5,6 +5,7 @@ using Bookly.Business_logic.Services;
 using Business_logic.Services;
 using Business_logic.InterfacesServices;
 using Business_logic.Mappers;
+using Bookly.Mappers;
 
 namespace WebApp
 {
@@ -18,11 +19,15 @@ namespace WebApp
             builder.Services.AddControllersWithViews();
             builder.Services.AddSession();
             builder.Services.AddHttpContextAccessor();
-            builder.Services.AddAutoMapper(typeof(UserProfile));
-            builder.Services.AddAutoMapper(typeof(ReviewProfile));
-            builder.Services.AddAutoMapper(typeof(BookProfile));
-            builder.Services.AddAutoMapper(typeof(ShelfProfile));
-            builder.Services.AddAutoMapper(typeof(GoalProfile));
+            builder.Services.AddAutoMapper(typeof(UserModelMapper));
+            builder.Services.AddAutoMapper(typeof(ReviewMapper));
+            builder.Services.AddAutoMapper(typeof(ReviewModelMapper));
+            builder.Services.AddAutoMapper(typeof(BookMapper));
+            builder.Services.AddAutoMapper(typeof(BookModelMapper));
+            builder.Services.AddAutoMapper(typeof(ShelfMapper));
+            builder.Services.AddAutoMapper(typeof(ShelfModelMapper));
+            builder.Services.AddAutoMapper(typeof(GoalMapper));
+            builder.Services.AddAutoMapper(typeof(GoalModelMapper));
 
             builder.Services.AddScoped<IGoalRepository, GoalRepository>();
             builder.Services.AddScoped<IShelfRepository, ShelfRepository>();
