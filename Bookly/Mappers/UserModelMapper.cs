@@ -13,9 +13,11 @@ namespace Bookly.Mappers
             CreateMap<UserDTO, AccountRegister>().ReverseMap();
 
             CreateMap<EditProfileModel, UserDTO>()
-                .ForSourceMember(src => src.Picture, opt => opt.DoNotValidate());
+                .ForSourceMember(src => src.Picture, opt => opt.DoNotValidate())
+                .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => DateTime.Parse(src.BirthDate)));
 
-            CreateMap<UserDTO, ProfileOverviewModel>();
+            CreateMap<UserDTO, ProfileOverviewModel>()
+                .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.BirthDate.ToString()));
         }
     }
 }

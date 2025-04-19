@@ -4,6 +4,8 @@ using Bookly.Business_logic.InterfacesServices;
 using Microsoft.AspNetCore.Http;
 using Business_logic.DTOs;
 using AutoMapper;
+using static System.Net.Mime.MediaTypeNames;
+using System.Text;
 
 namespace Bookly.Business_logic.Services
 {
@@ -47,13 +49,14 @@ namespace Bookly.Business_logic.Services
         }
 
         public bool UpdateProfile(UserDTO userDTO, IFormFile image)
-        { 
+        {
+            userDTO.Picture = ConvertToString(image);
             if (!ValidateUser(userDTO))
             {
                 return false;
             }
             userDTO.Id = LoadUser().Id;
-            userDTO.Picture = ConvertToString(image);
+            //userDTO.Picture = ConvertToString(image);
             _contextAccessor.HttpContext.Session.SetString("Username", userDTO.Username);
             return _iuserRepo.UpdateProfile(ConvertToEntity(userDTO));
         }
@@ -61,21 +64,23 @@ namespace Bookly.Business_logic.Services
         private UserDTO ConvertToDTO(User user)
         {
             string picture = user.Picture !=null ? Convert.ToBase64String(user.Picture): null;
-            return new UserDTO(user.Id, picture, user.Username, user.Age, user.Email, user.Password);
+            return new UserDTO(user.Id, picture, user.Username, user.BirthDate, user.Email, user.Password);
         }
 
         public User ConvertToEntity(UserDTO user)
         {
+
             byte[] picture = user.Picture != null ? Convert.FromBase64String(user.Picture) : null;
-            return new User(user.Id, picture, user.Username, user.Age, user.Email, user.Password);
+            return new User(user.Id, picture, user.Username, user.BirthDate, user.Email, user.Password);
         }
 
         private bool ValidateUser(UserDTO userDTO)
         {
             if (userDTO == null) return false;
             User user = ConvertToEntity(userDTO);
-            List<string> usernames = _iuserRepo.GetAllUsernames(user);
-            List<string> emails = _iuserRepo.GetAllEmails(user);
+            User oldUser = ConvertToEntity(LoadUser());
+            List<string> usernames = _iuserRepo.GetAllUsernames(oldUser);
+            List<string> emails = _iuserRepo.GetAllEmails(oldUser);
             if (usernames.Contains(userDTO.Username) || emails.Contains(userDTO.Email)) return false;
 
             return true;

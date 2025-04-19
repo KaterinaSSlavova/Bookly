@@ -11,7 +11,7 @@ namespace Bookly.ViewModels
         public string Username { get; set; }
 
         [Required]
-        public int Age { get; set; }
+        public string BirthDate { get; set; }
 
         [Required]
         public string Email { get; set; }

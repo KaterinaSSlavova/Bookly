@@ -7,6 +7,7 @@ using Bookly.Business_logic.InterfacesServices;
 using Business_logic.DTOs;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Reflection;
 
 namespace Bookly.Controllers
 {
@@ -49,8 +50,20 @@ namespace Bookly.Controllers
         public IActionResult FilterBooks(Ratings ratings, Genre genre)
         {
             List<BookDTO> filteredBooks = _iRandomServices.FilterBooks(genre, ratings);
-            TempData["Filtered"] = JsonConvert.SerializeObject(filteredBooks);  
+            TempData["Filtered"] = JsonConvert.SerializeObject(filteredBooks);
+            if (filteredBooks.Count == 0 || filteredBooks == null)
+            {
+                TempData["DateIndication"] = "No matches found!";
+            }
             return RedirectToAction("DateWithABook", "Random");
+        }
+
+        [HttpPost]
+        public IActionResult SelectDescription(int id)
+        {
+            BookDTO book = _bookServices.GetBookById(id);
+            BookViewModel bookModel = _mapper.Map<BookViewModel>(book);
+            return PartialView("_BookModalPartial", bookModel);
         }
 
         private List<SelectListItem> MapGenres(List<Genre> genres)

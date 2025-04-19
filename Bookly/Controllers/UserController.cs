@@ -104,7 +104,7 @@ namespace Bookly.Bookly.Controllers
             }
             else
             {
-                TempData["ProfileError"] = "Invalid data! Username and email must be unique!";
+                TempData["ProfileError"] = "Invalid data!";
                 return RedirectToAction("EditProfile", "User");
             }
         }

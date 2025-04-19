@@ -67,9 +67,9 @@ namespace Bookly.Data.Repository
                               reader.GetInt32(0),
                               reader.IsDBNull(1) ? null : reader.GetSqlBinary(1).Value,
                               reader.GetString(2),
-                              reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
-                              reader.GetString(4),
-                              reader.GetString(5)
+                              reader.IsDBNull(5) ? (DateTime?)null : reader.GetDateTime(5),
+                              reader.GetString(3),
+                              reader.GetString(4)
                         );
                 }
                 return null;
@@ -100,9 +100,9 @@ namespace Bookly.Data.Repository
                               reader.GetInt32(0),
                               reader.IsDBNull(1) ? null : reader.GetSqlBinary(1).Value,
                               reader.GetString(2),
-                              reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
-                              reader.GetString(4),
-                              reader.GetString(5)
+                              reader.IsDBNull(5) ? (DateTime?)null : reader.GetDateTime(5),
+                              reader.GetString(3),
+                              reader.GetString(4)
                         );
                 }
                 return null;
@@ -134,9 +134,9 @@ namespace Bookly.Data.Repository
                               reader.GetInt32(0),
                               reader.IsDBNull(1) ? null : reader.GetSqlBinary(1).Value,
                               reader.GetString(2),
-                              reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
-                              reader.GetString(4),
-                              reader.GetString(5)
+                              reader.IsDBNull(5) ? (DateTime?)null : reader.GetDateTime(5),
+                              reader.GetString(3),
+                              reader.GetString(4)
                         );
                 }
                 return null;
@@ -156,15 +156,15 @@ namespace Bookly.Data.Repository
                 
                 string sql = @"UPDATE Users 
                                SET Picture = @Picture, 
-                                [Username] = @Username, 
-                                Age = @Age, 
-                                Email = @Email 
+                                [Username] = @Username,  
+                                Email = @Email,
+                                BirthDate = @BirthDate
                                 WHERE Id=@Id";
                 using SqlCommand command = new SqlCommand(sql, connection);
 
                 command.Parameters.AddWithValue("@Picture", newUser.Picture);
                 command.Parameters.AddWithValue("@Username", newUser.Username);
-                command.Parameters.AddWithValue("@Age", newUser.Age);
+                command.Parameters.AddWithValue("@BirthDate", newUser.BirthDate);
                 command.Parameters.AddWithValue("@Email", newUser.Email);
                 command.Parameters.AddWithValue("@Id", newUser.Id);
 

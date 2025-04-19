@@ -7,11 +7,22 @@
 <h1>Random Date With A Book</h1>
 <hr />
 
+@if (TempData["DateIndication"] != null)
+{
+    <div class="alert alert-info" role="alert">
+        <strong>@TempData["DateIndication"]</strong>
+    </div>
+}
+
 @if (Model.FilteredBooks != null && Model.FilteredBooks.Any())
 {
     foreach (BookViewModel book in Model.FilteredBooks)
     {
         <label>@book.Description</label>
+        <form asp-controller="Random" asp-action="SelectDescription" method="post">
+            <input type="hidden" name="Id" value="@book.Id" />
+            <input type="submit" value="Select" class="btn btn-primary" />
+        </form>
     }
 }
 else
