@@ -4,7 +4,6 @@ using Bookly.Business_logic.InterfacesServices;
 using Microsoft.AspNetCore.Http;
 using Business_logic.DTOs;
 using AutoMapper;
-using static System.Net.Mime.MediaTypeNames;
 using System.Text;
 
 namespace Bookly.Business_logic.Services
@@ -56,7 +55,6 @@ namespace Bookly.Business_logic.Services
                 return false;
             }
             userDTO.Id = LoadUser().Id;
-            //userDTO.Picture = ConvertToString(image);
             _contextAccessor.HttpContext.Session.SetString("Username", userDTO.Username);
             return _iuserRepo.UpdateProfile(ConvertToEntity(userDTO));
         }
@@ -64,7 +62,8 @@ namespace Bookly.Business_logic.Services
         private UserDTO ConvertToDTO(User user)
         {
             string picture = user.Picture !=null ? Convert.ToBase64String(user.Picture): null;
-            return new UserDTO(user.Id, picture, user.Username, user.BirthDate, user.Email, user.Password);
+            int age = CalculateAge(user);
+            return new UserDTO(user.Id, picture, user.Username, user.BirthDate, age, user.Email, user.Password);
         }
 
         public User ConvertToEntity(UserDTO user)
@@ -77,6 +76,7 @@ namespace Bookly.Business_logic.Services
         private bool ValidateUser(UserDTO userDTO)
         {
             if (userDTO == null) return false;
+            if (userDTO.BirthDate.Value > DateTime.Now || userDTO.BirthDate.Value.Year == DateTime.Today.Year) return false;
             User user = ConvertToEntity(userDTO);
             User oldUser = ConvertToEntity(LoadUser());
             List<string> usernames = _iuserRepo.GetAllUsernames(oldUser);
@@ -95,6 +95,20 @@ namespace Bookly.Business_logic.Services
                 return Convert.ToBase64String(imageBytes);
             }
 
+        }
+
+        private int CalculateAge(User user)
+        {
+            if(user.BirthDate == null) return 0;
+
+            DateTime today = DateTime.Today;
+            DateTime birthDate = user.BirthDate.Value;
+            int age = today.Year - birthDate.Year;
+            if(birthDate.Month > today.Month || birthDate.Month == today.Month && birthDate.Day > today.Day)
+            {
+                age--;
+            }
+            return age;
         }
     }
 }

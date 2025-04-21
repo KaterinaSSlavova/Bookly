@@ -16,8 +16,7 @@ namespace Bookly.Mappers
                 .ForSourceMember(src => src.Picture, opt => opt.DoNotValidate())
                 .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => DateTime.Parse(src.BirthDate)));
 
-            CreateMap<UserDTO, ProfileOverviewModel>()
-                .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.BirthDate.ToString()));
+            CreateMap<UserDTO, ProfileOverviewModel>();
         }
     }
 }

@@ -6,15 +6,17 @@
         public string Picture { get;  set; }
         public string Username { get; set; }
         public DateTime? BirthDate { get; set; }
+        public int? Age { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
 
-        public UserDTO(int id, string picture, string username, DateTime? birthDate, string email, string password)
+        public UserDTO(int id, string picture, string username, DateTime? birthDate, int? age, string email, string password)
         {
             this.Id = id;
             this.Picture = picture;
             this.Username = username;
             this.BirthDate = birthDate;
+            this.Age = age;
             this.Email = email;
             this.Password = password;
         }
