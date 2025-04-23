@@ -8,20 +8,18 @@ namespace Bookly.Bookly.Controllers
 {
     public class ShelfController : Controller
     {
-        private readonly IShelfServices _ishelfService;
-        private readonly IUserServices _iuserService;
+        private readonly IShelfServices _shelfService;
         private readonly IMapper _mapper;
-        public ShelfController(IShelfServices ishelfService, IUserServices iuserService, IMapper mapper)
+        public ShelfController(IShelfServices shelfService, IMapper mapper)
         {
-            this._ishelfService = ishelfService;
-            this._iuserService = iuserService;
+            _shelfService = shelfService;
             _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult ShelfOverview()
         {
-            List<ShelfDTO> myShelves = _ishelfService.GetUserShelves();
+            List<ShelfDTO> myShelves = _shelfService.GetUserShelves();
             List<ShelfViewModel> model = _mapper.Map<List<ShelfViewModel>>(myShelves);    
             return View(model);
         }
@@ -48,7 +46,7 @@ namespace Bookly.Bookly.Controllers
             }
 
             ShelfDTO shelf = _mapper.Map<ShelfDTO>(shelfModel);   
-            if (!_ishelfService.CreateShelf(shelf)) 
+            if (!_shelfService.CreateShelf(shelf)) 
             {
                 TempData["ShelfError"] = "Invalid data! Shelf name must be unique!";
                 return RedirectToAction("CreateShelf", "Shelf");
@@ -60,7 +58,7 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult ShelfDetails(int id)
         {
-            ShelfDTO shelf=_ishelfService.GetShelfById(id);
+            ShelfDTO shelf=_shelfService.GetShelfById(id);
             ShelfViewModel shelfModel = _mapper.Map<ShelfViewModel>(shelf);
             return View(shelfModel);
         } 
@@ -80,7 +78,7 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult RemoveFromShelf(int bookId, int shelfId)
         {
-            if(!_ishelfService.RemoveBookFromShelf(bookId, shelfId))
+            if(!_shelfService.RemoveBookFromShelf(bookId, shelfId))
             {
                 TempData["RemoveBookError"] = "Book cannot be removed!";
             }
@@ -94,7 +92,7 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult MoveToShelf(int bookId, int shelfId)
         {
-            if (_ishelfService.AddBookToShelf(bookId, shelfId))
+            if (_shelfService.AddBookToShelf(bookId, shelfId))
             {
                 TempData["Message"] = "Book added to shelf!";
             }
@@ -108,7 +106,7 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult RemoveShelf(int id)
         {
-            if(!_ishelfService.RemoveShelf(id))
+            if(!_shelfService.RemoveShelf(id))
             {
                 TempData["ShelfError"] = "Shelf cannot be removed!";
             }

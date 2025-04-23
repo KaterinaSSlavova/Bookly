@@ -10,24 +10,22 @@ namespace Bookly.Business_logic.Services
 {
     public class UserServices: IUserServices
     {
-        private readonly IUserRepository _iuserRepo;
-        private readonly IMapper _mapper;
+        private readonly IUserRepository _userRepo;
         private readonly IHttpContextAccessor _contextAccessor;
-        public UserServices(IUserRepository iuserRepo, IMapper mapper, IHttpContextAccessor contextAccessor)
+        public UserServices(IUserRepository userRepo, IHttpContextAccessor contextAccessor)
         {
-            this._iuserRepo = iuserRepo;
-            this._mapper = mapper;
+            _userRepo = userRepo;
             _contextAccessor = contextAccessor;
         }
 
         public bool Register(UserDTO user)
         {
-            return _iuserRepo.Register(ConvertToEntity(user));
+            return _userRepo.Register(ConvertToEntity(user));
         }
 
         public bool LogIn(UserDTO user)
         {
-            if(_iuserRepo.LogIn(ConvertToEntity(user)) != null)
+            if(_userRepo.LogIn(ConvertToEntity(user)) != null)
             {
                 return true;
             }
@@ -37,13 +35,13 @@ namespace Bookly.Business_logic.Services
         public UserDTO? LoadUser()
         {
             string username = _contextAccessor.HttpContext.Session.GetString("Username");
-            User user = _iuserRepo.LoadUser(username);
+            User user = _userRepo.LoadUser(username);
             return ConvertToDTO(user);  
         }
 
         public UserDTO? GetUserByUsername(string username)
         {
-            User user = _iuserRepo.LoadUser(username);
+            User user = _userRepo.LoadUser(username);
             return ConvertToDTO(user);
         }
 
@@ -56,7 +54,7 @@ namespace Bookly.Business_logic.Services
             }
             userDTO.Id = LoadUser().Id;
             _contextAccessor.HttpContext.Session.SetString("Username", userDTO.Username);
-            return _iuserRepo.UpdateProfile(ConvertToEntity(userDTO));
+            return _userRepo.UpdateProfile(ConvertToEntity(userDTO));
         }
 
         private UserDTO ConvertToDTO(User user)
@@ -79,8 +77,8 @@ namespace Bookly.Business_logic.Services
             if (userDTO.BirthDate.Value > DateTime.Now || userDTO.BirthDate.Value.Year == DateTime.Today.Year) return false;
             User user = ConvertToEntity(userDTO);
             User oldUser = ConvertToEntity(LoadUser());
-            List<string> usernames = _iuserRepo.GetAllUsernames(oldUser);
-            List<string> emails = _iuserRepo.GetAllEmails(oldUser);
+            List<string> usernames = _userRepo.GetAllUsernames(oldUser);
+            List<string> emails = _userRepo.GetAllEmails(oldUser);
             if (usernames.Contains(userDTO.Username) || emails.Contains(userDTO.Email)) return false;
 
             return true;

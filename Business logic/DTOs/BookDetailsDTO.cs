@@ -1,5 +1,4 @@
-﻿using Models.Entities;
-using Models.Enums;
+﻿using Models.Enums;
 
 namespace Business_logic.DTOs
 {

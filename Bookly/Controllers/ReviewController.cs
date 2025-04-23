@@ -5,18 +5,17 @@ namespace Bookly.Controllers
 {
     public class ReviewController : Controller
     {
-        private readonly IReviewServices _services;
+        private readonly IReviewServices _reviewServices;
         private readonly IBookServices _bookServices;
-        public ReviewController(IReviewServices services, IBookServices bookServices)
+        public ReviewController(IReviewServices reviewServices)
         {
-            _services = services;
-            _bookServices = bookServices;
+            _reviewServices = reviewServices;
         }
 
         [HttpPost]
         public IActionResult CreateReview(string description, int bookId)
         {
-            if(_services.AddReview(description, bookId))
+            if(_reviewServices.AddReview(description, bookId))
             {
                 TempData["Review"] = "Review was successfully created!";
             }

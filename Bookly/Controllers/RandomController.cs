@@ -7,18 +7,17 @@ using Bookly.Business_logic.InterfacesServices;
 using Business_logic.DTOs;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Reflection;
 
 namespace Bookly.Controllers
 {
     public class RandomController : Controller
     {
-        private readonly IRandomServices _iRandomServices;
+        private readonly IRandomServices _randomServices;
         private readonly IBookServices _bookServices;
         private readonly IMapper _mapper;
-        public RandomController(IRandomServices iRandomServices, IBookServices bookServices, IMapper mapper)
+        public RandomController(IRandomServices randomServices, IBookServices bookServices, IMapper mapper)
         {
-            _iRandomServices = iRandomServices;
+            _randomServices = randomServices;
             _bookServices = bookServices;
             _mapper = mapper;
         }
@@ -32,7 +31,7 @@ namespace Bookly.Controllers
         [HttpPost]
         public IActionResult Spin()
         {
-            TempData["Book"] = _iRandomServices.RandomResult().Title;
+            TempData["Book"] = _randomServices.RandomResult().Title;
             return RedirectToAction("SpinTheWheel", "Random");
         }
 
@@ -40,7 +39,7 @@ namespace Bookly.Controllers
         public IActionResult DateWithABook()
         {
             var filteredBooksJson = TempData["Filtered"] as string;
-            DateWithABookDTO bookDTO = _iRandomServices.CreateDateDTO(filteredBooksJson);
+            DateWithABookDTO bookDTO = _randomServices.CreateDateDTO(filteredBooksJson);
             List<BookViewModel> bookModel = _mapper.Map<List<BookViewModel>>(bookDTO.FilteredBooks);
             DateWithABookViewModel model = new DateWithABookViewModel(bookModel, MapGenres(bookDTO.Genres), MapRatings(bookDTO.Ratings));
             return View(model);
@@ -49,7 +48,7 @@ namespace Bookly.Controllers
         [HttpPost]
         public IActionResult FilterBooks(Ratings ratings, Genre genre)
         {
-            List<BookDTO> filteredBooks = _iRandomServices.FilterBooks(genre, ratings);
+            List<BookDTO> filteredBooks = _randomServices.FilterBooks(genre, ratings);
             TempData["Filtered"] = JsonConvert.SerializeObject(filteredBooks);
             if (filteredBooks.Count == 0 || filteredBooks == null)
             {
@@ -59,11 +58,18 @@ namespace Bookly.Controllers
         }
 
         [HttpPost]
-        public IActionResult SelectDescription(int id)
+        public IActionResult AddToWishList(BookViewModel bookModel)
         {
-            BookDTO book = _bookServices.GetBookById(id);
-            BookViewModel bookModel = _mapper.Map<BookViewModel>(book);
-            return PartialView("_BookModalPartial", bookModel);
+            BookDTO book = _mapper.Map<BookDTO>(bookModel);
+            if(_randomServices.AddToWishList(book))
+            {
+                TempData["DateSuccess"] =  "Book added to shelf!";
+            }
+            else
+            {
+                TempData["DateWarning"] = "This book is already placed on that shelf!";
+            }
+            return RedirectToAction("DateWithABook", "Random");
         }
 
         private List<SelectListItem> MapGenres(List<Genre> genres)

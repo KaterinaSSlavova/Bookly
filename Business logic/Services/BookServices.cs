@@ -8,11 +8,11 @@ namespace Bookly.Business_logic.Services
 {
     public class BookServices: IBookServices
     {
-        private readonly IBookRepository _ibookRepo;
+        private readonly IBookRepository _bookRepo;
         private readonly IMapper _mapper;
-        public BookServices(IBookRepository ibookRepo, IMapper mapper)
+        public BookServices(IBookRepository bookRepo, IMapper mapper)
         {
-            _ibookRepo = ibookRepo;
+            _bookRepo = bookRepo;
             _mapper = mapper;
         }
 
@@ -20,18 +20,18 @@ namespace Bookly.Business_logic.Services
         {
             if (!ValidateBook(bookDTO)) return false;
             Book book = _mapper.Map<Book>(bookDTO);
-            return _ibookRepo.AddBook(book); 
+            return _bookRepo.AddBook(book); 
         }
 
         public List<BookDTO> LoadBooks()
         {
-            List<Book> books = _ibookRepo.LoadBooks();
+            List<Book> books = _bookRepo.LoadBooks();
             return _mapper.Map<List<BookDTO>>(books);
         }
 
         public BookDTO? GetBookById(int id)
         {  
-            Book? book = _ibookRepo.GetBookById(id);
+            Book? book = _bookRepo.GetBookById(id);
             return _mapper.Map<BookDTO>(book);
         }
 
@@ -48,7 +48,7 @@ namespace Bookly.Business_logic.Services
 
         public bool RemoveBook(int id)
         {
-            return _ibookRepo.RemoveBook(id);
+            return _bookRepo.RemoveBook(id);
         }
 
     }

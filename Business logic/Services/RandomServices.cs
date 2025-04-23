@@ -1,7 +1,6 @@
 ﻿using Business_logic.InterfacesServices;
 using Bookly.Business_logic.InterfacesServices;
 using Models.Enums;
-using AutoMapper;
 using Newtonsoft.Json;
 using Business_logic.DTOs;
 
@@ -9,25 +8,25 @@ namespace Business_logic.Services
 {
     public class RandomServices: IRandomServices
     {
-        private readonly IShelfServices _ishelfService;
-        private readonly IBookServices _ibookService;   
+        private readonly IShelfServices _shelfService;
+        private readonly IBookServices _bookService;   
         private readonly IRatingServices _ratingServices;
         private readonly IUserServices _userServices;   
-        public RandomServices(IShelfServices ishelfService, IBookServices ibookService, IRatingServices ratingServices, IUserServices userServices)
+        public RandomServices(IShelfServices shelfService, IBookServices bookService, IRatingServices ratingServices, IUserServices userServices)
         { 
-            _ishelfService = ishelfService;
-            _ibookService = ibookService;
+            _shelfService = shelfService;
+            _bookService = bookService;
             _ratingServices = ratingServices;
             _userServices = userServices;
         }
 
         private List<BookDTO>? GetHaveReadShelf()
         {
-            foreach(ShelfDTO shelf in _ishelfService.GetUserShelves())
+            foreach(ShelfDTO shelf in _shelfService.GetUserShelves())
             {
                 if(shelf.Name == "Have Read")
                 {
-                   return _ishelfService.GetBooksFromShelf(shelf.Id);
+                   return _shelfService.GetBooksFromShelf(shelf.Id);
                 }
             }
             return null;
@@ -36,7 +35,7 @@ namespace Business_logic.Services
         public List<BookDTO> GetUnreadBooks()
         {
             List<BookDTO>? readBooks = GetHaveReadShelf();
-            List<BookDTO> allBooks = _ibookService.LoadBooks();
+            List<BookDTO> allBooks = _bookService.LoadBooks();
             if(readBooks != null)
             {
                 List<BookDTO> unreadBooks = new List<BookDTO>();
@@ -68,6 +67,16 @@ namespace Business_logic.Services
             filteredBooks = filteredBooks.Where(b => b.Genre == genre).ToList();
             filteredBooks = filteredBooks.Where(b => _ratingServices.GetMostPopularRating(b.Id) == rating).ToList();
             return filteredBooks;   
+        }
+
+        public bool AddToWishList(BookDTO book)
+        {
+            ShelfDTO shelf = _shelfService.GetUserWishList();
+            if (!_shelfService.CheckForBook(shelf.Id, book.Id))
+            {
+                return _shelfService.AddBookToShelf(book.Id, shelf.Id);
+            }
+            return false; 
         }
 
         public DateWithABookDTO CreateDateDTO(string filteredJson) 

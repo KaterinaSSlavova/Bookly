@@ -14,15 +14,58 @@
     </div>
 }
 
+
+@if (TempData["DateSuccess"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        <strong>@TempData["DateSuccess"]</strong>
+    </div>
+}
+
+@if (TempData["DateWarning"] != null)
+{
+    <div class="alert alert-warning" role="alert">
+        <strong>@TempData["DateWarning"]</strong>
+    </div>
+}
+
 @if (Model.FilteredBooks != null && Model.FilteredBooks.Any())
 {
     foreach (BookViewModel book in Model.FilteredBooks)
     {
         <label>@book.Description</label>
-        <form asp-controller="Random" asp-action="SelectDescription" method="post">
-            <input type="hidden" name="Id" value="@book.Id" />
-            <input type="submit" value="Select" class="btn btn-primary" />
-        </form>
+        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modal-@book.Id">
+            View Details
+        </button>
+
+        <div class="modal fade" id="modal-@book.Id" tabindex="-1" aria-hidden="true">
+            <form asp-controller="Random" asp-action="AddToWishList" method="post">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                            <input type="hidden" name="Id" value="@book.Id" />
+                            <input type="hidden" name="Title" value="@book.Title" />
+                        <h5 class="modal-title">@book.Title</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                            <input type="hidden" name="Picture" value="@book.Picture" />
+                        <img src="@book.Picture" alt="Book Picture" class="img-fluid mb-3" />
+                            <input type="hidden" name="Author" value="@book.Author" />
+                        <p><strong>Author:</strong> @book.Author</p>
+                            <input type="hidden" name="Description" value="@book.Description" />
+                        <p><strong>Description:</strong> @book.Description</p>
+                            <input type="hidden" name="Genre" value="@book.Genre" />
+                        <p><strong>Genre:</strong> @book.Genre</p>
+                            <input type="hidden" name="ISBN" value="@book.ISBN" />
+                        <p><strong>ISBN:</strong> @book.ISBN</p>
+                    </div>
+                        <button type="submit" class="btn btn-secondary">Add to Want To Read</button>
+                </div>
+            </div>
+            </form>
+        </div>
+
     }
 }
 else
