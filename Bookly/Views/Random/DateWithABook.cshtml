@@ -15,17 +15,17 @@
 }
 
 
-@if (TempData["DateSuccess"] != null)
+@if (TempData["RandomSuccess"] != null)
 {
     <div class="alert alert-success" role="alert">
-        <strong>@TempData["DateSuccess"]</strong>
+        <strong>@TempData["RandomSuccess"]</strong>
     </div>
 }
 
-@if (TempData["DateWarning"] != null)
+@if (TempData["RandomWarning"] != null)
 {
     <div class="alert alert-warning" role="alert">
-        <strong>@TempData["DateWarning"]</strong>
+        <strong>@TempData["RandomWarning"]</strong>
     </div>
 }
 
@@ -39,7 +39,7 @@
         </button>
 
         <div class="modal fade" id="modal-@book.Id" tabindex="-1" aria-hidden="true">
-            <form asp-controller="Random" asp-action="AddToWishList" method="post">
+            <form asp-controller="Random" asp-action="AddBookFromRandomDate" method="post">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -60,7 +60,7 @@
                             <input type="hidden" name="ISBN" value="@book.ISBN" />
                         <p><strong>ISBN:</strong> @book.ISBN</p>
                     </div>
-                        <button type="submit" class="btn btn-secondary">Add to Want To Read</button>
+                        <button type="submit" class="btn btn-success">Add to Want To Read</button>
                 </div>
             </div>
             </form>

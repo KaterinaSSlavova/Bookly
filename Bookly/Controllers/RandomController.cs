@@ -25,13 +25,20 @@ namespace Bookly.Controllers
         [HttpGet]
         public IActionResult SpinTheWheel()
         {
+            int? bookId = HttpContext.Session.GetInt32("Id");
+            if(bookId.HasValue)
+            {
+                BookDTO bookDTO = _bookServices.GetBookById(bookId.Value);
+                BookViewModel bookModel = _mapper.Map<BookViewModel>(bookDTO);
+                return View(bookModel);
+            }
             return View();
         }
 
         [HttpPost]
         public IActionResult Spin()
         {
-            TempData["Book"] = _randomServices.RandomResult().Title;
+            HttpContext.Session.SetInt32("Id", _randomServices.RandomResult().Id);
             return RedirectToAction("SpinTheWheel", "Random");
         }
 
@@ -58,18 +65,30 @@ namespace Bookly.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddToWishList(BookViewModel bookModel)
+        public IActionResult AddBookFromSpinTheWheel(BookViewModel bookModel)
+        {
+            AddToWishList(bookModel);
+            return RedirectToAction("SpinTheWheel", "Random");
+        }
+
+        [HttpPost]
+        public IActionResult AddBookFromRandomDate(BookViewModel bookModel)
+        {
+            AddToWishList(bookModel);
+            return RedirectToAction("DateWithABook", "Random");
+        }
+
+        private void AddToWishList(BookViewModel bookModel)
         {
             BookDTO book = _mapper.Map<BookDTO>(bookModel);
-            if(_randomServices.AddToWishList(book))
+            if (_randomServices.AddToWishList(book))
             {
-                TempData["DateSuccess"] =  "Book added to shelf!";
+                TempData["RandomSuccess"] = "Book added to shelf!";
             }
             else
             {
-                TempData["DateWarning"] = "This book is already placed on that shelf!";
+                TempData["RandomWarning"] = "This book is already placed on that shelf!";
             }
-            return RedirectToAction("DateWithABook", "Random");
         }
 
         private List<SelectListItem> MapGenres(List<Genre> genres)

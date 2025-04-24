@@ -7,10 +7,10 @@ namespace Bookly.Data.Repository
 {
     public class ReviewRepository: Repository, IReviewRepository
     {
-        private readonly IUserRepository _iuserRepo;
-        public ReviewRepository(IConfiguration configuration, IUserRepository iuserRepo) : base(configuration)
+        private readonly IUserRepository _userRepo;
+        public ReviewRepository(IConfiguration configuration, IUserRepository userRepo) : base(configuration)
         {
-            this._iuserRepo = iuserRepo;
+            this._userRepo = userRepo;
         }
 
         public bool AddReview(Review review)
@@ -61,7 +61,7 @@ namespace Bookly.Data.Repository
                             reader.GetInt32(0),
                             reader.GetString(1),
                             reader.GetDateTime(2),
-                           _iuserRepo.GetUserById(reader.GetInt32(3)),
+                           _userRepo.GetUserById(reader.GetInt32(3)),
                             book
                         ));
                 }
