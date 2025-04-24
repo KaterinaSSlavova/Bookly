@@ -3,8 +3,8 @@ using Bookly.Data.InterfacesRepo;
 using Bookly.Business_logic.InterfacesServices;
 using Microsoft.AspNetCore.Http;
 using Business_logic.DTOs;
-using AutoMapper;
 using System.Text;
+using Business_logic.InterfacesHelpers;
 
 namespace Bookly.Business_logic.Services
 {
@@ -12,24 +12,26 @@ namespace Bookly.Business_logic.Services
     {
         private readonly IUserRepository _userRepo;
         private readonly IHttpContextAccessor _contextAccessor;
-        public UserServices(IUserRepository userRepo, IHttpContextAccessor contextAccessor)
+        private readonly IPasswordHelper _passwordHelper;
+        public UserServices(IUserRepository userRepo, IHttpContextAccessor contextAccessor, IPasswordHelper passwordHelper)
         {
             _userRepo = userRepo;
             _contextAccessor = contextAccessor;
+            _passwordHelper = passwordHelper;
         }
 
         public bool Register(UserDTO user)
         {
+            user.Password = _passwordHelper.HashPassword(user.Password);
             return _userRepo.Register(ConvertToEntity(user));
         }
 
-        public bool LogIn(UserDTO user)
+        public bool LogIn(UserDTO loggingUser)
         {
-            if(_userRepo.LogIn(ConvertToEntity(user)) != null)
-            {
-                return true;
-            }
-            return false;
+            UserDTO? storedUser = GetUserByUsername(loggingUser.Username);
+            if (storedUser == null) return false;
+
+            return _passwordHelper.VerifyPassword(loggingUser.Password, storedUser.Password);
         }
 
         public UserDTO? LoadUser()

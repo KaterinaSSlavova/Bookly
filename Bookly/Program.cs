@@ -6,6 +6,8 @@ using Business_logic.Services;
 using Business_logic.InterfacesServices;
 using Business_logic.Mappers;
 using Bookly.Mappers;
+using Business_logic.InterfacesHelpers;
+using Business_logic.Helpers;
 
 namespace WebApp
 {
@@ -43,6 +45,7 @@ namespace WebApp
             builder.Services.AddScoped<IReviewServices, ReviewServices>();
             builder.Services.AddScoped<IRatingServices, RatingServices>();
             builder.Services.AddScoped<IBookDetailsService, BookDetailsService>();
+            builder.Services.AddScoped<IPasswordHelper, PasswordHelper>();
 
             var app = builder.Build();
 
