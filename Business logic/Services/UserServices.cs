@@ -63,14 +63,14 @@ namespace Bookly.Business_logic.Services
         {
             string picture = user.Picture !=null ? Convert.ToBase64String(user.Picture): null;
             int age = CalculateAge(user);
-            return new UserDTO(user.Id, picture, user.Username, user.BirthDate, age, user.Email, user.Password);
+            return new UserDTO(user.Id, picture, user.Username, user.BirthDate, age, user.Email, user.Password, user.Role);
         }
 
         public User ConvertToEntity(UserDTO user)
         {
 
             byte[] picture = user.Picture != null ? Convert.FromBase64String(user.Picture) : null;
-            return new User(user.Id, picture, user.Username, user.BirthDate, user.Email, user.Password);
+            return new User(user.Id, picture, user.Username, user.BirthDate, user.Email, user.Password, user.Role);
         }
 
         private bool ValidateUser(UserDTO userDTO)

@@ -2,7 +2,7 @@
 using Models.Entities;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Identity.Client;
+using Models.Enums;
 
 namespace Bookly.Data.Repository
 {
@@ -46,49 +46,15 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public User? LogIn(User user)
-        {
-            try
-            {
-                using SqlConnection connection = GetSqlConnection();
-                connection.Open();
-                string sql = @"SELECT *
-                               FROM Users
-                               Where [Username]=@Username and [Password]=@Password";
-                using SqlCommand command = new SqlCommand(sql, connection);
-                command.Parameters.AddWithValue("@Username", user.Username);
-                command.Parameters.AddWithValue("@Password", user.Password);
-
-                using SqlDataReader reader = command.ExecuteReader();
-                if (reader.Read())
-                {
-                    return new User
-                        (
-                              reader.GetInt32(0),
-                              reader.IsDBNull(1) ? null : reader.GetSqlBinary(1).Value,
-                              reader.GetString(2),
-                              reader.IsDBNull(5) ? (DateTime?)null : reader.GetDateTime(5),
-                              reader.GetString(3),
-                              reader.GetString(4)
-                        );
-                }
-                return null;
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("Error logging in: " + ex.Message);
-            }
-        }
-
         public User LoadUser(string username)
         {
             try
             {
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
-                string sql = @"SELECT *
-                               FROM Users
-                               Where [Username]=@Username";
+                string sql = @"SELECT u.Id, u.Picture, u.Username, u.Email, u.[Password], u.BirthDate, u.RoleId
+                                FROM Users as u
+                                WHERE [Username] = @Username;";
                 using SqlCommand command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@Username", username);
 
@@ -102,7 +68,8 @@ namespace Bookly.Data.Repository
                               reader.GetString(2),
                               reader.IsDBNull(5) ? (DateTime?)null : reader.GetDateTime(5),
                               reader.GetString(3),
-                              reader.GetString(4)
+                              reader.GetString(4),
+                              (Role)reader.GetInt32(6)
                         );
                 }
                 return null;
@@ -136,7 +103,8 @@ namespace Bookly.Data.Repository
                               reader.GetString(2),
                               reader.IsDBNull(5) ? (DateTime?)null : reader.GetDateTime(5),
                               reader.GetString(3),
-                              reader.GetString(4)
+                              reader.GetString(4),
+                              (Role)reader.GetInt32(6)
                         );
                 }
                 return null;

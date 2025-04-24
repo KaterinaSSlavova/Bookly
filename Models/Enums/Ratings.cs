@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Models.Enums
+﻿namespace Models.Enums
 {
     public enum Ratings
     {
