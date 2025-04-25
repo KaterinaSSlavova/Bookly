@@ -6,5 +6,6 @@ namespace Bookly.Data.InterfacesRepo
     {
         bool AddReview(Review review);
         List<Review> GetBookReviews(Book book);
+        bool RemoveReview(int reviewId);
     }
 }

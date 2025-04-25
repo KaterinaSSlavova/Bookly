@@ -6,7 +6,6 @@ namespace Bookly.Controllers
     public class ReviewController : Controller
     {
         private readonly IReviewServices _reviewServices;
-        private readonly IBookServices _bookServices;
         public ReviewController(IReviewServices reviewServices)
         {
             _reviewServices = reviewServices;
@@ -20,6 +19,16 @@ namespace Bookly.Controllers
                 TempData["Review"] = "Review was successfully created!";
             }
             return RedirectToAction("BookDetails","Book", new { bookId = bookId });
+        }
+
+        [HttpPost]
+        public IActionResult RemoveReview(int reviewId, int bookId)
+        {
+            if(_reviewServices.RemoveReview(reviewId))
+            {
+                TempData["Review"] = "Review was successfully removed!";
+            }
+            return RedirectToAction("BookDetails", "Book", new { bookId = bookId });
         }
     }
 }

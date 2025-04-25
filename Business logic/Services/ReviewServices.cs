@@ -34,5 +34,10 @@ namespace Bookly.Business_logic.Services
             List<Review> reviews = _reviewRepo.GetBookReviews(_mapper.Map<Book>(book));
             return _mapper.Map<List<ReviewDTO>>(reviews);
         }
+
+        public bool RemoveReview(int reviewId)
+        {
+            return _reviewRepo.RemoveReview(reviewId);
+        }
     }
 }

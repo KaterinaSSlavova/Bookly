@@ -6,5 +6,6 @@ namespace Bookly.Business_logic.InterfacesServices
     {
         bool AddReview(string description, int bookId);
         List<ReviewDTO> GetBookReviews(BookDTO book);
+        bool RemoveReview(int reviewId);
     }
 }

@@ -1,6 +1,7 @@
 ﻿@model BookDetailsViewModel
 
 @{
+    string username = HttpContextAccessor.HttpContext.Session.GetString("Username");
     ViewData["Title"] = "Book Details";
 }
 
@@ -86,6 +87,14 @@
                         <li class="list-group-item">
                             <strong>@review.Username:</strong> @review.Description
                             <p>@review.Date</p>
+                            @if(username == review.Username)
+                            {
+                                <form asp-controller="Review" asp-action="RemoveReview">
+                                    <input type="hidden" name="reviewId" value="@review.Id" />
+                                    <input type="hidden" name="bookId" value="@Model.Book.Id" />
+                                    <button type="submit" class="btn btn-danger">Remove</button>
+                                </form>
+                            }
                         </li>
                     }
                 </ul>

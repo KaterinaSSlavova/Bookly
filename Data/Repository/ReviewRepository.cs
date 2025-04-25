@@ -72,5 +72,28 @@ namespace Bookly.Data.Repository
                 throw new ApplicationException(ex.Message);
             }
         }
+
+        public bool RemoveReview(int reviewId)
+        {
+            try
+            {
+                using SqlConnection connection = GetSqlConnection();
+                connection.Open();
+
+                string sql = @"UPDATE Reviews
+                                SET isArchived = @isArchived
+                                WHERE Id=@Id";
+                using SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@isArchived", 1);
+                command.Parameters.AddWithValue("@Id", reviewId);
+
+                command.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+        }
     }
 }
