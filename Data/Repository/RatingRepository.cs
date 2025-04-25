@@ -63,7 +63,7 @@ namespace Bookly.Data.Repository
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
-                string sql = @"SELECT r.Stars
+                string sql = @"SELECT r.Id
                                 FROM Rating as r
                                 INNER JOIN BookRating as br
                                 ON br.RatingId = r.Id
@@ -92,7 +92,7 @@ namespace Bookly.Data.Repository
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
-                string sql = @"SELECT r.Stars
+                string sql = @"SELECT r.Id
                                 FROM Rating as r
                                 INNER JOIN UserRating as ur
                                 ON ur.RatingId = r.Id
