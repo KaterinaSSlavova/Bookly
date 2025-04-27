@@ -271,7 +271,43 @@ namespace Bookly.Data.Repository
                 throw new Exception(ex.Message);
             }
         }
+        
+        public async Task<List<Goal>> GetAllGoals()
+        {
+            List<Goal> goals = new List<Goal>(); 
+            try
+            {
+                using SqlConnection connection = GetSqlConnection();
+                connection.Open();
 
- 
+                string sql = @"SELECT g.Id, g.[Start], g.[End], g.ReadingGoal, g.CurrentProgress, g.[Status], u.Username, u.BirthDate, u.Email, u.RoleId
+                                FROM Goals as g
+								INNER JOIN Users as u
+								ON u.Id = g.UserId
+                                WHERE isArchived=0";
+                using SqlCommand command = new SqlCommand(sql,connection);
+                command.Parameters.AddWithValue("@isArchived", 0);
+
+                using SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    goals.Add(new Goal
+                    (
+                        reader.GetInt32(0),
+                        reader.GetDateTime(1),
+                        reader.GetDateTime(2),
+                        reader.GetInt32(3),
+                        reader.GetInt32(4),
+                        (Status)Enum.Parse(typeof(Status), reader.GetString(5)),
+                        new User(reader.GetString(6), reader.IsDBNull(5) ? (DateTime?)null : reader.GetDateTime(7), reader.GetString(8), (Role)reader.GetInt32(9))
+                    ));
+                }
+                return goals;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

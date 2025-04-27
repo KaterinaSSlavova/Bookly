@@ -9,6 +9,6 @@ namespace Bookly.Business_logic.InterfacesServices
         void UpdateGoal(GoalDTO goal);
         bool RemoveGoal(int id);
         GoalDTO? GetNewestGoal(bool isIncreasing);
-
+        Task SendRemindersAsync();
     }
 }

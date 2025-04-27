@@ -1,5 +1,4 @@
-﻿using AutoMapper.Configuration.Conventions;
-using Models.Entities;
+﻿using Models.Entities;
 using Models.Enums;
 
 namespace Bookly.Data.InterfacesRepo
@@ -14,6 +13,7 @@ namespace Bookly.Data.InterfacesRepo
         void UpdateStatus(Status status, int goalId, int userId);
         Goal GetGoalById(User user, int goalId);
         bool RemoveGoal(int id);
+        Task<List<Goal>> GetAllGoals();
 
     }
 }

@@ -1,5 +1,4 @@
-﻿using Models.Entities;
-using Models.Enums;
+﻿using Models.Enums;
 
 namespace Business_logic.DTOs
 {
@@ -11,6 +10,21 @@ namespace Business_logic.DTOs
         public int ReadingGoal { get; set; }
         public int CurrentProgress { get; set; }
         public Status Status { get; set; }
-        public User User { get; set; }
+        public UserDTO User { get; set; }
+
+        public GoalDTO(int id, DateTime start, DateTime end, int readingGoal, int currentProgress, Status status, UserDTO user)
+        {
+            this.Id = id;
+            this.Start = start;
+            this.End = end;
+            this.ReadingGoal = readingGoal;
+            this.CurrentProgress = currentProgress;
+            this.Status = status;
+            this.User = user;
+        }
+
+        public GoalDTO()
+        { 
+        }
     }
 }

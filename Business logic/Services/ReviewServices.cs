@@ -25,19 +25,29 @@ namespace Bookly.Business_logic.Services
         {
             UserDTO? user = _userServices.LoadUser();
             BookDTO? book = _bookServices.GetBookById(bookId);
-            ReviewDTO review = new ReviewDTO(description, _userServices.ConvertToEntity(user), _mapper.Map<Book>(book));
-            return _reviewRepo.AddReview(_mapper.Map<Review>(review));    
+            ReviewDTO review = new ReviewDTO(description, user, book);
+            return _reviewRepo.AddReview(ConvertToEntity(review));    
         }
 
         public List<ReviewDTO> GetBookReviews(BookDTO book)
         {
             List<Review> reviews = _reviewRepo.GetBookReviews(_mapper.Map<Book>(book));
-            return _mapper.Map<List<ReviewDTO>>(reviews);
+            return reviews.Select(r => ConvertToDTO(r)).ToList();
         }
 
         public bool RemoveReview(int reviewId)
         {
             return _reviewRepo.RemoveReview(reviewId);
+        }
+
+        private Review ConvertToEntity(ReviewDTO review)
+        {
+            return new Review(review.Id, review.Description, review.Date, _userServices.ConvertToEntity(review.User), _mapper.Map<Book>(review.Book));
+        }
+
+        private ReviewDTO ConvertToDTO(Review review)
+        {
+            return new ReviewDTO(review.Id, review.Description, review.Date, _userServices.ConvertToDTO(review.User), _mapper.Map<BookDTO>(review.Book));
         }
     }
 }

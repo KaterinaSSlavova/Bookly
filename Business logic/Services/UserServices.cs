@@ -59,7 +59,7 @@ namespace Bookly.Business_logic.Services
             return _userRepo.UpdateProfile(ConvertToEntity(userDTO));
         }
 
-        private UserDTO ConvertToDTO(User user)
+        public UserDTO ConvertToDTO(User user)
         {
             string picture = user.Picture !=null ? Convert.ToBase64String(user.Picture): null;
             int age = CalculateAge(user);

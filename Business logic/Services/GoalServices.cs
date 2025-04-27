@@ -12,11 +12,14 @@ namespace Bookly.Business_logic.Services
         private readonly IGoalRepository _goalRepo;
         private readonly IUserServices _userServices;
         private readonly IMapper _mapper;
-        public GoalServices(IGoalRepository goalRepo, IMapper mapper, IUserServices userServices)
+        private readonly IEmailService _emailService;   
+
+        public GoalServices(IGoalRepository goalRepo, IMapper mapper, IUserServices userServices, IEmailService emailService)
         {
-            this._goalRepo = goalRepo;
-            this._mapper = mapper;
-            this._userServices = userServices;
+            _goalRepo = goalRepo;
+            _mapper = mapper;
+            _userServices = userServices;
+            _emailService = emailService;   
         }
 
         public bool CreateGoal(GoalDTO goalDTO)
@@ -25,8 +28,8 @@ namespace Bookly.Business_logic.Services
             {
                 return false;
             }
-            goalDTO.User = _userServices.ConvertToEntity(GetUser());
-            Goal goal = _mapper.Map<Goal>(goalDTO);
+            goalDTO.User = GetUser();
+            Goal goal = ConvertToEntity(goalDTO, goalDTO.User);
             return _goalRepo.CreateGoal(goal);
         }
 
@@ -34,10 +37,9 @@ namespace Bookly.Business_logic.Services
         {
             User user = _userServices.ConvertToEntity(GetUser());
             List<Goal> goals = _goalRepo.GetPersonalGoals(user);
-            List<GoalDTO> goalDTOs = _mapper.Map<List<GoalDTO>>(goals);
-            CheckForExpired(goalDTOs);
+            CheckForExpired(goals);
             goals = _goalRepo.GetPersonalGoals(user);
-            return _mapper.Map<List<GoalDTO>>(goals);
+            return goals.Select(g => ConvertToDTO(g,g.User)).ToList();
         }
 
         public bool RemoveGoal(int id)
@@ -52,14 +54,14 @@ namespace Bookly.Business_logic.Services
             {
                 goal = _goalRepo.GetLatestCompletedGoal(_userServices.ConvertToEntity(GetUser()));
             }
-            GoalDTO goalDTO = _mapper.Map<GoalDTO>(goal);
+            GoalDTO goalDTO = ConvertToDTO(goal, goal.User);
             return goalDTO;
         }
 
         private void UpdateProgress(GoalDTO goalDTO)
         {
             UserDTO user = GetUser();
-            Goal goal = _mapper.Map<Goal>(goalDTO);
+            Goal goal = ConvertToEntity(goalDTO, user);
             _goalRepo.UpdateProgress(user.Id, goal);
         }
         private void UpdateStatus(Status status, int goalId)
@@ -94,9 +96,9 @@ namespace Bookly.Business_logic.Services
             return true;
         }
 
-        private void CheckForExpired(List<GoalDTO> goals)
+        private void CheckForExpired(List<Goal> goals)
         {
-            foreach (GoalDTO goal in goals)
+            foreach (Goal goal in goals)
             {
                 if(goal.End < DateTime.Now)
                 {
@@ -108,6 +110,30 @@ namespace Bookly.Business_logic.Services
         private UserDTO GetUser()
         {
             return _userServices.LoadUser();
+        }
+
+        private async Task<List<GoalDTO>> GetAllGoals()
+        {
+            List<Goal> goals  = await _goalRepo.GetAllGoals();
+            return goals.Select(g => ConvertToDTO(g,g.User)).ToList();
+        }
+
+        public async Task SendRemindersAsync()
+        { 
+            foreach(GoalDTO goal in await GetAllGoals())
+            {
+                await _emailService.SendGoalReminderEmail(goal);
+            }
+        }
+
+        private Goal ConvertToEntity(GoalDTO goal, UserDTO user)
+        {
+            return new Goal(goal.Id, goal.Start, goal.End, goal.ReadingGoal, goal.CurrentProgress, goal.Status, _userServices.ConvertToEntity(user));
+        }
+
+        private GoalDTO ConvertToDTO(Goal goal, User user)
+        { 
+            return new GoalDTO(goal.Id, goal.Start, goal.End, goal.ReadingGoal, goal.CurrentProgress, goal.Status, _userServices.ConvertToDTO(user));
         }
     }
 }

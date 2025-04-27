@@ -20,7 +20,7 @@ namespace Bookly.Bookly.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             List<BookDTO> books = _bookService.LoadBooks();
             List<BookViewModel> booksModel = _mapper.Map<List<BookViewModel>>(books);

@@ -35,11 +35,19 @@ namespace Business_logic.DTOs
             this.Role = role;
         }
 
-        public UserDTO(string username, DateTime? birthDate, string email) 
+        public UserDTO(string username, DateTime? birthDate, string email)
         {
             this.Username = username;
             this.BirthDate = birthDate;
             this.Email = email;
+        }
+
+        public UserDTO(string username, DateTime? birthDate, string email, Role role)
+        {
+            this.Username = username;
+            this.BirthDate = birthDate;
+            this.Email = email;
+            this.Role = role;
         }
 
         public UserDTO(string username, string password)
