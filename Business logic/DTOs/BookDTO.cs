@@ -11,5 +11,6 @@ namespace Business_logic.DTOs
         public string Description { get; set; }
         public string ISBN { get; set; }
         public Genre Genre { get; set; }
+        public int Pages { get; set; }
     }
 }

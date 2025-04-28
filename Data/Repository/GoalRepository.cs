@@ -19,14 +19,14 @@ namespace Bookly.Data.Repository
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
-                string sql = @"INSERT INTO Goals ([Start], [End], ReadingGoal, CurrentProgress, [Status], UserId)
-                            VALUES (@Start, @End, @ReadingGoal, @CurrentProgress, @Status, @UserId)";
+                string sql = @"INSERT INTO Goals ([Start], [End], ReadingGoal, CurrentProgress, StatusId, UserId)
+                            VALUES (@Start, @End, @ReadingGoal, @CurrentProgress, @StatusId, @UserId)";
                 using SqlCommand command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@Start", goal.Start.Date);
                 command.Parameters.AddWithValue("@End", goal.End);
                 command.Parameters.AddWithValue("@ReadingGoal", goal.ReadingGoal);
                 command.Parameters.AddWithValue("@CurrentProgress", 0);
-                command.Parameters.AddWithValue("@Status", goal.Status.ToString());
+                command.Parameters.AddWithValue("@StatusId", (int)Status.Not_started);
                 command.Parameters.AddWithValue("@UserId", goal.User.Id);
 
                 command.ExecuteNonQuery();
@@ -45,7 +45,7 @@ namespace Bookly.Data.Repository
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
-                string sql = @"SELECT Id, [Start], [End], ReadingGoal, CurrentProgress, [Status], UserId
+                string sql = @"SELECT Id, [Start], [End], ReadingGoal, CurrentProgress, StatusId, UserId
                                 FROM Goals
                                 WHERE isArchived = @isArchived and UserId = @UserId and Id = @Id";
                 using SqlCommand command = new SqlCommand(sql, connection);
@@ -63,7 +63,7 @@ namespace Bookly.Data.Repository
                                 reader.GetDateTime(2),
                                 reader.GetInt32(3),
                                 reader.GetInt32(4),
-                                (Status)Enum.Parse(typeof(Status), reader.GetString(5)),
+                                (Status)reader.GetInt32(5),
                                 user
                         );
                 }
@@ -83,7 +83,7 @@ namespace Bookly.Data.Repository
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
-                string sql = @"SELECT Id, [Start], [End], ReadingGoal, CurrentProgress, [Status]
+                string sql = @"SELECT Id, [Start], [End], ReadingGoal, CurrentProgress, StatusId
                                 FROM Goals
                                 WHERE UserId=@Id and isArchived=@isArchived";
                 using SqlCommand command = new SqlCommand(sql, connection);
@@ -100,7 +100,7 @@ namespace Bookly.Data.Repository
                                 reader.GetDateTime(2),
                                 reader.GetInt32(3),
                                 reader.GetInt32(4),
-                                (Status)Enum.Parse(typeof(Status), reader.GetString(5)),
+                                (Status)reader.GetInt32(5),
                                 user
                         ));
                 }
@@ -119,16 +119,16 @@ namespace Bookly.Data.Repository
                 using SqlConnection connection= GetSqlConnection();
                 connection.Open();
 
-                string sql = @"SELECT TOP 1 Id, [Start], [End], ReadingGoal, CurrentProgress, [Status]
+                string sql = @"SELECT TOP 1 Id, [Start], [End], ReadingGoal, CurrentProgress, StatusId
                                 FROM Goals
                                 WHERE isArchived=@isArchived AND UserId = @Id";
                 if (isIncreasing)
                 {
-                    sql += @" AND [Status] <> @Status AND [Status] <> @StatusExp";
+                    sql += @" AND StatusId <> @Status AND StatusId <> @StatusExp";
                 }
                 if(!isIncreasing)
                 {
-                    sql += @" AND [Status] = @Status";
+                    sql += @" AND StatusId = @Status";
                 }
                 sql += @" ORDER BY [END] ASC";
                 using SqlCommand command = new SqlCommand(sql, connection);
@@ -136,12 +136,12 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("@Id", user.Id);
                 if (isIncreasing)
                 {
-                    command.Parameters.AddWithValue("@Status", Status.Completed.ToString());
-                    command.Parameters.AddWithValue("@StatusExp", Status.Expired.ToString());
+                    command.Parameters.AddWithValue("@Status", (int)Status.Completed);
+                    command.Parameters.AddWithValue("@StatusExp", (int)Status.Expired);
                 }
                 if (!isIncreasing)
                 {
-                    command.Parameters.AddWithValue("@Status", Status.In_progress.ToString());
+                    command.Parameters.AddWithValue("@Status", (int)Status.In_progress);
                 }
 
                 using SqlDataReader reader= command.ExecuteReader(); 
@@ -154,7 +154,7 @@ namespace Bookly.Data.Repository
                                 reader.GetDateTime(2),
                                 reader.GetInt32(3),
                                 reader.GetInt32(4),
-                                (Status)Enum.Parse(typeof(Status), reader.GetString(5)),
+                                (Status)reader.GetInt32(5),
                                 user
                         );
                 }
@@ -172,14 +172,14 @@ namespace Bookly.Data.Repository
             {
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
-                string sql = @"SELECT TOP 1 Id, [Start], [End], ReadingGoal, CurrentProgress, [Status]
+                string sql = @"SELECT TOP 1 Id, [Start], [End], ReadingGoal, CurrentProgress, StatusId
                                     FROM Goals
                                     WHERE isArchived = @isArchived AND [Status] = @CompletedStatus AND UserId = @Id
                                     ORDER BY [End] ASC";
                 using SqlCommand command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@isArchived", 0);
                 command.Parameters.AddWithValue("@Id", user.Id);
-                command.Parameters.AddWithValue("@CompletedStatus", Status.Completed.ToString());
+                command.Parameters.AddWithValue("@CompletedStatus", (int)Status.Completed);
 
                 using SqlDataReader reader = command.ExecuteReader();
                 if (reader.Read())
@@ -191,7 +191,7 @@ namespace Bookly.Data.Repository
                         reader.GetDateTime(2),
                         reader.GetInt32(3),
                         reader.GetInt32(4),
-                        (Status)Enum.Parse(typeof(Status), reader.GetString(5)),
+                        (Status)reader.GetInt32(5),
                         user
                     );
                 }
@@ -234,10 +234,10 @@ namespace Bookly.Data.Repository
                 connection.Open();
 
                 string sql = @"UPDATE Goals
-                                SET Status=@Status
+                                SET StatusId=@StatusId
                                 WHERE Id=@goalId and UserId=@UserId";
                 using SqlCommand command = new SqlCommand(sql,connection);
-                command.Parameters.AddWithValue("@Status", status.ToString());
+                command.Parameters.AddWithValue("@StatusId", (int)status);
                 command.Parameters.AddWithValue("@goalId", goalId);
                 command.Parameters.AddWithValue("@UserId", userId);
 
@@ -280,7 +280,7 @@ namespace Bookly.Data.Repository
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
-                string sql = @"SELECT g.Id, g.[Start], g.[End], g.ReadingGoal, g.CurrentProgress, g.[Status], u.Username, u.BirthDate, u.Email, u.RoleId
+                string sql = @"SELECT g.Id, g.[Start], g.[End], g.ReadingGoal, g.CurrentProgress, g.StatusId, u.Username, u.BirthDate, u.Email, u.RoleId
                                 FROM Goals as g
 								INNER JOIN Users as u
 								ON u.Id = g.UserId
@@ -298,7 +298,7 @@ namespace Bookly.Data.Repository
                         reader.GetDateTime(2),
                         reader.GetInt32(3),
                         reader.GetInt32(4),
-                        (Status)Enum.Parse(typeof(Status), reader.GetString(5)),
+                        (Status)reader.GetInt32(5),
                         new User(reader.GetString(6), reader.IsDBNull(5) ? (DateTime?)null : reader.GetDateTime(7), reader.GetString(8), (Role)reader.GetInt32(9))
                     ));
                 }

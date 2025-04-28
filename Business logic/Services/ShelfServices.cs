@@ -14,6 +14,8 @@ namespace Bookly.Business_logic.Services
         private readonly IMapper _mapper;
         private const string completedBooksShelf = "Have Read";
         private const string wishBooksShelf = "Want To Read";
+        private const string currentBookShelf = "Currently Reading";
+
         public ShelfServices(IShelfRepository shelfRepo, IMapper mapper, IUserServices userServices, IGoalServices goalService)
         { 
             _shelfRepo = shelfRepo;
@@ -36,9 +38,10 @@ namespace Bookly.Business_logic.Services
             List<ShelfDTO> defaultShelves = new List<ShelfDTO>()
             {
                 new ShelfDTO(completedBooksShelf, new List<BookDTO>()),
-                new ShelfDTO(wishBooksShelf, new List<BookDTO>())
+                new ShelfDTO(wishBooksShelf, new List<BookDTO>()),
+                new ShelfDTO(currentBookShelf, new List<BookDTO>())
             };
-            foreach(ShelfDTO shelf in defaultShelves)
+            foreach (ShelfDTO shelf in defaultShelves)
             {
                 _shelfRepo.CreateShelf(_mapper.Map<Shelf>(shelf), user.Id);
             }

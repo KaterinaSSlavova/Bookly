@@ -18,8 +18,8 @@ namespace Bookly.Data.Repository
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
-                string sql = @"INSERT INTO Books(Picture, Title, Author, Description, ISBN, Genre) 
-                               VALUES (@Picture, @Title, @Author, @Description, @ISBN, @Genre)";
+                string sql = @"INSERT INTO Books(Picture, Title, Author, Description, ISBN, Genre, Pages) 
+                               VALUES (@Picture, @Title, @Author, @Description, @ISBN, @Genre, @Pages)";
                 using SqlCommand command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@Picture", picturePath);
                 command.Parameters.AddWithValue("@Title", book.Title);
@@ -27,6 +27,7 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("@Description", book.Description);
                 command.Parameters.AddWithValue("@ISBN", book.ISBN);
                 command.Parameters.AddWithValue("@Genre", book.Genre.ToString());
+                command.Parameters.AddWithValue("Pages", book.Pages);
 
                 command.ExecuteNonQuery();
                 return true;
@@ -45,7 +46,7 @@ namespace Bookly.Data.Repository
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
-                string sql = @"SELECT Id, Picture, Title, Author, [Description], ISBN, Genre
+                string sql = @"SELECT Id, Picture, Title, Author, [Description], ISBN, Genre, Pages
                                FROM Books
                                 WHERE isArchived=@IsArchived";
                 using SqlCommand command = new SqlCommand(sql, connection);
@@ -60,7 +61,8 @@ namespace Bookly.Data.Repository
                         reader.GetString(3),
                         reader.GetString(4),
                         reader.GetString(5),
-                        (Genre)Enum.Parse(typeof(Genre), reader.GetString(6))
+                        (Genre)Enum.Parse(typeof(Genre), reader.GetString(6)),
+                        reader.GetInt32(7)
                         ));
                 }
                 return books;
@@ -78,7 +80,7 @@ namespace Bookly.Data.Repository
                 SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
-                string sql = @"SELECT Id, Picture, Title, Author, [Description], ISBN, Genre
+                string sql = @"SELECT Id, Picture, Title, Author, [Description], ISBN, Genre, Pages
                                FROM Books 
                                WHERE Id=@Id";
                 using SqlCommand command = new SqlCommand(sql, connection);
@@ -94,7 +96,8 @@ namespace Bookly.Data.Repository
                         reader.GetString(3),
                         reader.GetString(4),
                         reader.GetString(5),
-                        (Genre)Enum.Parse(typeof(Genre), reader.GetString(6))
+                        (Genre)Enum.Parse(typeof(Genre), reader.GetString(6)),
+                        reader.GetInt32(7)
                         );
                 }
                 return null;

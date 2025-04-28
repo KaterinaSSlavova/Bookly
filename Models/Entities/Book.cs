@@ -11,8 +11,9 @@ namespace Models.Entities
         public string Description { get; private set; }
         public string ISBN { get; private set; }
         public Genre Genre { get; private set; }
+        public int Pages { get; set; }
 
-        public Book(int id, string picture, string title, string author, string description, string isbn, Genre genre)
+        public Book(int id, string picture, string title, string author, string description, string isbn, Genre genre, int pages)
         {
             this.Id = id;
             this.Picture = picture;
@@ -21,8 +22,9 @@ namespace Models.Entities
             this.Description = description;
             this.ISBN = isbn;
             this.Genre = genre;
+            this.Pages = pages;
         }
-        public Book(string picture, string title, string author, string description, string isbn, Genre genre)
+        public Book(string picture, string title, string author, string description, string isbn, Genre genre, int pages)
         {
             this.Picture = picture;
             this.Title = title;
@@ -30,6 +32,7 @@ namespace Models.Entities
             this.Description = description;
             this.ISBN = isbn;
             this.Genre = genre;
+            this.Pages = pages;
         }
       
         public Book()

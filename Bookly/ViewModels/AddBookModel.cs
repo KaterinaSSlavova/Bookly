@@ -11,6 +11,7 @@ namespace Bookly.ViewModels
         public string Description { get; set; }
         public string ISBN { get; set; }
         public string Genre { get; set; }
+        public int Pages { get; set; }
         public List<SelectListItem> Genres { get; set; } 
 
         public AddBookModel()

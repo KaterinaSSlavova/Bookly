@@ -51,6 +51,11 @@
                 <span asp-validation-for="ISBN" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Pages" class="control-label">Pages:</label>
+                <input asp-for="Pages" class="form-control" />
+                <span asp-validation-for="Pages" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Genre" class="control-label">Genre:</label>
                 <select asp-for="Genre" asp-items="@Model.Genres" class="form-select">
                     <option value="">Select a Genre</option>

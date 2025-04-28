@@ -72,7 +72,7 @@ namespace Bookly.Data.Repository
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
-                string sql = @"SELECT * 
+                string sql = @"SELECT b.Id, b.Picture, b.Title, b.Author, b.[Description], b.ISBN, b.Genre, b.Pages 
                                FROM Books as b
                                INNER JOIN ShelfBook as sb
                                ON b.Id=sb.BookId
@@ -89,7 +89,8 @@ namespace Bookly.Data.Repository
                         reader.GetString(3),
                         reader.GetString(4),
                         reader.GetString(5),
-                        (Genre)Enum.Parse(typeof(Genre), reader.GetString(6))
+                        (Genre)Enum.Parse(typeof(Genre), reader.GetString(6)),
+                        reader.GetInt32(7)
                         ));
                 }
                 return books;

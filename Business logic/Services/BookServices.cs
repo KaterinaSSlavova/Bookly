@@ -38,6 +38,7 @@ namespace Bookly.Business_logic.Services
         public bool ValidateBook(BookDTO newBook)
         {
             if (newBook == null) return false;
+            if(newBook.Pages == 0) return false;
             List<BookDTO> allBooks = LoadBooks();
             foreach(BookDTO book in allBooks)
             {

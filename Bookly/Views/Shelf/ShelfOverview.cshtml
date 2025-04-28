@@ -39,7 +39,7 @@
                             <input type="hidden" name="id" value="@shelf.Id" />
                             <button type="submit" class="btn btn-primary">View</button>
                         </form>
-                        @if(shelf.Name!="Have Read" && shelf.Name != "Want To Read")
+                        @if(shelf.Name!="Have Read" && shelf.Name != "Want To Read" && shelf.Name != "Currently Reading")
                         {
                             <form asp-controller="Shelf" asp-action="RemoveShelf" method="post">
                                 <input type="hidden" name="id" value="@shelf.Id" />
