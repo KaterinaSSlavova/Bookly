@@ -153,6 +153,90 @@ namespace Bookly.Data.Repository
             }
         }
 
+        public List<CurrentBook> GetBooksFromCurrentlyReadingShelf(int userId)
+        {
+            try
+            {
+                List<CurrentBook> currentBooks = new List<CurrentBook>();
+                using SqlConnection connection = GetSqlConnection();
+                connection.Open();
+
+                string sql = @"SELECT BookId, Progress, StatusId
+                                FROM UserBookProgress
+                                WHERE UserId = @UserId";
+                using SqlCommand command = new SqlCommand( sql, connection);
+                command.Parameters.AddWithValue("@UserId", userId);
+
+                using SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    currentBooks.Add(new CurrentBook(
+                        reader.GetInt32(0),
+                        reader.GetInt32(1),
+                        (Status)reader.GetInt32(2)
+                        ));
+                }
+                return currentBooks;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+        }
+
+        public bool SetCurrentBookProgress(int userId, CurrentBook book)
+        {
+            try
+            {
+                using SqlConnection connection = GetSqlConnection();
+                connection.Open();
+
+                string sql = @"INSERT INTO UserBookProgress (UserId, BookId, Progress, StatusId)
+                                VALUES (@UserId, @BookId, @Progress, @StatusId)";
+
+                using SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@UserId", userId);
+                command.Parameters.AddWithValue("@BookId", book.Id);
+                command.Parameters.AddWithValue("@Progress", book.CurrentProgress);
+                command.Parameters.AddWithValue("@StatusId", (int)book.Status);
+
+                command.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+        }
+
+        public bool SaveCurrentBookProgress(int userId, int bookId, int progress, Status status)
+        {
+            try
+            {
+                using SqlConnection connection = GetSqlConnection();
+                connection.Open();
+
+                string sql = @"UPDATE UserBookProgress
+                                SET UserId = @UserId,
+                                    BookId = @BookId,
+                                    Progress = @Progress,
+                                    StatusId = @StatusId";
+
+                using SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@UserId", userId);
+                command.Parameters.AddWithValue("@BookId", bookId);
+                command.Parameters.AddWithValue("@Progress", progress);
+                command.Parameters.AddWithValue("@StatusId", (int)status);
+
+                command.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+        }
+
         public Shelf GetShelfContainingBook(int bookId, int userId)
         {
             try

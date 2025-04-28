@@ -1,4 +1,4 @@
-﻿@model ShelfViewModel
+﻿@model CurrentBookShelfViewModel
 
 @{
     ViewData["Title"] = "Currently Reading Overview";
@@ -7,3 +7,18 @@
 <h1>@Model.Name</h1>
 <hr />
 
+<div class="book-grid">
+    @foreach (var book in Model.BooksOnShelf)
+    {
+        <div class="book-card">
+            <h3>@book.Book.Title</h3>
+
+            <div class="progress-container">
+                <progress value="@book.CurrentProgress" max="100"></progress>
+                <span>@book.CurrentProgress%</span>
+            </div>
+
+            <p>Status: @book.Status</p>
+        </div>
+    }
+</div>

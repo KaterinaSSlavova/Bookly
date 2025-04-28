@@ -69,6 +69,20 @@ namespace Bookly.Bookly.Controllers
             return RedirectToAction("ShelfDetails", "Shelf", new { id = id });
         }
 
+        [HttpGet]
+        public IActionResult CurrentlyReadingOverview(int id)
+        {
+            CurrentBookShelfDTO currentBooksShelf = _shelfService.GetCurrentlyReadingShelf();
+            CurrentBookShelfViewModel shelfModel = _mapper.Map<CurrentBookShelfViewModel>(currentBooksShelf);
+            return View(shelfModel);
+        }
+
+        [HttpPost]
+        public IActionResult ViewCurrentlyReadingShelf(int id)
+        {
+            return RedirectToAction("CurrentlyReadingOverview", "Shelf", new {id = id});
+        }
+
         [HttpPost]
         public IActionResult GoBack()
         {

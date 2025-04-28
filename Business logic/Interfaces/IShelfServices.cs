@@ -14,5 +14,6 @@ namespace Bookly.Business_logic.InterfacesServices
         bool AddBookToShelf(int bookId, int shelfId);
         bool RemoveBookFromShelf(int bookId, int shelfId);
         bool RemoveShelf(int id);
+        CurrentBookShelfDTO GetCurrentlyReadingShelf();
     }
 }

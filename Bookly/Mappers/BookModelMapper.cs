@@ -23,6 +23,11 @@ namespace Bookly.Mappers
             CreateMap<AddBookModel, BookDTO>()
                 .ForMember(dest => dest.Genre, opt => opt.MapFrom(src => Enum.Parse(typeof(Genre), src.Genre)))
                 .ForSourceMember(src => src.Genres, opt => opt.DoNotValidate());
+
+            CreateMap<CurrentBookDTO, CurrentBookViewModel>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+                .ReverseMap()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => Enum.Parse(typeof(Status), src.Status)));
         }
     }
 }
