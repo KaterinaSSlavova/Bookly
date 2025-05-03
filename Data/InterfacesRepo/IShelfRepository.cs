@@ -14,6 +14,7 @@ namespace Bookly.Data.InterfacesRepo
         bool SaveCurrentBookProgress(int userId, int bookId, int progress, Status status);
         Shelf GetShelfContainingBook(int bookId, int userId);
         bool RemoveBookFromShelf(int userId, int bookId);
+        void RemoveFromCurrentBookShelf(int userId, int bookId);
         bool RemoveShelf(int id);
         List<CurrentBook> GetBooksFromCurrentlyReadingShelf(int userId);
 

@@ -125,6 +125,10 @@ namespace Bookly.Business_logic.Services
                 GoalDTO? goal = _goalService.GetNewestGoal(false);
                 DecreaseProgress(goal);
             }
+            if(GetShelfById(shelfId).Name == currentBooksShelf)
+            {
+                _shelfRepo.RemoveFromCurrentBookShelf(user.Id, bookId);
+            }
             return _shelfRepo.RemoveBookFromShelf(user.Id, bookId);
         }
 

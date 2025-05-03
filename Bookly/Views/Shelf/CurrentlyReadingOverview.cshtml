@@ -4,21 +4,66 @@
     ViewData["Title"] = "Currently Reading Overview";
 }
 
+@if (TempData["RemoveBookSuccess"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        <strong>@TempData["RemoveBookSuccess"]</strong>
+    </div>
+}
+
+@if (TempData["RemoveBookError"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        <strong>@TempData["RemoveBookError"]</strong>
+    </div>
+}
+
 <h1>@Model.Name</h1>
 <hr />
 
-<div class="book-grid">
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     @foreach (var book in Model.BooksOnShelf)
     {
-        <div class="book-card">
-            <h3>@book.Book.Title</h3>
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">@book.Book.Title</h5>
+                    <p class="card-text">Author: <strong>@book.Book.Author</strong></p>
+                    <p class="card-text"> <img src="@book.Book.Picture" class="card-img-top" alt="@book.Book.Title" /> </p>
 
-            <div class="progress-container">
-                <progress value="@book.CurrentProgress" max="100"></progress>
-                <span>@book.CurrentProgress%</span>
+                    <div class="progress mb-2">
+                        <div class="progress-bar @(book.CurrentProgress >= book.Book.Pages ? "bg-success" : "bg-info")"
+                             role="progressbar"
+                             style="width: @(Math.Min((book.CurrentProgress / (double)book.Book.Pages) * 100, 100))%;"
+                             aria-valuenow="@book.CurrentProgress"
+                             aria-valuemin="0"
+                             aria-valuemax="@book.Book.Pages">
+                            @book.CurrentProgress / @book.Book.Pages
+                        </div>
+                    </div>
+
+                    <p class="text-center">
+                        @if (book.Status == "Completed")
+                        {
+                            <span class="badge bg-success">✅ Completed</span>
+                        }
+                        else if (book.Status == "In_progress")
+                        {
+                            <span class="badge bg-warning text-dark">⌛ In Progress</span>
+                        }
+                        else if (book.Status == "Not_started")
+                        {
+                            <span class="badge bg-secondary">🔧 Not Started</span>
+                        }
+                    </p>
+
+                    <form asp-controller="Shelf" asp-action="RemoveFromCurrentBookShelf" method="post">
+                        <input type="hidden" name="bookId" value="@book.Book.Id" />
+                        <input type="hidden" name="shelfId" value="@Model.Id" />
+                        <input type="submit" value="Remove" class="btn btn-danger mb-3" />
+                    </form>
+                </div>
             </div>
-
-            <p>Status: @book.Status</p>
         </div>
     }
 </div>

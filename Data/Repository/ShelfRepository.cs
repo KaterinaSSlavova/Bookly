@@ -295,6 +295,28 @@ namespace Bookly.Data.Repository
             }
         }
 
+        public void RemoveFromCurrentBookShelf(int userId, int bookId)
+        {
+            try
+            {
+                using SqlConnection connection = GetSqlConnection();
+                connection.Open();
+
+                string sql = @"DELETE
+                               FROM UserBookProgress
+                               WHERE UserId=@UserId and BookId=@BookId";
+                using SqlCommand deleteCommand = new SqlCommand(sql, connection);
+                deleteCommand.Parameters.AddWithValue("@UserId", userId);
+                deleteCommand.Parameters.AddWithValue("@BookId", bookId);
+
+                deleteCommand.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+        }
+
         public bool RemoveShelf(int id)
         {
             try

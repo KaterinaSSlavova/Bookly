@@ -3,6 +3,7 @@ using Bookly.Business_logic.InterfacesServices;
 using Bookly.ViewModels;
 using Business_logic.DTOs;
 using AutoMapper;
+using Models.Entities;
 
 namespace Bookly.Bookly.Controllers
 {
@@ -70,7 +71,7 @@ namespace Bookly.Bookly.Controllers
         }
 
         [HttpGet]
-        public IActionResult CurrentlyReadingOverview(int id)
+        public IActionResult CurrentlyReadingOverview()
         {
             CurrentBookShelfDTO currentBooksShelf = _shelfService.GetCurrentlyReadingShelf();
             CurrentBookShelfViewModel shelfModel = _mapper.Map<CurrentBookShelfViewModel>(currentBooksShelf);
@@ -78,9 +79,9 @@ namespace Bookly.Bookly.Controllers
         }
 
         [HttpPost]
-        public IActionResult ViewCurrentlyReadingShelf(int id)
+        public IActionResult ViewCurrentlyReadingShelf()
         {
-            return RedirectToAction("CurrentlyReadingOverview", "Shelf", new {id = id});
+            return RedirectToAction("CurrentlyReadingOverview", "Shelf");
         }
 
         [HttpPost]
@@ -92,15 +93,15 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult RemoveFromShelf(int bookId, int shelfId)
         {
-            if(!_shelfService.RemoveBookFromShelf(bookId, shelfId))
-            {
-                TempData["RemoveBookError"] = "Book cannot be removed!";
-            }
-            else
-            {
-                TempData["RemoveBookSuccess"] = "Book was removed successfully!";
-            }
+            RemoveBookFromShelf(bookId, shelfId);
             return RedirectToAction("ShelfDetails", "Shelf", new { id=shelfId });
+        }
+
+        [HttpPost]
+        public IActionResult RemoveFromCurrentBookShelf(int bookId, int shelfId)
+        {
+            RemoveBookFromShelf(bookId, shelfId);
+            return RedirectToAction("CurrentlyReadingOverview", "Shelf");
         }
 
         [HttpPost]
@@ -129,6 +130,18 @@ namespace Bookly.Bookly.Controllers
                 TempData["ShelfSuccess"] = "Shelf was removed successfully!";
             }
             return RedirectToAction("ShelfOverview","Shelf");
+        }
+
+        private void RemoveBookFromShelf(int bookId, int shelfId)
+        {
+            if (!_shelfService.RemoveBookFromShelf(bookId, shelfId))
+            {
+                TempData["RemoveBookError"] = "Book cannot be removed!";
+            }
+            else
+            {
+                TempData["RemoveBookSuccess"] = "Book was removed successfully!";
+            }
         }
     }
 }
