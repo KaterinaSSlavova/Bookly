@@ -1,0 +1,85 @@
+﻿@model AddBookModel
+
+@{
+    ViewData["Title"] = "Update Book";
+}
+
+<h1>Update Book</h1>
+<hr />
+
+@if (TempData["BookError"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        <strong>@TempData["BookError"]</strong>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Book" asp-action="SaveBookChanges" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-group">
+                <label class="control-label">Current Picture:</label><br />
+                @if (!string.IsNullOrEmpty(Model.Picture))
+                {
+                    <img src="@Model.Picture" alt="Current Picture" class="img-thumbnail mb-2" style="max-height: 200px;" />
+                }
+                else
+                {
+                    <p class="text-muted">No image uploaded yet.</p>
+                }
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Picture" class="control-label">Choose picture:</label>
+                <input asp-for="Picture" type="file" name="Picture" class="form-control" />
+                <span asp-validation-for="Picture" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Title" class="control-label">Title:</label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Author" class="control-label">Author:</label>
+                <input asp-for="Author" class="form-control" />
+                <span asp-validation-for="Author" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description" class="control-label">Description:</label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ISBN" class="control-label">ISBN:</label>
+                <input asp-for="ISBN" class="form-control" />
+                <span asp-validation-for="ISBN" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Pages" class="control-label">Pages:</label>
+                <input asp-for="Pages" class="form-control" />
+                <span asp-validation-for="Pages" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Genre" class="control-label">Current Genre:</label>
+                <select asp-for="Genre" asp-items="@Model.Genres" class="form-select">
+                    <option value="">Select a Genre</option>
+                </select>
+                <span asp-validation-for="Genre" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Update" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>

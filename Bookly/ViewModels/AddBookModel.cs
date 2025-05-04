@@ -5,6 +5,7 @@ namespace Bookly.ViewModels
 {
     public class AddBookModel
     {
+        public int Id { get; set; }
         public string Picture { get; set; }
         public string Title { get; set; }
         public string Author { get; set; }
@@ -16,6 +17,26 @@ namespace Bookly.ViewModels
 
         public AddBookModel()
         {
+            Genres = Enum.GetValues(typeof(Genre))
+                         .Cast<Genre>()
+                         .Select(g => new SelectListItem
+                         {
+                             Value = g.ToString(),
+                             Text = g.ToString()
+                         })
+                         .ToList();
+        }
+
+        public AddBookModel(int id, string picture, string title, string author, string description, string isbn, string genre, int pages)
+        {
+            this.Id = id;
+            this.Picture = picture;
+            this.Title = title;
+            this.Author = author;
+            this.Description = description;
+            this.ISBN = isbn;
+            this.Genre = genre; 
+            this.Pages = pages;
             Genres = Enum.GetValues(typeof(Genre))
                          .Cast<Genre>()
                          .Select(g => new SelectListItem

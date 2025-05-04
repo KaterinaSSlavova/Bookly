@@ -108,6 +108,41 @@ namespace Bookly.Data.Repository
             }
         }
 
+        public bool UpdateBook(Book book)
+        {
+            try
+            {
+                SqlConnection connection = GetSqlConnection();
+                connection.Open();
+
+                string sql = @"UPDATE Books
+                                 SET Picture = @Picture,
+                                 Title = @Title,
+                                 Author = @Author,
+                                 Description = @Description,
+                                 ISBN = @ISBN,
+                                 Genre = @Genre,
+                                 Pages = @Pages
+                                 WHERE Id = @Id";
+                using SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@Id", book.Id);
+                command.Parameters.AddWithValue("@Picture", book.Picture);
+                command.Parameters.AddWithValue("@Title", book.Title);
+                command.Parameters.AddWithValue("@Author", book.Author);
+                command.Parameters.AddWithValue("@Description", book.Description);
+                command.Parameters.AddWithValue("@ISBN", book.ISBN);
+                command.Parameters.AddWithValue("@Genre", book.Genre);
+                command.Parameters.AddWithValue("@Pages", book.Pages);
+
+                command.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+        }
+
         public bool RemoveBook(int id)
         {
             try

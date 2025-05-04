@@ -69,6 +69,11 @@
             </form>
 
             <div class="d-grid gap-2">
+                <form asp-controller="Book" asp-action="GoToUpdateBook">
+                    <input type="hidden" name="id" value="@Model.Book.Id" />
+                    <button type="submit" class="btn btn-warning">Update</button>
+                </form>
+
                 <form asp-controller="Book" asp-action="RemoveBook">
                     <input type="hidden" name="id" value="@Model.Book.Id" />
                     <button type="submit" class="btn btn-danger">Remove Book</button>

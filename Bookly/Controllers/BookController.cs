@@ -56,7 +56,7 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult AddBookPage()
         { 
-            var model = new AddBookModel();
+            AddBookModel model = new AddBookModel();
             return View(model);
         }
 
@@ -84,6 +84,36 @@ namespace Bookly.Bookly.Controllers
             {
                 TempData["BookSuccess"] = "Book added successfully!";
                 return RedirectToAction("Index", "Book");
+            }
+        }
+
+        [HttpGet]
+        public IActionResult UpdateBook(int bookId)
+        {
+            BookDetailsDTO bookDTO = _bookDetailsService.CreateDetailsDTO(bookId);
+            AddBookModel model = new AddBookModel(bookId, bookDTO.Book.Picture, bookDTO.Book.Title, bookDTO.Book.Author, bookDTO.Book.Description, bookDTO.Book.ISBN, bookDTO.Book.Genre.ToString(), bookDTO.Book.Pages);
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult GoToUpdateBook(int Id)
+        {
+            return RedirectToAction("UpdateBook", "Book", new {bookId = Id});
+        }
+
+        [HttpPost]
+        public IActionResult SaveBookChanges(AddBookModel bookModel)
+        {
+            BookDTO book = _mapper.Map<BookDTO>(bookModel);
+            if(!_bookService.UpdateBook(book))
+            {
+                TempData["BookError"] = "Invalid data! Book must be unique!";
+                return RedirectToAction("UpdateBook", "Book", new { bookId = bookModel.Id });
+            }
+            else
+            {
+                TempData["Message"] = "Book updated successfully!";
+                return RedirectToAction("BookDetails", "Book", new { bookId = bookModel.Id });
             }
         }
 

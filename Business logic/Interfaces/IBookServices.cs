@@ -7,6 +7,7 @@ namespace Bookly.Business_logic.InterfacesServices
         bool AddBook(BookDTO book);
         List<BookDTO> LoadBooks();
         BookDTO GetBookById(int bookId);
+        bool UpdateBook(BookDTO book);
         bool RemoveBook(int id);
     }
 }
