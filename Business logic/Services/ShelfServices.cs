@@ -3,6 +3,7 @@ using Models.Entities;
 using Bookly.Data.InterfacesRepo;
 using Business_logic.DTOs;
 using AutoMapper;
+using Models.Enums;
 
 namespace Bookly.Business_logic.Services
 {
@@ -101,9 +102,12 @@ namespace Bookly.Business_logic.Services
             return _shelfRepo.AddBookToShelf(bookId, shelfId, user.Id);
         }
 
-        public bool SaveCurrentBookProgress(CurrentBookDTO book)
+        public bool UpdateBookProgress(CurrentBookDTO book, int progress)
         {
-            return _shelfRepo.SaveCurrentBookProgress(GetUser().Id, book.Book.Id, book.CurrentProgress, book.Status);
+            book.Status = Status.Not_started;
+            if (progress > 0) book.Status = Status.In_progress;
+            if (progress == book.Book.Pages) book.Status = Status.Completed;
+            return _shelfRepo.SaveCurrentBookProgress(GetUser().Id, book.Book.Id, progress, book.Status);
         }
 
         private void CheckForPreviousShelf(int bookId)

@@ -105,6 +105,14 @@ namespace Bookly.Bookly.Controllers
         }
 
         [HttpPost]
+        public IActionResult UpdateCurrentBookProgress(CurrentBookViewModel book, int progress)
+        {
+            CurrentBookDTO bookDTO = _mapper.Map<CurrentBookDTO>(book);
+            _shelfService.UpdateBookProgress(bookDTO, progress);
+            return RedirectToAction("CurrentlyReadingOverview", "Shelf");
+        }
+
+        [HttpPost]
         public IActionResult MoveToShelf(int bookId, int shelfId)
         {
             if (_shelfService.AddBookToShelf(bookId, shelfId))
