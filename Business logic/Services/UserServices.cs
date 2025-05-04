@@ -29,8 +29,7 @@ namespace Bookly.Business_logic.Services
         public bool LogIn(UserDTO loggingUser)
         {
             UserDTO? storedUser = GetUserByUsername(loggingUser.Username);
-            if (storedUser == null) return false;
-
+            if (storedUser == null) return false; 
             return _passwordHelper.VerifyPassword(loggingUser.Password, storedUser.Password);
         }
 
@@ -65,8 +64,9 @@ namespace Bookly.Business_logic.Services
             return _userRepo.UpdateProfile(ConvertToEntity(userDTO));
         }
 
-        public UserDTO ConvertToDTO(User user)
+        public UserDTO? ConvertToDTO(User user)
         {
+            if (user == null) return null;
             string picture = user.Picture !=null ? Convert.ToBase64String(user.Picture): null;
             int age = CalculateAge(user);
             return new UserDTO(user.Id, picture, user.Username, user.BirthDate, age, user.Email, user.Password, user.Role);

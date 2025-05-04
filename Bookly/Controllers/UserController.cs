@@ -25,7 +25,7 @@ namespace Bookly.Bookly.Controllers
         }
 
         [HttpPost]
-        public IActionResult RegisterAccount(AccountRegister model)
+        public IActionResult Register(AccountRegister model)
         {
             if (!ModelState.IsValid)
             {
@@ -49,7 +49,7 @@ namespace Bookly.Bookly.Controllers
         }
 
         [HttpPost]
-        public IActionResult LogIntoAccount(AccountLogIn model)
+        public IActionResult LogIn(AccountLogIn model)
         {
             if (!ModelState.IsValid)
             {
