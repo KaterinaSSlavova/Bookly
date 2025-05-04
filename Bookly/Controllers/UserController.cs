@@ -25,7 +25,7 @@ namespace Bookly.Bookly.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register(AccountRegister model)
+        public IActionResult RegisterAccount(AccountRegister model)
         {
             if (!ModelState.IsValid)
             {
@@ -49,7 +49,7 @@ namespace Bookly.Bookly.Controllers
         }
 
         [HttpPost]
-        public IActionResult LogIn(AccountLogIn model)
+        public IActionResult LogIntoAccount(AccountLogIn model)
         {
             if (!ModelState.IsValid)
             {
@@ -84,7 +84,9 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult EditProfile()
         {
-            return View();
+            UserDTO? user = _userService.LoadUser();
+            EditProfileModel viewModel = _mapper.Map<EditProfileModel>(user);    
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -94,10 +96,19 @@ namespace Bookly.Bookly.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveChanges(EditProfileModel model)
+        public IActionResult SaveChanges(EditProfileModel model, string image)
         {
+            bool isSaved = false;
             UserDTO user = _mapper.Map<UserDTO>(model);
-            if (_userService.UpdateProfile(user, model.Picture))
+            if (model.Picture != null) isSaved = _userService.UpdateProfile(user, model.Picture);
+            else if(image != null)isSaved = _userService.UpdateProfile(user, image);
+            else
+            {
+                TempData["ProfileError"] = "Invalid data! Please upload a photo!";
+                return RedirectToAction("EditProfile", "User");
+            }
+
+            if (isSaved)
             {
                 TempData["ProfileUpdated"] = "Profile updated successfully!";
                 return RedirectToAction("ViewProfile", "User");

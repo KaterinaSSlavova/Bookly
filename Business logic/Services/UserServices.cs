@@ -59,6 +59,12 @@ namespace Bookly.Business_logic.Services
             return _userRepo.UpdateProfile(ConvertToEntity(userDTO));
         }
 
+        public bool UpdateProfile(UserDTO userDTO, string image)
+        {
+            userDTO.Picture = image;
+            return _userRepo.UpdateProfile(ConvertToEntity(userDTO));
+        }
+
         public UserDTO ConvertToDTO(User user)
         {
             string picture = user.Picture !=null ? Convert.ToBase64String(user.Picture): null;
@@ -68,7 +74,6 @@ namespace Bookly.Business_logic.Services
 
         public User ConvertToEntity(UserDTO user)
         {
-
             byte[] picture = user.Picture != null ? Convert.FromBase64String(user.Picture) : null;
             return new User(user.Id, picture, user.Username, user.BirthDate, user.Email, user.Password, user.Role);
         }

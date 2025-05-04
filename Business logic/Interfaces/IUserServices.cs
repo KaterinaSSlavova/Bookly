@@ -11,6 +11,7 @@ namespace Bookly.Business_logic.InterfacesServices
         UserDTO? LoadUser();
         UserDTO? GetUserByUsername(string username);
         bool UpdateProfile(UserDTO User, IFormFile image);
+        bool UpdateProfile(UserDTO User, string image);
         UserDTO ConvertToDTO(User user);
         User ConvertToEntity(UserDTO user);
     }
