@@ -202,6 +202,64 @@ namespace Tests
         }
 
         [TestMethod]
+        public void UpdateBook_ShouldReturnTrue_WhenValidUpdate()
+        {
+            //Arrange
+            Book oldBookVersion = new Book(3, "/images/book3.jpg", "Just Words", "Ghost Writer", "Another mystery book", "111-1-11111-111-1", Genre.Fantasy, 150);
+            BookDTO newBookVersion = new BookDTO()
+            {
+                Id = 3,
+                Title = "New Title",
+                Author = "Author",
+                Description = "Updated",
+                ISBN = "123",
+                Genre = Genre.Mystery,
+                Pages = 250,
+                Picture = null
+            };
+            _bookRepo.Setup(r => r.GetBookById(3)).Returns(oldBookVersion);
+            _bookRepo.Setup(r => r.UpdateBook(It.IsAny<Book>())).Returns(true);
+
+            //Act
+            bool isUpdated = _bookService.UpdateBook(newBookVersion);
+
+            //Assert
+            Assert.IsTrue(isUpdated);   
+        }
+
+        [TestMethod]
+        public void UpdateBook_ShouldReturnFalse_WhenBookWithTheSameISBNExists()
+        {
+            //Arrange
+            Book oldBookVersion = new Book(3, "/images/book3.jpg", "Just Words", "Ghost Writer", "Another mystery book", "111-1-11111-111-1", Genre.Fantasy, 150);
+            List<Book> allBooks = new List<Book>()
+            {
+                 new Book(1, "/images/book.jpg", "The Mockingbird Code", "Jane Devlin", "A thrilling journey into the world of AI and espionage.", "978-1-23456-789-7", Genre.Thriller, 384),
+                 new Book(2, "/images/book2.jpg", "Empty Shell", "No One", "Empty book", "000-0-00000-000-0", Genre.Mystery, 1),
+                oldBookVersion
+            };
+            BookDTO newBookVersion = new BookDTO()
+            {
+                Id = 3,
+                Title = "New Title",
+                Author = "Author",
+                Description = "Updated",
+                ISBN = "123",
+                Genre = Genre.Mystery,
+                Pages = 250,
+                Picture = null
+            };
+            _bookRepo.Setup(r => r.GetBookById(3)).Returns(oldBookVersion);
+            _bookRepo.Setup(r => r.LoadBooks()).Returns(allBooks.Where(b => b.Id != 3).ToList());
+
+            //Act
+            bool isUpdated = _bookService.UpdateBook(newBookVersion);
+
+            //Assert
+            Assert.IsFalse(isUpdated);
+        }
+
+        [TestMethod]
         public void RemoveBook_ShouldReturnTrue_WhenBookExists()
         {
             //Arrange
