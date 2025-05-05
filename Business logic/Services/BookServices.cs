@@ -67,6 +67,7 @@ namespace Bookly.Business_logic.Services
 
         public bool RemoveBook(int id)
         {
+            if (GetBookById(id) == null) return false;
             return _bookRepo.RemoveBook(id);
         }
 

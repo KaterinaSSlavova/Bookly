@@ -29,6 +29,92 @@ namespace Tests
         }
 
         [TestMethod]
+        public void AddBook_ShouldReturnTrue_WhenBookIsAddedSuccessfully()
+        {
+            //Arrange
+            BookDTO bookDTO = new BookDTO
+            {
+                Id = 1,
+                Picture = "/images/book.png",
+                Title = "Happy Ending",
+                Author = "Hope Writer",
+                Description = "A story with a perfect ending.",
+                ISBN = "999-9-99999-999-9",
+                Genre = Genre.Romance,
+                Pages = 300
+            }; 
+            _bookRepo.Setup(r => r.AddBook(It.IsAny<Book>())).Returns(true);
+
+            //Act
+            bool isAdded = _bookService.AddBook(bookDTO);
+
+            //Assert
+            Assert.IsTrue(isAdded);
+        }
+
+        [TestMethod]
+        public void AddBook_ShouldReturnFalse_WhenBookIsNull()
+        {
+            //Arrange
+            BookDTO? book = null;
+
+            //Act
+            bool isAdded = _bookService.AddBook(book);
+
+            //Assert
+            Assert.IsFalse(isAdded);
+        }
+
+        [TestMethod]
+        public void AddBook_ShouldReturnFalse_WhenBookHasZeroPages()
+        {
+            //Arrange
+            BookDTO bookDTO = new BookDTO
+            {
+                Id = 1,
+                Picture = "/images/book.png",
+                Title = "Happy Ending",
+                Author = "Hope Writer",
+                Description = "A story with a perfect ending.",
+                ISBN = "999-9-99999-999-9",
+                Genre = Genre.Romance,
+                Pages = 0
+            };
+
+            //Act
+            bool isAdded = _bookService.AddBook(bookDTO);
+
+            //Assert
+            Assert.IsFalse(isAdded);
+        }
+
+        [TestMethod]
+        public void AddBook_ShouldReturnFalse_WhenBookWithTheSameISBNExists()
+        {
+            //Arrange
+            BookDTO newBookDTO = new BookDTO
+            {
+                Id = 1,
+                Picture = "/images/book.png",
+                Title = "Happy Ending",
+                Author = "Hope Writer",
+                Description = "A story with a perfect ending.",
+                ISBN = "999-9-99999-999-9",
+                Genre = Genre.Romance,
+                Pages = 100
+            };
+
+            List<Book> existingBooks = new List<Book>() { new Book(1, "/images/book1.png", "Book1", "Author1", "Description1", "999-9-99999-999-9", Genre.Thriller, 100) };
+            _bookRepo.Setup(r => r.LoadBooks()).Returns(existingBooks);
+
+            //Act
+            bool isAdded = _bookService.AddBook(newBookDTO);
+
+            //Assert
+            Assert.IsFalse(isAdded);
+        }
+
+        [TestMethod]
         public void LoadBooks_ShouldReturnAllBooksFromTheDatabase_WhenBooksExist()
         {
             //Arrange 
@@ -60,7 +146,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public void LoadBooks_ShouldReturnAllBooksFromTheDatabase_WhenNoBooksExist()
+        public void LoadBooks_ShouldReturnEmptyList_WhenNoBooksExist()
         {
             //Arrange
             _bookRepo.Setup(r => r.LoadBooks()).Returns((List<Book>)null);
@@ -113,6 +199,34 @@ namespace Tests
 
             //Assert
             Assert.IsNull(bookDTO);
+        }
+
+        [TestMethod]
+        public void RemoveBook_ShouldReturnTrue_WhenBookExists()
+        {
+            //Arrange
+            Book book = new Book(3, "/images/book3.jpg", "Just Words", "Ghost Writer", "Another mystery book", "111-1-11111-111-1", Genre.Fantasy, 150);
+            _bookRepo.Setup(r => r.GetBookById(book.Id)).Returns(book);
+            _bookRepo.Setup(r => r.RemoveBook(It.IsAny<int>())).Returns(true);
+
+            //Act
+            bool isRemoved = _bookService.RemoveBook(book.Id);
+
+            //Assert
+            Assert.IsTrue(isRemoved);   
+        }
+
+        [TestMethod]
+        public void RemoveBook_ShouldReturnFalse_WhenBookDoesNotExist()
+        {
+            //Arrange 
+            int bookId = 99999999;
+            _bookRepo.Setup(r => r.GetBookById(bookId)).Returns((Book)null);
+
+            //Act
+            bool isRemoved =_bookService.RemoveBook(bookId);
+
+            Assert.IsFalse(isRemoved);
         }
     }
 }
