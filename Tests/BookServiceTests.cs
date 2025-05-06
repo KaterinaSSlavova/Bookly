@@ -174,7 +174,7 @@ namespace Tests
             _bookRepo.Setup(r => r.GetBookById(1)).Returns(book);
 
             //Act
-            BookDTO bookDTO = _bookService.GetBookById(1);
+            BookDTO? bookDTO = _bookService.GetBookById(1);
 
             //Assert
             Assert.IsNotNull(bookDTO);

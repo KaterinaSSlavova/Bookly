@@ -88,6 +88,40 @@ namespace Tests
             Assert.IsFalse(isCreated);
         }
 
+        [TestMethod]
+        public void AddBookToShelf_ShouldReturnTrue_WhenBookIsNotOnTheShelf()
+        {
+            //Arrange
+            UserDTO user = new UserDTO(1, null, "Username", new DateTime(2000, 1, 1), 25, "email", "Pass", Role.Reader);
+            List<Book> books = new List<Book>();
+            Shelf shelf = new Shelf(1, "Have Read");
+            ShelfDTO shelfDTO = new ShelfDTO(1,"Have Read", new List<BookDTO>());
+            BookDTO book = new BookDTO()
+            {
+                Id = 3,
+                Title = "New Title",
+                Author = "Author",
+                Description = "Updated",
+                ISBN = "123",
+                Genre = Genre.Mystery,
+                Pages = 250,
+                Picture = null
+            };
+            GoalDTO goal = new GoalDTO(1, new DateTime(2025, 1, 1), new DateTime(2025, 5, 6), 3, 0, Status.Not_started, user);
+            _userServices.Setup(r => r.LoadUser()).Returns(user);
+            _shelfRepo.Setup(r => r.GetBooksFromShelf(shelfDTO.Id)).Returns(books);
+            _shelfRepo.Setup(r => r.GetShelfContainingBook(book.Id, user.Id)).Returns((Shelf?)null);
+            _shelfRepo.Setup(r => r.GetShelfById(shelfDTO.Id)).Returns(shelf);
+            _goalServices.Setup(s => s.GetNewestGoal(true)).Returns(goal);
+            _goalServices.Setup(s => s.UpdateGoal(It.IsAny<GoalDTO>())).Verifiable();
+            _shelfRepo.Setup(r => r.AddBookToShelf(book.Id, shelfDTO.Id, user.Id)).Returns(true);
 
+            //Act 
+            bool isBookAdded = _shelfServices.AddBookToShelf(book.Id, shelfDTO.Id);
+
+            //Assert
+            Assert.IsTrue(isBookAdded);
+            _goalServices.Verify(s => s.UpdateGoal(It.IsAny<GoalDTO>()), Times.Once);
+        }
     }
 }
