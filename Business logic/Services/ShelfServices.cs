@@ -173,7 +173,7 @@ namespace Bookly.Business_logic.Services
 
         public bool ValidateShelf(ShelfDTO shelf)
         {
-            if(shelf.Name == null) return false;
+            if (shelf == null || shelf.Name == null) return false;
             List<ShelfDTO> shelves = GetUserShelves();
             foreach (ShelfDTO userShelf in shelves)
             {

@@ -1,5 +1,4 @@
 using AutoMapper;
-using Bookly.Business_logic.InterfacesServices;
 using Bookly.Business_logic.Services;
 using Bookly.Data.InterfacesRepo;
 using Business_logic.DTOs;
@@ -15,7 +14,7 @@ namespace Tests
     {
         private readonly Mock<IBookRepository> _bookRepo;
         private readonly IMapper _mapper;
-        private readonly IBookServices _bookService;
+        private readonly BookServices _bookService;
 
         public BookServiceTests()
         {
