@@ -96,7 +96,7 @@ namespace Tests
             UserDTO user = new UserDTO(1, null, "Username", new DateTime(2000, 1, 1), 25, "email", "Pass", Role.Reader);
             List<Book> books = new List<Book>();
             Shelf shelf = new Shelf(1, "Have Read");
-            ShelfDTO shelfDTO = new ShelfDTO(1,"Have Read", new List<BookDTO>());
+            ShelfDTO shelfDTO = new ShelfDTO(1, "Have Read", new List<BookDTO>());
             BookDTO book = new BookDTO()
             {
                 Id = 3,
@@ -143,7 +143,7 @@ namespace Tests
                 Picture = null
             };
             ShelfDTO shelfDTO = new ShelfDTO(1, "Have Read", new List<BookDTO>() { book });
-            List<Book> books = new List<Book>() { new Book(3, null, "New Title", "Author", "Updated", "123", Genre.Mystery, 250)};
+            List<Book> books = new List<Book>() { new Book(3, null, "New Title", "Author", "Updated", "123", Genre.Mystery, 250) };
             _userServices.Setup(r => r.LoadUser()).Returns(user);
             _shelfRepo.Setup(r => r.GetBooksFromShelf(shelfDTO.Id)).Returns(books);
 
@@ -153,5 +153,39 @@ namespace Tests
             //Assert
             Assert.IsFalse(isBookAdded);
         }
+
+        [TestMethod]
+        public void AddBookToShelf_ShouldReturnTrue_WhenBookIsMovedToCurrentlyReadingShelfFromHaveReadShelf()
+        {
+            //Arrange
+            int userId = 1;
+            int bookId = 2;
+            int currentShelfId = 3;
+            int completedShelfId = 4;
+            UserDTO user = new UserDTO(userId, null, "Username", new DateTime(2000, 1, 1), 25, "email", "Pass", Role.Reader);
+            Book book = new Book(bookId, null, "New Title", "Author", "Updated", "123", Genre.Mystery, 250);
+            BookDTO bookDTO = new BookDTO { Id = bookId, Title = "New Title", Author = "Author", Description = "Updated", ISBN = "123", Genre = Genre.Mystery, Pages = 250, Picture = null };
+            GoalDTO goal = new GoalDTO(1, new DateTime(2025, 1, 1), new DateTime(2025, 5, 6), 3, 2, Status.Not_started, user);
+
+            _userServices.Setup(s => s.LoadUser()).Returns(user);
+            _shelfRepo.Setup(r => r.GetBooksFromShelf(currentShelfId)).Returns(new List<Book>());
+            _shelfRepo.Setup(r => r.GetShelfContainingBook(bookId, userId)).Returns(new Shelf(completedShelfId, "Have Read"));
+            _goalServices.Setup(s => s.GetNewestGoal(false)).Returns(goal);
+            _goalServices.Setup(s => s.UpdateGoal(It.IsAny<GoalDTO>())).Verifiable();
+            _shelfRepo.Setup(r => r.GetShelfById(currentShelfId)).Returns(new Shelf(currentShelfId, "Currently Reading"));
+            _bookServices.Setup(s => s.GetBookById(bookId)).Returns(bookDTO);
+            _shelfRepo.Setup(s => s.SetCurrentBookProgress(userId, It.IsAny<CurrentBook>())).Verifiable();
+            _shelfRepo.Setup(r => r.AddBookToShelf(bookId, currentShelfId, userId)).Returns(true);
+
+            //Act
+            bool isBookAdded = _shelfServices.AddBookToShelf(bookId, currentShelfId);
+
+            //Assert
+            Assert.IsTrue(isBookAdded);
+            _goalServices.Verify(r => r.UpdateGoal(It.IsAny<GoalDTO>()), Times.Once);
+            _shelfRepo.Verify(r => r.SetCurrentBookProgress(userId, It.IsAny<CurrentBook>()), Times.Once);
+        }
     }
+
 }
+

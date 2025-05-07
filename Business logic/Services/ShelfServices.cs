@@ -88,16 +88,18 @@ namespace Bookly.Business_logic.Services
             }
             UserDTO user = GetUser();
             CheckForPreviousShelf(bookId);
-            if (GetShelfById(shelfId)?.Name == completedBooksShelf)
+            ShelfDTO shelf = GetShelfById(shelfId);
+            if (shelf?.Name == completedBooksShelf)
             {
                 GoalDTO? goal = _goalService.GetNewestGoal(true);
                 IncreaseProgress(goal);
             }
-            if (GetShelfById(shelfId)?.Name == currentBooksShelf)
+            if (shelf?.Name == currentBooksShelf)
             {
                 BookDTO bookDTO = _bookServices.GetBookById(bookId);
                 CurrentBookDTO currentBook = new CurrentBookDTO(bookDTO);
-                _shelfRepo.SetCurrentBookProgress(GetUser().Id, _mapper.Map<CurrentBook>(currentBook));
+                CurrentBook book = _mapper.Map<CurrentBook>(currentBook);
+                _shelfRepo.SetCurrentBookProgress(user.Id, book);
             }
             return _shelfRepo.AddBookToShelf(bookId, shelfId, user.Id);
         }
@@ -124,12 +126,13 @@ namespace Bookly.Business_logic.Services
         public bool RemoveBookFromShelf(int bookId, int shelfId)
         {   
             UserDTO user = GetUser();
-            if (GetShelfById(shelfId)?.Name == completedBooksShelf && CheckForBook(shelfId, bookId))
+            ShelfDTO shelf = GetShelfById(shelfId);
+            if (shelf?.Name == completedBooksShelf && CheckForBook(shelfId, bookId))
             {
                 GoalDTO? goal = _goalService.GetNewestGoal(false);
                 DecreaseProgress(goal);
             }
-            if(GetShelfById(shelfId).Name == currentBooksShelf)
+            if(shelf?.Name == currentBooksShelf)
             {
                 _shelfRepo.RemoveFromCurrentBookShelf(user.Id, bookId);
             }
