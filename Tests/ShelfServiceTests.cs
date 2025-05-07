@@ -29,6 +29,7 @@ namespace Tests
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile(new ShelfMapper());
+                cfg.AddProfile(new BookMapper());
             });
             _mapper = config.CreateMapper();
 
@@ -122,6 +123,35 @@ namespace Tests
             //Assert
             Assert.IsTrue(isBookAdded);
             _goalServices.Verify(s => s.UpdateGoal(It.IsAny<GoalDTO>()), Times.Once);
+        }
+
+        [TestMethod]
+        public void AddBookToShelf_ShouldReturnFalse_WhenBookIsOnShelf()
+        {
+            //Arrange
+            UserDTO user = new UserDTO(1, null, "Username", new DateTime(2000, 1, 1), 25, "email", "Pass", Role.Reader);
+            Shelf shelf = new Shelf(1, "Have Read");
+            BookDTO book = new BookDTO()
+            {
+                Id = 3,
+                Title = "New Title",
+                Author = "Author",
+                Description = "Updated",
+                ISBN = "123",
+                Genre = Genre.Mystery,
+                Pages = 250,
+                Picture = null
+            };
+            ShelfDTO shelfDTO = new ShelfDTO(1, "Have Read", new List<BookDTO>() { book });
+            List<Book> books = new List<Book>() { new Book(3, null, "New Title", "Author", "Updated", "123", Genre.Mystery, 250)};
+            _userServices.Setup(r => r.LoadUser()).Returns(user);
+            _shelfRepo.Setup(r => r.GetBooksFromShelf(shelfDTO.Id)).Returns(books);
+
+            //Act 
+            bool isBookAdded = _shelfServices.AddBookToShelf(book.Id, shelfDTO.Id);
+
+            //Assert
+            Assert.IsFalse(isBookAdded);
         }
     }
 }
