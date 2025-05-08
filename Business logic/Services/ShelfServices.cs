@@ -106,6 +106,7 @@ namespace Bookly.Business_logic.Services
 
         public bool UpdateBookProgress(CurrentBookDTO book, int progress)
         {
+            if (book.Book.Pages < progress || progress < 0) return false; 
             book.Status = Status.Not_started;
             if (progress > 0) book.Status = Status.In_progress;
             if (progress == book.Book.Pages) book.Status = Status.Completed;
@@ -127,16 +128,24 @@ namespace Bookly.Business_logic.Services
         {   
             UserDTO user = GetUser();
             ShelfDTO shelf = GetShelfById(shelfId);
-            if (shelf?.Name == completedBooksShelf && CheckForBook(shelfId, bookId))
+            bool isBookOnShelf = CheckForBook(shelfId, bookId);
+            if (isBookOnShelf)
             {
-                GoalDTO? goal = _goalService.GetNewestGoal(false);
-                DecreaseProgress(goal);
+                if (shelf?.Name == completedBooksShelf)
+                {
+                    GoalDTO? goal = _goalService.GetNewestGoal(false);
+                    DecreaseProgress(goal);
+                }
+                if (shelf?.Name == currentBooksShelf)
+                {
+                    _shelfRepo.RemoveFromCurrentBookShelf(user.Id, bookId);
+                }
+                return _shelfRepo.RemoveBookFromShelf(user.Id, bookId);
             }
-            if(shelf?.Name == currentBooksShelf)
+            else
             {
-                _shelfRepo.RemoveFromCurrentBookShelf(user.Id, bookId);
+                return false;
             }
-            return _shelfRepo.RemoveBookFromShelf(user.Id, bookId);
         }
 
         private void DecreaseProgress(GoalDTO goal)
@@ -159,6 +168,7 @@ namespace Bookly.Business_logic.Services
 
         public bool RemoveShelf(int id)
         {
+            if (id == 0) return false;
             return _shelfRepo.RemoveShelf(id);
         }
 
