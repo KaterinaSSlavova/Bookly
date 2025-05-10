@@ -13,9 +13,6 @@ namespace Business_logic.Mappers
                 .ReverseMap();
             CreateMap<BookDTO, CurrentBookDTO>()
                 .ForMember(dest => dest.User, opt => opt.Ignore());
-
-     //       CreateMap<CurrentBookDTO, CurrentBook>()
-     //.ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Book.Id));
         }
     }
 }

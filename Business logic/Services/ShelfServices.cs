@@ -29,8 +29,8 @@ namespace Bookly.Business_logic.Services
 
         public bool CreateShelf(ShelfDTO shelfDTO)
         {
-            shelfDTO.User = GetUser();
             if (!ValidateShelf(shelfDTO)) return false;
+            shelfDTO.User = GetUser();
             RegularShelf shelf = _mapper.Map<RegularShelf>(shelfDTO);
             return _shelfRepo.CreateShelf(shelf, shelf.User.Id);
         }
@@ -121,7 +121,6 @@ namespace Bookly.Business_logic.Services
 
         public bool RemoveBookFromShelf(int bookId, int shelfId)
         {   
-            UserDTO user = GetUser();
             ShelfDTO shelf = GetShelfById(shelfId);
             bool isBookOnShelf = CheckForBook(shelf, bookId);
             if (isBookOnShelf)
@@ -133,9 +132,9 @@ namespace Bookly.Business_logic.Services
                 }
                 if (shelf?.Name == currentBooksShelf)
                 {
-                    _shelfRepo.RemoveFromCurrentBookShelf(user.Id, bookId);
+                    _shelfRepo.RemoveFromCurrentBookShelf(shelf.User.Id, bookId);
                 }
-                return _shelfRepo.RemoveBookFromShelf(user.Id, bookId);
+                return _shelfRepo.RemoveBookFromShelf(shelf.User.Id,bookId);
             }
             else
             {

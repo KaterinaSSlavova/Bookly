@@ -56,32 +56,6 @@ namespace Tests
             Assert.IsFalse(isRegistered);
         }
 
-        //[TestMethod]
-        //public void LoadUser_ShouldReturnUserDTO_WhenUserExists()
-        //{
-        //    //Arrange
-        //    string username = "Username";
-        //    User expectedEntity = new User(1, null, username, new DateTime(2000, 1, 1), "email", "hashedPass", Role.Reader);
-        //    UserDTO expectedDTO = new UserDTO(1, null, username, new DateTime(2000, 1, 1), 25, "email", "hashedPass", Role.Reader);
-
-        //   Mock<ISession> session = new Mock<ISession>();
-        //    session.Setup(s => s.Get("Username")).Returns(Encoding.UTF8.GetBytes(username));
-        //    var httpContext = new Mock<HttpContext>();
-        //    httpContext.Setup(c => c.Session).Returns(session.Object);
-        //    _contextAccessor.Setup(ca => ca.HttpContext).Returns(httpContext.Object);
-
-        //    //Act
-        //    UserDTO userDTO = _userService.LoadUser();
-
-        //    //Assert
-        //    Assert.IsNotNull(userDTO);
-        //    Assert.AreEqual(expectedDTO.Username, userDTO.Username);
-        //    Assert.AreEqual(expectedDTO.BirthDate,userDTO.BirthDate);
-        //    Assert.AreEqual(expectedDTO.Email, userDTO.Email);
-        //    Assert.AreEqual(expectedDTO.Password, userDTO.Password);
-        //    Assert.AreEqual(expectedDTO.Role, userDTO.Role);
-        //}
-
         [TestMethod]
         public void LogIn_ShouldReturnTrue_WhenUserExists()
         {

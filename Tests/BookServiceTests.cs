@@ -31,17 +31,7 @@ namespace Tests
         public void AddBook_ShouldReturnTrue_WhenBookIsAddedSuccessfully()
         {
             //Arrange
-            BookDTO bookDTO = new BookDTO
-            {
-                Id = 1,
-                Picture = "/images/book.png",
-                Title = "Happy Ending",
-                Author = "Hope Writer",
-                Description = "A story with a perfect ending.",
-                ISBN = "999-9-99999-999-9",
-                Genre = Genre.Romance,
-                Pages = 300
-            }; 
+            BookDTO bookDTO = new BookDTO(1, "/images/book1.png", "Book1", "Author1", "Description1", "999-9-99999-999-9", Genre.Thriller, 100);
             _bookRepo.Setup(r => r.AddBook(It.IsAny<Book>())).Returns(true);
 
             //Act
@@ -68,17 +58,7 @@ namespace Tests
         public void AddBook_ShouldReturnFalse_WhenBookHasZeroPages()
         {
             //Arrange
-            BookDTO bookDTO = new BookDTO
-            {
-                Id = 1,
-                Picture = "/images/book.png",
-                Title = "Happy Ending",
-                Author = "Hope Writer",
-                Description = "A story with a perfect ending.",
-                ISBN = "999-9-99999-999-9",
-                Genre = Genre.Romance,
-                Pages = 0
-            };
+            BookDTO bookDTO = new BookDTO(1, "/images/book1.png", "Book1", "Author1", "Description1", "999-9-99999-999-9", Genre.Thriller, 0);
 
             //Act
             bool isAdded = _bookService.AddBook(bookDTO);
@@ -91,18 +71,7 @@ namespace Tests
         public void AddBook_ShouldReturnFalse_WhenBookWithTheSameISBNExists()
         {
             //Arrange
-            BookDTO newBookDTO = new BookDTO
-            {
-                Id = 1,
-                Picture = "/images/book.png",
-                Title = "Happy Ending",
-                Author = "Hope Writer",
-                Description = "A story with a perfect ending.",
-                ISBN = "999-9-99999-999-9",
-                Genre = Genre.Romance,
-                Pages = 100
-            };
-
+            BookDTO newBookDTO = new BookDTO(1, "/images/book1.png", "Book1", "Author1", "Description1", "999-9-99999-999-9", Genre.Thriller, 100);
             List<Book> existingBooks = new List<Book>() { new Book(1, "/images/book1.png", "Book1", "Author1", "Description1", "999-9-99999-999-9", Genre.Thriller, 100) };
             _bookRepo.Setup(r => r.LoadBooks()).Returns(existingBooks);
 
@@ -205,17 +174,7 @@ namespace Tests
         {
             //Arrange
             Book oldBookVersion = new Book(3, "/images/book3.jpg", "Just Words", "Ghost Writer", "Another mystery book", "111-1-11111-111-1", Genre.Fantasy, 150);
-            BookDTO newBookVersion = new BookDTO()
-            {
-                Id = 3,
-                Title = "New Title",
-                Author = "Author",
-                Description = "Updated",
-                ISBN = "123",
-                Genre = Genre.Mystery,
-                Pages = 250,
-                Picture = null
-            };
+            BookDTO newBookVersion = new BookDTO(3, null, "New Title", "Author", "Updated", "123", Genre.Mystery, 250);
             _bookRepo.Setup(r => r.GetBookById(3)).Returns(oldBookVersion);
             _bookRepo.Setup(r => r.UpdateBook(It.IsAny<Book>())).Returns(true);
 
@@ -223,7 +182,7 @@ namespace Tests
             bool isUpdated = _bookService.UpdateBook(newBookVersion);
 
             //Assert
-            Assert.IsTrue(isUpdated);   
+            Assert.IsTrue(isUpdated);
         }
 
         [TestMethod]
@@ -237,17 +196,7 @@ namespace Tests
                  new Book(2, "/images/book2.jpg", "Empty Shell", "No One", "Empty book", "000-0-00000-000-0", Genre.Mystery, 1),
                 oldBookVersion
             };
-            BookDTO newBookVersion = new BookDTO()
-            {
-                Id = 3,
-                Title = "New Title",
-                Author = "Author",
-                Description = "Updated",
-                ISBN = "123",
-                Genre = Genre.Mystery,
-                Pages = 250,
-                Picture = null
-            };
+            BookDTO newBookVersion = new BookDTO(3, null, "New Title", "Author", "Updated", "123", Genre.Mystery, 250);
             _bookRepo.Setup(r => r.GetBookById(3)).Returns(oldBookVersion);
             _bookRepo.Setup(r => r.LoadBooks()).Returns(allBooks.Where(b => b.Id != 3).ToList());
 

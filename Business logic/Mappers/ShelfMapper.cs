@@ -9,8 +9,6 @@ namespace Business_logic.Mappers
     {
         public ShelfMapper()
         {
-            //CreateMap<ShelfDTO, Shelf>().
-            //    ForSourceMember(src => src.BooksOnShelf, opt => opt.DoNotValidate());
             CreateMap<RegularShelf, ShelfDTO>()
                 .ReverseMap(); 
             CreateMap<CurrentBookShelf, CurrentBookShelfDTO>()

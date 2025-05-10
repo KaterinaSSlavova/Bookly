@@ -8,10 +8,10 @@ namespace Models.Entities
         public int CurrentProgress { get; private set; }
         public Status Status { get; private set; }
 
-        public CurrentBook(User user, int bookId, string picture, string title, 
+        public CurrentBook(User user, int Id, string picture, string title, 
             string author, string description, string isbn, Genre genre, int pages,
             int progress, Status status): 
-            base(bookId, picture, title,author, description, isbn, genre, pages)
+            base(Id, picture, title,author, description, isbn, genre, pages)
         {
             this.User = user;   
             this.CurrentProgress = progress;

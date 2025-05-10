@@ -144,8 +144,6 @@ namespace Bookly.Data.Repository
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
-                //RemoveBookFromShelf(userId, bookId);
-
                 string sql = @"INSERT INTO ShelfBook(ShelfId, BookId)
                                VALUES (@ShelfId, @BookId)";
                 using SqlCommand command = new SqlCommand(sql, connection);
@@ -222,33 +220,6 @@ namespace Bookly.Data.Repository
 
                 command.ExecuteNonQuery();
                 return true;
-        }
-
-        public Shelf GetShelfContainingBook(int bookId, User user)
-        {
-                using SqlConnection connection = GetSqlConnection();
-                connection.Open();
-
-                string sql = @"SELECT s.Id, s.Name
-                                FROM Shelves as s
-                                INNER JOIN ShelfBook as sb
-                                ON sb.ShelfId = s.Id
-                                WHERE s.UserId = @UserId and sb.BookId=@BookId and s.isArchived = @isArchived";
-                using SqlCommand command = new SqlCommand(sql, connection);
-                command.Parameters.AddWithValue("@UserId", user.Id);
-                command.Parameters.AddWithValue("@BookId", bookId);
-                command.Parameters.AddWithValue("@isArchived", 0);
-
-                using SqlDataReader reader = command.ExecuteReader();
-                if (reader.Read())
-                {
-                    return new Shelf(
-                        reader.GetInt32(0),
-                        reader.GetString(1), 
-                        user
-                        );
-                }
-                return null;
         }
 
         public bool RemoveBookFromShelf(int userId, int bookId)
