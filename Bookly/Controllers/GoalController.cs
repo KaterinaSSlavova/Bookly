@@ -8,20 +8,31 @@ namespace Bookly.WebApp.Controllers
 {
     public class GoalController : Controller
     {
-        private readonly IGoalServices _igoalService;
+        private readonly ILogger<GoalController> _logger;   
+        private readonly IGoalServices _goalService;
         private readonly IMapper _mapper;
-        public GoalController(IGoalServices igoalService, IMapper mapper)
+        public GoalController(ILogger<GoalController> logger, IGoalServices goalService, IMapper mapper)
         {
-            this._igoalService = igoalService;
+            this._logger = logger;
+            this._goalService = goalService;
             this._mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult GoalOverview()
         {
-            List<GoalDTO> goals = _igoalService.GetPersonalGoals();
-            List<GoalViewModel> personalGoals = _mapper.Map<List<GoalViewModel>>(goals);
-            return View(personalGoals);
+            try
+            {
+                List<GoalDTO> goals = _goalService.GetPersonalGoals();
+                List<GoalViewModel> personalGoals = _mapper.Map<List<GoalViewModel>>(goals);
+                return View(personalGoals);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while trying to load goal overview page: {ErrorMessage}", ex.Message);
+                TempData["GoalError"] = "An unexpected error occurred! Please try again later!";
+                return View();
+            }
         }
 
         [HttpGet]
@@ -39,27 +50,45 @@ namespace Bookly.WebApp.Controllers
         [HttpPost]
         public IActionResult SaveGoal(GoalViewModel goalModel)
         {
-            GoalDTO goal = _mapper.Map<GoalDTO>(goalModel);
-            if (_igoalService.CreateGoal(goal))
+            try
             {
+                GoalDTO goal = _mapper.Map<GoalDTO>(goalModel);
+                if (_goalService.CreateGoal(goal))
+                {
+                    return RedirectToAction("GoalOverview", "Goal");
+                }
+                TempData["InvalidGoal"] = "Please enter valid data!";
+                return RedirectToAction("CreateGoal", "Goal");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while trying to create a goal: {ErrorMessage}", ex.Message);
+                TempData["GoalError"] = "An unexpected error occurred! Please try again later!";
                 return RedirectToAction("GoalOverview", "Goal");
             }
-            TempData["InvalidGoal"] = "Please enter valid data!";
-            return RedirectToAction("CreateGoal","Goal");
         }
 
         [HttpPost]
         public IActionResult RemoveGoal(int id)
         {
-            if(!_igoalService.RemoveGoal(id))
+            try
             {
-                TempData["GoalError"] = "Cannot remove this goal!";
+                if (!_goalService.RemoveGoal(id))
+                {
+                    TempData["GoalError"] = "Cannot remove this goal!";
+                }
+                else
+                {
+                    TempData["GoalSuccess"] = "Goal was removed successfully!";
+                }
+                return RedirectToAction("GoalOverview", "Goal");
             }
-            else
+            catch (Exception ex)
             {
-                TempData["GoalSuccess"] = "Goal was removed successfully!";
+                _logger.LogError(ex, "An error occurred while trying to remove a goal: {ErrorMessage}", ex.Message);
+                TempData["GoalError"] = "An unexpected error occurred! Please try again later!";
+                return RedirectToAction("GoalOverview", "Goal");
             }
-            return RedirectToAction("GoalOverview", "Goal");
         }
     }
 }

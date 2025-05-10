@@ -25,6 +25,16 @@ namespace Tests
             _userService = new UserServices(_userRepo.Object, _contextAccessor.Object, _passwordHelper.Object);
         }
 
+        private void SetSession(string username)
+        {
+            byte[] usernameBytes = System.Text.Encoding.UTF8.GetBytes(username);
+            Mock<ISession> session = new Mock<ISession>();
+            session.Setup(s => s.Set(It.IsAny<string>(), It.IsAny<byte[]>()));
+            session.Setup(s => s.TryGetValue("Username", out usernameBytes)).Returns(true);
+
+            _contextAccessor.Setup(a => a.HttpContext).Returns(new DefaultHttpContext() { Session = session.Object });
+        }
+
         [TestMethod]
         public void Register_ShouldReturnTrue_WhenUserIsRegistered()
         {
@@ -156,35 +166,36 @@ namespace Tests
             byte[] picture = new byte[] { 0x01, 0x02, 0x03 };
             string pictureDTO = Convert.ToBase64String(new byte[] { 0x01, 0x02, 0x03 });
 
-            UserDTO expectedDTO = new UserDTO(1, pictureDTO, "Username", new DateTime(2000, 1, 1), 25, "email", "Pass", Role.Reader);
-            User user = new User(1, picture, "Username", new DateTime(2000, 1, 1), "email", "Pass", Role.Reader);
+            UserDTO userDTO = new UserDTO(1, pictureDTO, "Username", new DateTime(2001, 2, 2), 25, "email", "Pass", Role.Reader);
+            User oldUserVersion = new User(1, picture, "Username", new DateTime(2001, 1, 1), "email", "Pass", Role.Reader);
 
-            byte[] usernameBytes = System.Text.Encoding.UTF8.GetBytes(user.Username);
-            Mock<ISession> session = new Mock<ISession>();
-            session.Setup(s => s.Set(It.IsAny<string>(), It.IsAny<byte[]>()));
-            session.Setup(s => s.TryGetValue("Username", out usernameBytes)).Returns(true);
+            SetSession(oldUserVersion.Username);
 
-            _contextAccessor.Setup(a => a.HttpContext).Returns(new DefaultHttpContext() { Session = session.Object});
-
-            _userRepo.Setup(r => r.GetAllEmails(It.IsAny<User>())).Returns(new List<string>());
-            _userRepo.Setup(r => r.GetAllUsernames(It.IsAny<User>())).Returns(new List<string>());
-            _userRepo.Setup(r => r.LoadUser(user.Username)).Returns(user);
-            _userRepo.Setup(r => r.UpdateProfile(It.Is<User>(u =>
-                                  u.Id == user.Id &&
-                                  u.Username == user.Username &&
-                                  u.Email == user.Email &&
-                                  u.Password == user.Password &&
-                                  u.Role == user.Role &&
-                                  u.BirthDate == user.BirthDate &&
-                                  u.Picture.SequenceEqual(user.Picture)
-                            ))).Returns(true);
-
+            _userRepo.Setup(r => r.GetAllEmails(It.IsAny<User>())).Returns(new List<string> { "email1@example.com", "email2@example.com" });
+            _userRepo.Setup(r => r.GetAllUsernames(It.IsAny<User>())).Returns(new List<string> { "Username1", "Username2" });
+            _userRepo.Setup(r => r.LoadUser(oldUserVersion.Username)).Returns(oldUserVersion);
+            _userRepo.Setup(r => r.UpdateProfile
+            (It.Is<User>(u => u.Id == userDTO.Id && u.Username==userDTO.Username &&
+            u.BirthDate==userDTO.BirthDate && u.Email==userDTO.Email && u.Password==userDTO.Password 
+            && u.Role==userDTO.Role))).Returns(true);
 
             //Act
-            bool isUpdated = _userService.UpdateProfile(expectedDTO, pictureDTO);
+            bool isUpdated = _userService.UpdateProfile(userDTO, pictureDTO);
 
             //Assert
             Assert.IsTrue(isUpdated);
+        }
+
+        [TestMethod]
+        public void UpdateProfile_ShouldReturnFalse_WhenUserIsNotValid()
+        {
+            //Arrange
+            byte[] picture = new byte[] { 0x01, 0x02, 0x03 };
+            string pictureDTO = Convert.ToBase64String(new byte[] { 0x01, 0x02, 0x03 });
+
+            UserDTO expectedDTO = new UserDTO(1, pictureDTO, "Username", new DateTime(2000, 1, 1), 25, "email", "Pass", Role.Reader);
+            User user = new User(1, picture, "Username", new DateTime(2000, 1, 1), "email", "Pass", Role.Reader);
+
         }
     }
 }

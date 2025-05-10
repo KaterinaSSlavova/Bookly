@@ -12,11 +12,13 @@ namespace Bookly.Controllers
 {
     public class RandomController : Controller
     {
+        private readonly ILogger<RandomController> _logger;  
         private readonly IRandomServices _randomServices;
         private readonly IBookServices _bookServices;
         private readonly IMapper _mapper;
-        public RandomController(IRandomServices randomServices, IBookServices bookServices, IMapper mapper)
+        public RandomController(ILogger<RandomController> logger, IRandomServices randomServices, IBookServices bookServices, IMapper mapper)
         {
+            _logger = logger;
             _randomServices = randomServices;
             _bookServices = bookServices;
             _mapper = mapper;
@@ -25,43 +27,79 @@ namespace Bookly.Controllers
         [HttpGet]
         public IActionResult SpinTheWheel()
         {
-            int? bookId = HttpContext.Session.GetInt32("Id");
-            if(bookId.HasValue)
+            try
             {
-                BookDTO bookDTO = _bookServices.GetBookById(bookId.Value);
-                BookViewModel bookModel = _mapper.Map<BookViewModel>(bookDTO);
-                return View(bookModel);
+                int? bookId = HttpContext.Session.GetInt32("Id");
+                if (bookId.HasValue)
+                {
+                    BookDTO bookDTO = _bookServices.GetBookById(bookId.Value);
+                    BookViewModel bookModel = _mapper.Map<BookViewModel>(bookDTO);
+                    return View(bookModel);
+                }
+                return View();
             }
-            return View();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while trying to load spin the wheel page: {ErrorMessage}", ex.Message);
+                TempData["Error"] = "An unexpected error occurred! Please try again later!";
+                return View();
+            }
         }
 
         [HttpPost]
         public IActionResult Spin()
         {
-            HttpContext.Session.SetInt32("Id", _randomServices.RandomResult().Id);
-            return RedirectToAction("SpinTheWheel", "Random");
+            try
+            {
+                HttpContext.Session.SetInt32("Id", _randomServices.RandomResult().Id);
+                return RedirectToAction("SpinTheWheel", "Random");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while trying to generate random book choice: {ErrorMessage}", ex.Message);
+                TempData["Error"] = "An unexpected error occurred! Please try again later!";
+                return RedirectToAction("SpinTheWheel", "Random");
+            }
         }
 
         [HttpGet]
         public IActionResult DateWithABook()
         {
-            var filteredBooksJson = TempData["Filtered"] as string;
-            DateWithABookDTO bookDTO = _randomServices.CreateDateDTO(filteredBooksJson);
-            List<BookViewModel> bookModel = _mapper.Map<List<BookViewModel>>(bookDTO.FilteredBooks);
-            DateWithABookViewModel model = new DateWithABookViewModel(bookModel, MapGenres(bookDTO.Genres), MapRatings(bookDTO.Ratings));
-            return View(model);
+            try
+            {
+                var filteredBooksJson = TempData["Filtered"] as string;
+                DateWithABookDTO bookDTO = _randomServices.CreateDateDTO(filteredBooksJson);
+                List<BookViewModel> bookModel = _mapper.Map<List<BookViewModel>>(bookDTO.FilteredBooks);
+                DateWithABookViewModel model = new DateWithABookViewModel(bookModel, MapGenres(bookDTO.Genres), MapRatings(bookDTO.Ratings));
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while trying to load date with a book page: {ErrorMessage}", ex.Message);
+                TempData["Error"] = "An unexpected error occurred! Please try again later!";
+                return View();
+            }
         }
 
         [HttpPost]
         public IActionResult FilterBooks(Ratings ratings, Genre genre)
         {
-            List<BookDTO> filteredBooks = _randomServices.FilterBooks(genre, ratings);
-            TempData["Filtered"] = JsonConvert.SerializeObject(filteredBooks);
-            if (filteredBooks.Count == 0 || filteredBooks == null)
+            try
             {
-                TempData["DateIndication"] = "No matches found!";
+                List<BookDTO> filteredBooks = _randomServices.FilterBooks(genre, ratings);
+                TempData["Filtered"] = JsonConvert.SerializeObject(filteredBooks);
+                if (filteredBooks.Count == 0 || filteredBooks == null)
+                {
+                    TempData["DateIndication"] = "No matches found!";
+                }
+                return RedirectToAction("DateWithABook", "Random");
             }
-            return RedirectToAction("DateWithABook", "Random");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while trying to filter books for date with a book page: {ErrorMessage}", ex.Message);
+                TempData["Error"] = "An unexpected error occurred! Please try again later!";
+                return RedirectToAction("DateWithABook", "Random");
+            }
         }
 
         [HttpPost]
@@ -80,14 +118,22 @@ namespace Bookly.Controllers
 
         private void AddToWishList(BookViewModel bookModel)
         {
-            BookDTO book = _mapper.Map<BookDTO>(bookModel);
-            if (_randomServices.AddToWishList(book))
+            try
             {
-                TempData["RandomSuccess"] = "Book added to shelf!";
+                BookDTO book = _mapper.Map<BookDTO>(bookModel);
+                if (_randomServices.AddToWishList(book))
+                {
+                    TempData["RandomSuccess"] = "Book added to shelf!";
+                }
+                else
+                {
+                    TempData["RandomWarning"] = "This book is already placed on that shelf!";
+                }
             }
-            else
+            catch (Exception ex)
             {
-                TempData["RandomWarning"] = "This book is already placed on that shelf!";
+                _logger.LogError(ex, "An error occurred while trying to add a book to wish list: {ErrorMessage}", ex.Message);
+                TempData["Error"] = "An unexpected error occurred! Please try again later!";
             }
         }
 
