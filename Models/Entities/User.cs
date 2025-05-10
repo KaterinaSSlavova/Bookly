@@ -52,5 +52,10 @@ namespace Models.Entities
             this.Email = email;
             this.Role = role;
         }
+
+        public User()
+        {
+           
+        }
     }
 }

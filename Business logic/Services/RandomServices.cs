@@ -1,58 +1,56 @@
-﻿using Business_logic.InterfacesServices;
-using Bookly.Business_logic.InterfacesServices;
+﻿using Bookly.Business_logic.InterfacesServices;
+using Business_logic.DTOs;
+using Business_logic.InterfacesServices;
 using Models.Enums;
 using Newtonsoft.Json;
-using Business_logic.DTOs;
 
 namespace Business_logic.Services
 {
-    public class RandomServices: IRandomServices
+    public class RandomServices : IRandomServices
     {
         private readonly IShelfServices _shelfService;
-        private readonly IBookServices _bookService;   
+        private readonly IBookServices _bookService;
         private readonly IRatingServices _ratingServices;
-        private readonly IUserServices _userServices;   
+        private readonly IUserServices _userServices;
+        private const string completedShelf = "Have Read";
         public RandomServices(IShelfServices shelfService, IBookServices bookService, IRatingServices ratingServices, IUserServices userServices)
-        { 
+        {
             _shelfService = shelfService;
             _bookService = bookService;
             _ratingServices = ratingServices;
             _userServices = userServices;
         }
 
-        private List<BookDTO>? GetHaveReadShelf()
+        private List<BookDTO>? GetBooksFromHaveReadShelf()
         {
-            foreach(ShelfDTO shelf in _shelfService.GetUserShelves())
+            foreach (ShelfDTO shelf in _shelfService.GetUserShelves())
             {
-                if(shelf.Name == "Have Read")
-                {
-                   return _shelfService.GetBooksFromShelf(shelf.Id);
-                }
+                if(shelf.Name == completedShelf) return shelf.BooksOnShelf;
             }
             return null;
         }
 
         public List<BookDTO> GetUnreadBooks()
         {
-            List<BookDTO>? readBooks = GetHaveReadShelf();
+            List<BookDTO>? readBooks = GetBooksFromHaveReadShelf();
             List<BookDTO> allBooks = _bookService.LoadBooks();
-            if(readBooks != null)
+            if (readBooks != null)
             {
                 List<BookDTO> unreadBooks = new List<BookDTO>();
-                List<int> readBooksId = readBooks.Select(x => x.Id).ToList();   
-                foreach(BookDTO book in allBooks)
+                List<int> readBooksId = readBooks.Select(x => x.Id).ToList();
+                foreach (BookDTO book in allBooks)
                 {
-                    if(!readBooksId.Contains(book.Id))
+                    if (!readBooksId.Contains(book.Id))
                     {
                         unreadBooks.Add(book);
                     }
                 }
-                return unreadBooks; 
+                return unreadBooks;
             }
             return allBooks;
         }
 
-        public BookDTO RandomResult() 
+        public BookDTO RandomResult()
         {
             List<BookDTO> books = GetUnreadBooks();
             Random random = new Random();
@@ -66,20 +64,20 @@ namespace Business_logic.Services
             List<BookDTO> filteredBooks = GetUnreadBooks();
             filteredBooks = filteredBooks.Where(b => b.Genre == genre).ToList();
             filteredBooks = filteredBooks.Where(b => _ratingServices.GetMostPopularRating(b.Id) == rating).ToList();
-            return filteredBooks;   
+            return filteredBooks;
         }
 
         public bool AddToWishList(BookDTO book)
         {
             ShelfDTO shelf = _shelfService.GetUserWishList();
-            if (!_shelfService.CheckForBook(shelf.Id, book.Id))
+            if (!_shelfService.CheckForBook(shelf, book.Id))
             {
                 return _shelfService.AddBookToShelf(book.Id, shelf.Id);
             }
-            return false; 
+            return false;
         }
 
-        public DateWithABookDTO CreateDateDTO(string filteredJson) 
+        public DateWithABookDTO CreateDateDTO(string filteredJson)
         {
             List<BookDTO> filteredBooks = filteredJson != null ? JsonConvert.DeserializeObject<List<BookDTO>>(filteredJson) : new List<BookDTO>();
             return new DateWithABookDTO(filteredBooks, GetGenres(), GetRatings());

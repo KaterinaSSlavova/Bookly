@@ -1,5 +1,4 @@
-﻿using System.Net;
-using AutoMapper;
+﻿using AutoMapper;
 using Bookly.Business_logic.InterfacesServices;
 using Bookly.Business_logic.Services;
 using Bookly.Data.InterfacesRepo;
@@ -54,6 +53,7 @@ namespace Tests
 
             //Assert
             Assert.IsTrue(isCreated);
+           // Assert.ThrowsException
         }
 
         [TestMethod]

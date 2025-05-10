@@ -22,23 +22,23 @@
 <hr />
 
 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-    @foreach (var book in Model.BooksOnShelf)
+    @foreach (var book in Model.CurrentBooks)
     {
         <div class="col">
             <div class="card h-100 shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title">@book.Book.Title</h5>
-                    <p class="card-text">Author: <strong>@book.Book.Author</strong></p>
-                    <p class="card-text"> <img src="@book.Book.Picture" class="card-img-top" alt="@book.Book.Title" /> </p>
+                    <h5 class="card-title">@book.Title</h5>
+                    <p class="card-text">Author: <strong>@book.Author</strong></p>
+                    <p class="card-text"> <img src="@book.Picture" class="card-img-top" alt="@book.Title" /> </p>
 
                     <div class="progress mb-2">
-                        <div class="progress-bar @(book.CurrentProgress >= book.Book.Pages ? "bg-success" : "bg-info")"
+                        <div class="progress-bar @(book.CurrentProgress >= book.Pages ? "bg-success" : "bg-info")"
                              role="progressbar"
-                             style="width: @(Math.Min((book.CurrentProgress / (double)book.Book.Pages) * 100, 100))%;"
+                             style="width: @(Math.Min((book.CurrentProgress / (double)book.Pages) * 100, 100))%;"
                              aria-valuenow="@book.CurrentProgress"
                              aria-valuemin="0"
-                             aria-valuemax="@book.Book.Pages">
-                            @book.CurrentProgress / @book.Book.Pages
+                             aria-valuemax="@book.Pages">
+                            @book.CurrentProgress / @book.Pages
                         </div>
                     </div>
 
@@ -57,37 +57,37 @@
                         }
                     </p>
 
-                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modal-@book.Book.Id">
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modal-@book.Id">
                         Update progress
                     </button>
 
                     <form asp-controller="Shelf" asp-action="UpdateCurrentBookProgress" method="post">
-                        <div class="modal fade" id="modal-@book.Book.Id" tabindex="-1" aria-labelledby="modalLabel-@book.Book.Id" aria-hidden="true">
+                        <div class="modal fade" id="modal-@book.Id" tabindex="-1" aria-labelledby="modalLabel-@book.Id" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <form asp-controller="Shelf" asp-action="UpdateCurrentBookProgress" method="post">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="modalLabel-@book.Book.Id">@book.Book.Title</h5>
+                                            <h5 class="modal-title" id="modalLabel-@book.Id">@book.Title</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
 
-                                            <img src="@book.Book.Picture" alt="Book Picture" class="img-fluid mb-3" />
+                                            <img src="@book.Picture" alt="Book Picture" class="img-fluid mb-3" />
 
                                             <div class="form-group">
                                                 <label class="control-label" for="progress">Pages Read:</label>
-                                                <input type="number" class="form-control" id="progress" name="progress" min="0" max="@book.Book.Pages" required />
-                                                <small class="form-text text-muted">Out of @book.Book.Pages pages</small>
+                                                <input type="number" class="form-control" id="progress" name="progress" min="0" max="@book.Pages" required />
+                                                <small class="form-text text-muted">Out of @book.Pages pages</small>
                                             </div>
 
-                                            <input type="hidden" name="book.Book.Id" value="@book.Book.Id" />
-                                            <input type="hidden" name="book.Book.Picture" value="@book.Book.Picture" />
-                                            <input type="hidden" name="book.Book.Title" value="@book.Book.Title" />
-                                            <input type="hidden" name="book.Book.Author" value="@book.Book.Author" />
-                                            <input type="hidden" name="book.Book.Description" value="@book.Book.Description" />
-                                            <input type="hidden" name="book.Book.ISBN" value="@book.Book.ISBN" />
-                                            <input type="hidden" name="book.Book.Genre" value="@book.Book.Genre" />
-                                            <input type="hidden" name="book.Book.Pages" value="@book.Book.Pages" />
+                                            <input type="hidden" name="book.Id" value="@book.Id" />
+                                            <input type="hidden" name="book.Picture" value="@book.Picture" />
+                                            <input type="hidden" name="book.Title" value="@book.Title" />
+                                            <input type="hidden" name="book.Author" value="@book.Author" />
+                                            <input type="hidden" name="book.Description" value="@book.Description" />
+                                            <input type="hidden" name="book.ISBN" value="@book.ISBN" />
+                                            <input type="hidden" name="book.Genre" value="@book.Genre" />
+                                            <input type="hidden" name="book.Pages" value="@book.Pages" />
                                             <input type="hidden" name="book.CurrentProgress" value="@book.CurrentProgress" />
                                             <input type="hidden" name="book.Status" value="@book.Status" />
                                         </div>
@@ -102,7 +102,7 @@
 
 
                     <form asp-controller="Shelf" asp-action="RemoveFromCurrentBookShelf" method="post">
-                        <input type="hidden" name="bookId" value="@book.Book.Id" />
+                        <input type="hidden" name="bookId" value="@book.Id" />
                         <input type="hidden" name="shelfId" value="@Model.Id" />
                         <input type="submit" value="Remove" class="btn btn-danger mb-3" />
                     </form>

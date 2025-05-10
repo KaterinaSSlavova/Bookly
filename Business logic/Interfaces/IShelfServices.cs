@@ -7,10 +7,10 @@ namespace Bookly.Business_logic.InterfacesServices
         bool CreateShelf(ShelfDTO shelf);
         void CreateDefaultShelf(string username);
         List<ShelfDTO> GetUserShelves();
-        List<BookDTO> GetBooksFromShelf(int id);
+       // List<BookDTO> GetBooksFromShelf(int id);
         ShelfDTO GetUserWishList();
-        ShelfDTO? GetShelfById(int id);
-        bool CheckForBook(int shelfId, int bookId);
+       ShelfDTO? GetShelfById(int id);
+        bool CheckForBook(ShelfDTO shelf, int bookId);
         bool AddBookToShelf(int bookId, int shelfId);
         bool UpdateBookProgress(CurrentBookDTO book, int progress);
         bool RemoveBookFromShelf(int bookId, int shelfId);

@@ -3,7 +3,6 @@ using Bookly.Business_logic.InterfacesServices;
 using Bookly.ViewModels;
 using Business_logic.DTOs;
 using AutoMapper;
-using Models.Entities;
 
 namespace Bookly.Bookly.Controllers
 {

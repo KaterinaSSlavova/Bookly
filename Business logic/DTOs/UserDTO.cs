@@ -62,5 +62,10 @@ namespace Business_logic.DTOs
             this.Email = email;
             this.Password = password;
         }
+
+        public UserDTO()
+        {
+            
+        }
     }
 }
