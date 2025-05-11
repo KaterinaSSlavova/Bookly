@@ -6,7 +6,7 @@ namespace Bookly.Data.InterfacesRepo
     {
         bool Register(User user);
         User? LoadUser(string username);
-        bool UpdateProfile(User newUse);
+        void UpdateProfile(User newUse);
         User? GetUserById(int id);
         List<string> GetAllUsernames(User user);
         List<string> GetAllEmails(User user);

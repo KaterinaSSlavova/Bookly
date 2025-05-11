@@ -26,7 +26,7 @@ namespace Bookly.Data.Repository
                 int count = (int)commandCheck.ExecuteScalar();
                 if (count > 0)
                 {
-                    throw new ApplicationException("Username or Password is already taken.");
+                    throw new ArgumentException("Username or Password is already taken.");
                 }
 
                 string insertSql = @"INSERT INTO Users([Username], Email, [Password]) 
@@ -40,9 +40,13 @@ namespace Bookly.Data.Repository
 
                 return true;
             }
+            catch (SqlException ex)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error registering user: " + ex.Message);
+                throw;
             }
         }
 
@@ -74,9 +78,13 @@ namespace Bookly.Data.Repository
                 }
                 return null;
             }
+            catch (SqlException ex)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
-                throw new ApplicationException(ex.Message);
+                throw ;
             }
         }
 
@@ -109,13 +117,17 @@ namespace Bookly.Data.Repository
                 }
                 return null;
             }
+            catch(SqlException ex)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
-                throw new ApplicationException(ex.Message);
+                throw ;
             }
         }
 
-        public bool UpdateProfile(User newUser)
+        public void UpdateProfile(User newUser)
         {
             try
             {
@@ -137,11 +149,14 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("@Id", newUser.Id);
 
                 command.ExecuteNonQuery();
-                return true;
+            }
+            catch(SqlException ex)
+            {
+                throw;
             }
             catch (Exception ex)
             {
-                throw new ApplicationException(ex.Message);
+                throw;
             }
         }
         
@@ -167,9 +182,13 @@ namespace Bookly.Data.Repository
                 }
                 return usernames;
             }
+            catch(SqlException ex)
+            {
+                throw;
+            }
             catch(Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw ;
             }
         }
 
@@ -195,9 +214,13 @@ namespace Bookly.Data.Repository
                 }
                 return emails;
             }
+            catch(SqlException ex)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw ;
             }
         }
     }

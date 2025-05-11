@@ -47,21 +47,23 @@ namespace Bookly.Business_logic.Services
             return ConvertToDTO(user);
         }
 
-        public bool UpdateProfile(UserDTO userDTO, IFormFile image)
+        public void UpdateProfile(UserDTO userDTO, IFormFile image)
         {
+            ValidateUser(userDTO);
             userDTO.Picture = ConvertToString(image);
-            if (!ValidateUser(userDTO)) return false;
             userDTO.Id = LoadUser().Id;
             _contextAccessor.HttpContext.Session.SetString("Username", userDTO.Username);
-            return _userRepo.UpdateProfile(ConvertToEntity(userDTO));
+            _userRepo.UpdateProfile(ConvertToEntity(userDTO));
         }
 
-        public bool UpdateProfile(UserDTO userDTO, string image)
+        public void UpdateProfile(UserDTO userDTO, string image)
         {
+            ValidateUser(userDTO);
             userDTO.Picture = image;
-            if(!ValidateUser(userDTO)) return false;
+            userDTO.Id = LoadUser().Id;
+            _contextAccessor.HttpContext.Session.SetString("Username", userDTO.Username);
             User user = ConvertToEntity(userDTO);
-            return _userRepo.UpdateProfile(user);
+            _userRepo.UpdateProfile(user);
         }
 
         public UserDTO? ConvertToDTO(User user)
@@ -78,17 +80,15 @@ namespace Bookly.Business_logic.Services
             return new User(user.Id, picture, user.Username, user.BirthDate, user.Email, user.Password, user.Role);
         }
 
-        private bool ValidateUser(UserDTO userDTO)
+        private void ValidateUser(UserDTO userDTO)
         {
-            if (userDTO == null) return false;
-            if (userDTO.BirthDate.Value > DateTime.Now || userDTO.BirthDate.Value.Year == DateTime.Today.Year) return false;
+            if (userDTO == null) throw new ArgumentNullException("User cannot be null", nameof(userDTO));
+            if (userDTO.BirthDate.Value > DateTime.Now || userDTO.BirthDate.Value.Year == DateTime.Today.Year) throw new ArgumentException("BirthDate must be provided.", nameof(userDTO.BirthDate));
             User user = ConvertToEntity(userDTO);
             User oldUser = ConvertToEntity(LoadUser());
             List<string> usernames = _userRepo.GetAllUsernames(oldUser);
             List<string> emails = _userRepo.GetAllEmails(oldUser);
-            if (usernames.Contains(userDTO.Username) || emails.Contains(userDTO.Email)) return false;
-
-            return true;
+            if (usernames.Contains(userDTO.Username) || emails.Contains(userDTO.Email)) throw new ArgumentException("Username and email must be unique.");
         }
 
         private string ConvertToString(IFormFile image)

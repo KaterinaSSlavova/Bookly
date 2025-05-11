@@ -1,8 +1,10 @@
-﻿using AutoMapper;
+﻿using System.Reflection.Metadata;
+using AutoMapper;
 using Bookly.Business_logic.InterfacesServices;
+using Bookly.ViewModels;
 using Business_logic.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using Bookly.ViewModels;
+using Microsoft.Data.SqlClient;
 
 namespace Bookly.Bookly.Controllers
 {
@@ -45,12 +47,21 @@ namespace Bookly.Bookly.Controllers
                 ViewBag.ErrorMessage = "There was an error while registering. Email and username must be unique.";
                 return View(model);
             }
+            catch(ArgumentException ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+            }
+            catch(SqlException ex)
+            {
+                _logger.LogError(ex, "A sql error occurred: {ErrorMessage}", ex.Message);
+                ViewBag.ErrorMessage = "An unexpected error occurred! Please try again later!";
+            }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while trying to create an account: {ErrorMessage}", ex.Message);
-                TempData["Error"] = "An unexpected error occurred! Please try again later!";
-                return View();
+                _logger.LogError(ex, "An unexpected error: {ErrorMessage}", ex.Message);
+                ViewBag.ErrorMessage = "An unexpected error occurred! Please try again later!";
             }
+            return View(model);
         }
 
         [HttpGet]
@@ -81,7 +92,7 @@ namespace Bookly.Bookly.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while trying to log into an account: {ErrorMessage}", ex.Message);
-                TempData["Error"] = "An unexpected error occurred! Please try again later!";
+                ViewBag.ErrorMessage = "An unexpected error occurred! Please try again later!";
                 return View();
             }
         }
@@ -138,33 +149,32 @@ namespace Bookly.Bookly.Controllers
         {
             try
             {
-                bool isSaved = false;
                 UserDTO user = _mapper.Map<UserDTO>(model);
-                if (model.Picture != null) isSaved = _userService.UpdateProfile(user, model.Picture);
-                else if (image != null) isSaved = _userService.UpdateProfile(user, image);
-                else
-                {
-                    TempData["ProfileError"] = "Invalid data! Please upload a photo!";
-                    return RedirectToAction("EditProfile", "User");
-                }
+                if (model.Picture != null) _userService.UpdateProfile(user, model.Picture);
+                else if (image != null) _userService.UpdateProfile(user, image);
+                TempData["ProfileUpdated"] = "Profile updated successfully!";
+                return RedirectToAction("ViewProfile", "User");
 
-                if (isSaved)
-                {
-                    TempData["ProfileUpdated"] = "Profile updated successfully!";
-                    return RedirectToAction("ViewProfile", "User");
-                }
-                else
-                {
-                    TempData["ProfileError"] = "Invalid data!";
-                    return RedirectToAction("EditProfile", "User");
-                }
+            }
+            catch(ArgumentNullException ex)
+            {
+                TempData["ProfileError"] = "Missing required data.";
+            }
+            catch(ArgumentException ex)
+            {
+                TempData["ProfileError"] = "Your email and username must be unique!";
+            }
+            catch(SqlException ex)
+            {
+                _logger.LogError(ex, "An error occurred while trying to edit an account: {ErrorMessage}", ex.Message);
+                TempData["ProfileError"] = "An error occurred while trying to save your data! Please try again later!";
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while trying to edit an account: {ErrorMessage}", ex.Message);
+                _logger.LogError(ex, "An unexpected error occurred: {ErrorMessage}", ex.Message);
                 TempData["ProfileError"] = "An unexpected error occurred! Please try again later!";
-                return RedirectToAction("EditProfile", "User");
             }
+            return RedirectToAction("EditProfile", "User");
         }
     }
 }
