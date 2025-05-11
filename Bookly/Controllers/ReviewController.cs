@@ -1,5 +1,6 @@
 ﻿using Bookly.Business_logic.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 
 namespace Bookly.Controllers
 {
@@ -18,18 +19,20 @@ namespace Bookly.Controllers
         {
             try
             {
-                if (_reviewServices.AddReview(description, bookId))
-                {
-                    TempData["Review"] = "Review was successfully created!";
-                }
-                return RedirectToAction("BookDetails", "Book", new { bookId = bookId });
+                _reviewServices.AddReview(description, bookId);
+                TempData["Review"] = "Review was successfully created!";
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "An sql error occurred while trying to create a review: {ErrorMessage}", ex.Message);
+                TempData["BookCatalogError"] = "An error occurred while trying to save your review! Please try again later!";
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while trying to create a review: {ErrorMessage}", ex.Message);
-                TempData["BookError"] = "An unexpected error occurred! Please try again later!";
-                return RedirectToAction("Index", "Book");
+                _logger.LogError(ex, "An unexpected error occurred while trying to create a review: {ErrorMessage}", ex.Message);
+                TempData["BookCatalogError"] = "An unexpected error occurred! Please try again later!";
             }
+            return RedirectToAction("BookDetails", "Book", new { bookId = bookId });
         }
 
         [HttpPost]
@@ -37,18 +40,21 @@ namespace Bookly.Controllers
         {
             try
             {
-                if (_reviewServices.RemoveReview(reviewId))
-                {
+                _reviewServices.RemoveReview(reviewId);
                     TempData["Review"] = "Review was successfully removed!";
-                }
                 return RedirectToAction("BookDetails", "Book", new { bookId = bookId });
+            }
+            catch(SqlException ex)
+            {
+                _logger.LogError(ex, "An sql error occurred while trying to remove a review: {ErrorMessage}", ex.Message);
+                TempData["BookCatalogError"] = "An error occurred while trying to remove your review! Please try again later!";
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while trying to remove a review: {ErrorMessage}", ex.Message);
-                TempData["BookError"] = "An unexpected error occurred! Please try again later!";
-                return RedirectToAction("Index", "Book");
+                TempData["BookCatalogError"] = "An unexpected error occurred! Please try again later!";
             }
+            return RedirectToAction("BookDetails", "Book", new { bookId = bookId });
         }
     }
 }

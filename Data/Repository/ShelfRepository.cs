@@ -26,6 +26,10 @@ namespace Bookly.Data.Repository
                 command.ExecuteNonQuery();
                 return true;
             }
+            catch (SqlException ex)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 throw;
@@ -34,6 +38,8 @@ namespace Bookly.Data.Repository
 
         public List<RegularShelf> GetUserRegularShelves(User user)
         {
+            try
+            {
                 List<RegularShelf> shelves = new List<RegularShelf>();
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
@@ -49,35 +55,57 @@ namespace Bookly.Data.Repository
                 while (reader.Read())
                 {
                     Shelf shelf = new Shelf(reader.GetInt32(0), reader.GetString(1), user);
-                    List<Book> books = GetBooksFromShelf(shelf.Id);    
-                    shelves.Add(new RegularShelf(shelf.Id, shelf.Name,user, books));
+                    List<Book> books = GetBooksFromShelf(shelf.Id);
+                    shelves.Add(new RegularShelf(shelf.Id, shelf.Name, user, books));
                 }
                 return shelves;
+            }
+            catch (SqlException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public CurrentBookShelf? GetUserCurrentShelf(User user, string shelfName)
         {
-            using SqlConnection connection = GetSqlConnection();
-            connection.Open();
+            try
+            {
+                using SqlConnection connection = GetSqlConnection();
+                connection.Open();
 
-            string sql = @"SELECT s.Id, s.[Name]
+                string sql = @"SELECT s.Id, s.[Name]
                                 FROM Shelves as s
                                 WHERE s.UserId = @Id and s.[Name] = @shelfName and s.isArchived=@isArchived";
-            using SqlCommand command = new SqlCommand(sql, connection);
-            command.Parameters.AddWithValue("@Id", user.Id);
-            command.Parameters.AddWithValue("@shelfName", shelfName);
-            command.Parameters.AddWithValue("@isArchived", 0);
-            using SqlDataReader reader = command.ExecuteReader();
+                using SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@Id", user.Id);
+                command.Parameters.AddWithValue("@shelfName", shelfName);
+                command.Parameters.AddWithValue("@isArchived", 0);
+                using SqlDataReader reader = command.ExecuteReader();
 
-            if (reader.Read())
-            {
-                return new CurrentBookShelf(reader.GetInt32(0), reader.GetString(1), user, GetBooksFromCurrentlyReadingShelf(user));
+                if (reader.Read())
+                {
+                    return new CurrentBookShelf(reader.GetInt32(0), reader.GetString(1), user, GetBooksFromCurrentlyReadingShelf(user));
+                }
+                return null;
             }
-            return null;
+            catch (SqlException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public List<Book> GetBooksFromShelf(int id)
         {
+            try
+            {
                 List<Book> books = new List<Book>();
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
@@ -104,10 +132,21 @@ namespace Bookly.Data.Repository
                         ));
                 }
                 return books;
+            }
+            catch (SqlException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public RegularShelf? GetShelfById(int id)
-        { 
+        {
+            try
+            {
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
@@ -121,26 +160,37 @@ namespace Bookly.Data.Repository
                 using SqlDataReader reader = command.ExecuteReader();
                 if (reader.Read())
                 {
-                     int shelfId = reader.GetInt32(0);
-                return new RegularShelf(
-                    shelfId,
-                    reader.GetString(1),
-                     new User(
-                        reader.GetInt32(2),
-                        reader.IsDBNull(3) ? null : reader.GetSqlBinary(3).Value,
-                        reader.GetString(4),
-                        reader.IsDBNull(5) ? (DateTime?)null : reader.GetDateTime(5),
-                        reader.GetString(6),
-                        reader.GetString(7),
-                        (Role)reader.GetInt32(8)),
-                     GetBooksFromShelf(shelfId)
-                     );
+                    int shelfId = reader.GetInt32(0);
+                    return new RegularShelf(
+                        shelfId,
+                        reader.GetString(1),
+                         new User(
+                            reader.GetInt32(2),
+                            reader.IsDBNull(3) ? null : reader.GetSqlBinary(3).Value,
+                            reader.GetString(4),
+                            reader.IsDBNull(5) ? (DateTime?)null : reader.GetDateTime(5),
+                            reader.GetString(6),
+                            reader.GetString(7),
+                            (Role)reader.GetInt32(8)),
+                         GetBooksFromShelf(shelfId)
+                         );
                 }
-            return null;
+                return null;
+            }
+            catch (SqlException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public bool AddBookToShelf(int bookId, int shelfId, int userId)
         {
+            try
+            {
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
@@ -152,10 +202,21 @@ namespace Bookly.Data.Repository
 
                 command.ExecuteNonQuery();
                 return true;
+            }
+            catch (SqlException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public List<CurrentBook> GetBooksFromCurrentlyReadingShelf(User user)
         {
+            try
+            {
                 List<CurrentBook> currentBooks = new List<CurrentBook>();
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
@@ -173,18 +234,29 @@ namespace Bookly.Data.Repository
                 {
                     currentBooks.Add(new CurrentBook(
                         user,
-                        reader.GetInt32(0), reader.GetString(1), reader.GetString(2), 
-                        reader.GetString(3), reader.GetString(4), reader.GetString(5), 
+                        reader.GetInt32(0), reader.GetString(1), reader.GetString(2),
+                        reader.GetString(3), reader.GetString(4), reader.GetString(5),
                         (Genre)Enum.Parse(typeof(Genre), reader.GetString(6)), reader.GetInt32(7),
                         reader.GetInt32(8),
                         (Status)reader.GetInt32(9)
                         ));
                 }
                 return currentBooks;
+            }
+            catch (SqlException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public bool SetCurrentBookProgress(CurrentBook book)
         {
+            try
+            {
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
@@ -199,10 +271,21 @@ namespace Bookly.Data.Repository
 
                 command.ExecuteNonQuery();
                 return true;
+            }
+            catch (SqlException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public bool SaveCurrentBookProgress(CurrentBook book)
         {
+            try
+            {
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
@@ -220,10 +303,21 @@ namespace Bookly.Data.Repository
 
                 command.ExecuteNonQuery();
                 return true;
+            }
+            catch (SqlException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public bool RemoveBookFromShelf(int userId, int bookId)
         {
+            try
+            {
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
@@ -238,10 +332,21 @@ namespace Bookly.Data.Repository
 
                 deleteCommand.ExecuteNonQuery();
                 return true;
+            }
+            catch (SqlException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public void RemoveFromCurrentBookShelf(int userId, int bookId)
         {
+            try
+            {
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
@@ -253,10 +358,21 @@ namespace Bookly.Data.Repository
                 deleteCommand.Parameters.AddWithValue("@BookId", bookId);
 
                 deleteCommand.ExecuteNonQuery();
+            }
+            catch (SqlException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public bool RemoveShelf(int id)
         {
+            try
+            {
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
@@ -269,6 +385,15 @@ namespace Bookly.Data.Repository
 
                 command.ExecuteNonQuery();
                 return true;
+            }
+            catch (SqlException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }

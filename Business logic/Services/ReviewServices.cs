@@ -21,12 +21,12 @@ namespace Bookly.Business_logic.Services
             _bookServices = bookServices;
         }
 
-        public bool AddReview(string description, int bookId)
+        public void AddReview(string description, int bookId)
         {
             UserDTO? user = _userServices.LoadUser();
             BookDTO? book = _bookServices.GetBookById(bookId);
             ReviewDTO review = new ReviewDTO(description, user, book);
-            return _reviewRepo.AddReview(ConvertToEntity(review));    
+            _reviewRepo.AddReview(ConvertToEntity(review));    
         }
 
         public List<ReviewDTO> GetBookReviews(BookDTO book)
@@ -35,9 +35,9 @@ namespace Bookly.Business_logic.Services
             return reviews.Select(r => ConvertToDTO(r)).ToList();
         }
 
-        public bool RemoveReview(int reviewId)
+        public void RemoveReview(int reviewId)
         {
-            return _reviewRepo.RemoveReview(reviewId);
+            _reviewRepo.RemoveReview(reviewId);
         }
 
         private Review ConvertToEntity(ReviewDTO review)

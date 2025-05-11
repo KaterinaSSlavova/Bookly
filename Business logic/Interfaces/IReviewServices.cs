@@ -4,8 +4,8 @@ namespace Bookly.Business_logic.InterfacesServices
 {
     public interface IReviewServices
     {
-        bool AddReview(string description, int bookId);
+        void AddReview(string description, int bookId);
         List<ReviewDTO> GetBookReviews(BookDTO book);
-        bool RemoveReview(int reviewId);
+        void RemoveReview(int reviewId);
     }
 }

@@ -4,8 +4,8 @@ namespace Bookly.Data.InterfacesRepo
 {
     public interface IReviewRepository
     {
-        bool AddReview(Review review);
+        void AddReview(Review review);
         List<Review> GetBookReviews(Book book);
-        bool RemoveReview(int reviewId);
+        void RemoveReview(int reviewId);
     }
 }

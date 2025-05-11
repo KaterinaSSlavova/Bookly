@@ -42,10 +42,6 @@ namespace Bookly.Bookly.Controllers
                 _shelfService.CreateDefaultShelf(user.Username);
                 return RedirectToAction("LogIn", "User");
             }
-            catch(ArgumentNullException ex)
-            {
-                ViewBag.ErrorMessage = "Invalid Data!";
-            }
             catch (ArgumentException ex)
             { 
                 ViewBag.ErrorMessage = ex.Message;
@@ -53,7 +49,7 @@ namespace Bookly.Bookly.Controllers
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "A sql error occurred: {ErrorMessage}", ex.Message);
-                ViewBag.ErrorMessage = "An unexpected error occurred! Please try again later!";
+                ViewBag.ErrorMessage = "An error occurred while trying to register your profile! Please try again later!";
             }
             catch (Exception ex)
             {
@@ -165,13 +161,9 @@ namespace Bookly.Bookly.Controllers
                 return RedirectToAction("ViewProfile", "User");
 
             }
-            catch (ArgumentNullException ex)
-            {
-                TempData["ProfileError"] = "Missing required data.";
-            }
             catch (ArgumentException ex)
             {
-                TempData["ProfileError"] = "Your email and username must be unique!";
+                TempData["ProfileError"] = ex.Message;
             }
             catch (SqlException ex)
             {

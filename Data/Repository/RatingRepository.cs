@@ -9,7 +9,7 @@ namespace Bookly.Data.Repository
     {
         public RatingRepository(IConfiguration configuration) : base(configuration) { }
 
-        public bool RateBook(int bookId, int ratingId)
+        public void RateBook(int bookId, int ratingId)
         {
             try
             {
@@ -24,15 +24,18 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("@BookId", bookId);
 
                 command.ExecuteNonQuery();
-                return true;
             }
-            catch (Exception e)
+            catch (SqlException ex)
             {
-                throw new Exception(e.Message, e);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
 
-        public bool ConnectUserWithRating(int userId, int ratingId)
+        public void ConnectUserWithRating(int userId, int ratingId)
         {
             try
             {
@@ -47,11 +50,14 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("@RatingId", ratingId);
 
                 command.ExecuteNonQuery();
-                return true;
             }
-            catch (Exception e)
+            catch (SqlException ex)
             {
-                throw new Exception(e.Message, e);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
 
@@ -79,9 +85,13 @@ namespace Bookly.Data.Repository
                 }
                 return ratings;
             }
-            catch (Exception e)
+            catch (SqlException ex)
             {
-                throw new Exception(e.Message, e);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
 
@@ -111,9 +121,13 @@ namespace Bookly.Data.Repository
                 }
                 return null;
             }
-            catch (Exception e)
+            catch (SqlException ex)
             {
-                throw new Exception(e.Message, e);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
 
@@ -135,9 +149,13 @@ namespace Bookly.Data.Repository
                 int count = (int)command.ExecuteScalar();
                 return count;
             }
-            catch (Exception e)
+            catch (SqlException ex)
             {
-                throw new Exception(e.Message, e);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
 
@@ -163,9 +181,13 @@ namespace Bookly.Data.Repository
 
                 command.ExecuteNonQuery();
             }
-            catch (Exception e)
+            catch (SqlException ex)
             {
-                throw new Exception(e.Message, e);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
     }

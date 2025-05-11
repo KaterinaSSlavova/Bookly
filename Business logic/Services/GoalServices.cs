@@ -22,15 +22,12 @@ namespace Bookly.Business_logic.Services
             _emailService = emailService;   
         }
 
-        public bool CreateGoal(GoalDTO goalDTO)
+        public void CreateGoal(GoalDTO goalDTO)
         {
-            if(!ValidateGoal(goalDTO))
-            {
-                return false;
-            }
+            ValidateGoal(goalDTO);
             goalDTO.User = GetUser();
             Goal goal = ConvertToEntity(goalDTO, goalDTO.User);
-            return _goalRepo.CreateGoal(goal);
+           _goalRepo.CreateGoal(goal);
         }
 
         public List<GoalDTO> GetPersonalGoals()
@@ -42,9 +39,9 @@ namespace Bookly.Business_logic.Services
             return goals.Select(g => ConvertToDTO(g,g.User)).ToList();
         }
 
-        public bool RemoveGoal(int id)
+        public void RemoveGoal(int id)
         {
-            return _goalRepo.RemoveGoal(id);
+             _goalRepo.RemoveGoal(id);
         }
 
         public GoalDTO? GetNewestGoal(bool isIncreasing)
@@ -86,14 +83,12 @@ namespace Bookly.Business_logic.Services
             UpdateStatus(newStatus, goal.Id);
         }
 
-        private bool ValidateGoal(GoalDTO goal)
+        private void ValidateGoal(GoalDTO goal)
         {
-            if (goal == null) return false;
-            if (goal.ReadingGoal <= 0) return false;
-            if (goal.Start > goal.End) return false;
-            if (goal.End < DateTime.Now) return false;
-
-            return true;
+            if (goal == null) throw new ArgumentNullException("Enter valid data!");
+            if (goal.ReadingGoal <= 0) throw new ArgumentException("Reading goal cannot be negative!");
+            if (goal.Start > goal.End) throw new ArgumentException("Invalid timeframe!");
+            if (goal.End < DateTime.Now) throw new ArgumentException("Invalid end of goal!");
         }
 
         private void CheckForExpired(List<Goal> goals)

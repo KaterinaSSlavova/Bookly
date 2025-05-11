@@ -12,7 +12,7 @@ namespace Bookly.Data.Repository
         {    
         }
 
-        public bool CreateGoal(Goal goal)
+        public void CreateGoal(Goal goal)
         {
             try
             {
@@ -30,11 +30,14 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("@UserId", goal.User.Id);
 
                 command.ExecuteNonQuery();
-                return true;
+            }
+            catch (SqlException ex)
+            {
+                throw;
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw;
             }
         }
 
@@ -69,9 +72,13 @@ namespace Bookly.Data.Repository
                 }
                 return null;
             }
-            catch(Exception ex) 
+            catch (SqlException ex)
             {
-                throw new Exception(ex.Message);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
 
@@ -106,9 +113,13 @@ namespace Bookly.Data.Repository
                 }
                 return goals;
             }
+            catch (SqlException ex)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw;
             }
         }
 
@@ -160,9 +171,13 @@ namespace Bookly.Data.Repository
                 }
                 return null;
             }
+            catch (SqlException ex)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw;
             }
         }
 
@@ -197,9 +212,13 @@ namespace Bookly.Data.Repository
                 }
                 return null;
             }
-            catch(Exception ex)
+            catch (SqlException ex)
             {
-                throw new Exception(ex.Message);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
 
@@ -220,9 +239,13 @@ namespace Bookly.Data.Repository
 
                 command.ExecuteNonQuery();
             }
+            catch (SqlException ex)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw;
             }
         }
 
@@ -243,13 +266,17 @@ namespace Bookly.Data.Repository
 
                 command.ExecuteNonQuery();  
             }
+            catch (SqlException ex)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw;
             }
         }
 
-        public bool RemoveGoal(int id)
+        public void RemoveGoal(int id)
         {
             try
             {
@@ -264,11 +291,14 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("@isArchived", 1);
 
                 command.ExecuteNonQuery();
-                return true;
+            }
+            catch (SqlException ex)
+            {
+                throw;
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw;
             }
         }
         
@@ -304,9 +334,13 @@ namespace Bookly.Data.Repository
                 }
                 return goals;
             }
+            catch (SqlException ex)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw;
             }
         }
     }

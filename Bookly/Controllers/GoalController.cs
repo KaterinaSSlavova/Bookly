@@ -1,14 +1,15 @@
-﻿using Bookly.Business_logic.InterfacesServices;
-using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Bookly.Business_logic.InterfacesServices;
 using Bookly.ViewModels;
 using Business_logic.DTOs;
-using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 
 namespace Bookly.WebApp.Controllers
 {
     public class GoalController : Controller
     {
-        private readonly ILogger<GoalController> _logger;   
+        private readonly ILogger<GoalController> _logger;
         private readonly IGoalServices _goalService;
         private readonly IMapper _mapper;
         public GoalController(ILogger<GoalController> logger, IGoalServices goalService, IMapper mapper)
@@ -43,8 +44,8 @@ namespace Bookly.WebApp.Controllers
 
         [HttpPost]
         public IActionResult GoToCreateGoal()
-        {  
-            return RedirectToAction("CreateGoal","Goal");
+        {
+            return RedirectToAction("CreateGoal", "Goal");
         }
 
         [HttpPost]
@@ -53,12 +54,19 @@ namespace Bookly.WebApp.Controllers
             try
             {
                 GoalDTO goal = _mapper.Map<GoalDTO>(goalModel);
-                if (_goalService.CreateGoal(goal))
-                {
-                    return RedirectToAction("GoalOverview", "Goal");
-                }
-                TempData["InvalidGoal"] = "Please enter valid data!";
+                _goalService.CreateGoal(goal);
+                return RedirectToAction("GoalOverview", "Goal");
+            }
+            catch (ArgumentException ex)
+            {
+                TempData["InvalidGoal"] = ex.Message;
                 return RedirectToAction("CreateGoal", "Goal");
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "An sql error occurred while trying to create a goal: {ErrorMessage}", ex.Message);
+                TempData["GoalError"] = "An error occurred while trying to save the goal! Please try again later!";
+                return RedirectToAction("GoalOverview", "Goal");
             }
             catch (Exception ex)
             {
@@ -73,22 +81,20 @@ namespace Bookly.WebApp.Controllers
         {
             try
             {
-                if (!_goalService.RemoveGoal(id))
-                {
-                    TempData["GoalError"] = "Cannot remove this goal!";
-                }
-                else
-                {
-                    TempData["GoalSuccess"] = "Goal was removed successfully!";
-                }
-                return RedirectToAction("GoalOverview", "Goal");
+                _goalService.RemoveGoal(id);
+                TempData["GoalSuccess"] = "Goal was removed successfully!";
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "An sql occurred while trying to remove a goal: {ErrorMessage}", ex.Message);
+                TempData["GoalError"] = "An error occurred while trying to remove this goal! Please try again later!";
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while trying to remove a goal: {ErrorMessage}", ex.Message);
+                _logger.LogError(ex, "An unexpected error occurred while trying to remove a goal: {ErrorMessage}", ex.Message);
                 TempData["GoalError"] = "An unexpected error occurred! Please try again later!";
-                return RedirectToAction("GoalOverview", "Goal");
             }
+            return RedirectToAction("GoalOverview", "Goal");
         }
     }
 }

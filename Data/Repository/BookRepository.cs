@@ -32,9 +32,13 @@ namespace Bookly.Data.Repository
                 command.ExecuteNonQuery();
                 return true;
             }
+            catch (SqlException ex)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
-                throw ;
+                throw;
             }
         }
 
@@ -67,9 +71,13 @@ namespace Bookly.Data.Repository
                 }
                 return books;
             }
+            catch (SqlException ex)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
-                throw new ApplicationException(ex.Message);
+                throw;
             }
         }
 
@@ -102,9 +110,13 @@ namespace Bookly.Data.Repository
                 }
                 return null;
             }
+            catch (SqlException ex)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
-                throw new ApplicationException(ex.Message);
+                throw;
             }
         }
 
@@ -137,9 +149,13 @@ namespace Bookly.Data.Repository
                 command.ExecuteNonQuery();
                 return true;
             }
+            catch (SqlException ex)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
-                throw new ApplicationException(ex.Message);
+                throw;
             }
         }
 
@@ -159,9 +175,13 @@ namespace Bookly.Data.Repository
 
                 command.ExecuteNonQuery();
             }
+            catch (SqlException ex)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw;
             }
         }
 

@@ -13,7 +13,7 @@ namespace Bookly.Data.Repository
             this._userRepo = userRepo;
         }
 
-        public bool AddReview(Review review)
+        public void AddReview(Review review)
         {
             try
             {
@@ -30,11 +30,14 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("BookId", review.Book.Id);
 
                 command.ExecuteNonQuery();
-                return true;
             }
-            catch(Exception ex) 
+            catch (SqlException ex)
             {
-                throw new ApplicationException(ex.Message);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
 
@@ -67,13 +70,17 @@ namespace Bookly.Data.Repository
                 }
                 return reviews;
             }
+            catch (SqlException ex)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
-                throw new ApplicationException(ex.Message);
+                throw;
             }
         }
 
-        public bool RemoveReview(int reviewId)
+        public void RemoveReview(int reviewId)
         {
             try
             {
@@ -88,11 +95,14 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("@Id", reviewId);
 
                 command.ExecuteNonQuery();
-                return true;
+            }
+            catch (SqlException ex)
+            {
+                throw;
             }
             catch (Exception ex)
             {
-                throw new ApplicationException(ex.Message);
+                throw;
             }
         }
     }

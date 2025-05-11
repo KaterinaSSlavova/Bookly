@@ -22,7 +22,7 @@ namespace Bookly.Business_logic.Services
 
         public void Register(UserDTO user)
         {
-            if (user == null) throw new ArgumentNullException("User cannot be null.", nameof(user));
+            if (user == null) throw new ArgumentNullException("Invalid data!");
             user.Password = _passwordHelper.HashPassword(user.Password);
             _userRepo.Register(ConvertToEntity(user));
         }
@@ -82,8 +82,8 @@ namespace Bookly.Business_logic.Services
 
         private void ValidateUser(UserDTO userDTO)
         {
-            if (userDTO == null) throw new ArgumentNullException("User cannot be null", nameof(userDTO));
-            if (userDTO.BirthDate.Value > DateTime.Now || userDTO.BirthDate.Value.Year == DateTime.Today.Year) throw new ArgumentException("BirthDate must be provided.", nameof(userDTO.BirthDate));
+            if (userDTO == null) throw new ArgumentNullException("Invalid data!");
+            if (userDTO.BirthDate.Value > DateTime.Now || userDTO.BirthDate.Value.Year == DateTime.Today.Year) throw new ArgumentException("Invalid birthday!");
             User user = ConvertToEntity(userDTO);
             User oldUser = ConvertToEntity(LoadUser());
             List<string> usernames = _userRepo.GetAllUsernames(oldUser);

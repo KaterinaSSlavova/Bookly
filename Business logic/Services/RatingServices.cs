@@ -16,7 +16,7 @@ namespace Bookly.Business_logic.Services
             _userServices = userServices;
         }
 
-        public bool RateBook(int bookId, int ratingId)
+        public void RateBook(int bookId, int ratingId)
         {
             UserDTO user = GetUser();
             int previousRatingCount = _ratingRepository.CheckForRating(user.Id, bookId);
@@ -24,11 +24,8 @@ namespace Bookly.Business_logic.Services
             {
                 _ratingRepository.RemoveRating(user.Id, bookId, ratingId);
             }
-            if (_ratingRepository.RateBook(bookId, ratingId) && _ratingRepository.ConnectUserWithRating(user.Id, ratingId))
-            {
-                return true;
-            }
-            return false;
+            _ratingRepository.RateBook(bookId, ratingId);
+            _ratingRepository.ConnectUserWithRating(user.Id, ratingId);
         }
 
         public List<Ratings> GetBookRatings(int bookId)
