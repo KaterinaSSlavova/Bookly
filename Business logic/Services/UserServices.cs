@@ -20,11 +20,11 @@ namespace Bookly.Business_logic.Services
             _passwordHelper = passwordHelper;
         }
 
-        public bool Register(UserDTO user)
+        public void Register(UserDTO user)
         {
-            if (user == null) return false;
+            if (user == null) throw new ArgumentNullException("User cannot be null.", nameof(user));
             user.Password = _passwordHelper.HashPassword(user.Password);
-            return _userRepo.Register(ConvertToEntity(user));
+            _userRepo.Register(ConvertToEntity(user));
         }
 
         public bool LogIn(UserDTO loggingUser)

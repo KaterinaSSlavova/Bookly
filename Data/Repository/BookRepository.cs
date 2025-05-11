@@ -34,7 +34,7 @@ namespace Bookly.Data.Repository
             }
             catch (Exception ex)
             {
-                throw new ApplicationException(ex.Message);
+                throw ;
             }
         }
 
@@ -143,7 +143,7 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public bool RemoveBook(int id)
+        public void RemoveBook(int id)
         {
             try
             {
@@ -158,7 +158,6 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("@Id", id);
 
                 command.ExecuteNonQuery();
-                return true;
             }
             catch (Exception ex)
             {

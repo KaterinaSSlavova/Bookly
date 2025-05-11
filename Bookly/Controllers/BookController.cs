@@ -178,23 +178,21 @@ namespace Bookly.Bookly.Controllers
         {
             try
             {
-                if (!_bookService.RemoveBook(id))
-                {
-                    TempData["BookCatalogError"] = "Cannot remove this book!";
-                    return RedirectToAction("BookDetails", "Book");
-                }
-                else
-                {
-                    TempData["BookCatalogSuccess"] = "Book was removed successfully!";
-                    return RedirectToAction("Index", "Book");
-                }
+                _bookService.RemoveBook(id);
+                TempData["BookCatalogSuccess"] = "Book was removed successfully!";
+                return RedirectToAction("Index", "Book");
+            }
+            catch(ArgumentNullException ex)
+            {
+                _logger.LogError(ex, "An error occurred while trying to remove a book: {ErrorMessage}", ex.Message);
+                TempData["BookError"] = "Book was not found! Please try again later!";
             }
             catch(Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while trying to remove a book: {ErrorMessage}", ex.Message);
+                _logger.LogError(ex, "An unexpected error occurred: {ErrorMessage}", ex.Message);
                 TempData["BookError"] = "An unexpected error occurred! Please try again later!";
-                return RedirectToAction("Index", "Book");
             }
+            return RedirectToAction("Index", "Book");
         }
     }
 }

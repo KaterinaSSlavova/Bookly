@@ -36,34 +36,31 @@ namespace Tests
         }
 
         [TestMethod]
-        public void Register_ShouldReturnTrue_WhenUserIsRegistered()
+        public void Register_ShouldExecuteMethodOnce_WhenUserIsRegistered()
         {
             //Arrange
             UserDTO userDTO = new UserDTO("Username", "Email", "Password");
             string hashedPass = "HashedPassword";
             User user = new User("Username", "Email", hashedPass);
             _passwordHelper.Setup(h => h.HashPassword(userDTO.Password)).Returns(hashedPass);
-            _userRepo.Setup(r => r.Register(It.Is<User>(u => u.Username == userDTO.Username && u.Email == userDTO.Email && u.Password == userDTO.Password))).Returns(true);
+            _userRepo.Setup(r => r.Register(It.Is<User>(u => u.Username == userDTO.Username && u.Email == userDTO.Email && u.Password == userDTO.Password))).Verifiable();
 
             //Act
-            bool isRegistered = _userService.Register(userDTO);
+           _userService.Register(userDTO);
 
             //Assert
-            Assert.IsTrue(isRegistered);
+            _userRepo.Verify(r => r.Register(It.Is<User>(u => u.Username == userDTO.Username && u.Email == userDTO.Email && u.Password == userDTO.Password)),Times.Once);
         }
 
         [TestMethod]
-        public void Register_ShouldReturnFalse_WhenUserIsNull()
+        public void Register_ShouldThrowException_WhenUserIsNull()
         {
             //Arrange
             UserDTO user = null;
-            _userRepo.Setup(r => r.Register(It.IsAny<User>())).Returns(false);
+            _userRepo.Setup(r => r.Register(It.IsAny<User>()));
 
-            //Act
-            bool isRegistered = _userService.Register(user);
-
-            //Assert
-            Assert.IsFalse(isRegistered);
+            //Act and Assert
+            Assert.ThrowsException<ArgumentNullException>(() => _userService.Register(user));
         }
 
         [TestMethod]

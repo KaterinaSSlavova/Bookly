@@ -13,7 +13,7 @@ namespace Bookly.Data.Repository
         { 
         }
 
-        public bool Register(User user)
+        public void Register(User user)
         {
             try
             {
@@ -37,8 +37,6 @@ namespace Bookly.Data.Repository
                 commandInsert.Parameters.AddWithValue("@Password", user.Password);
 
                 commandInsert.ExecuteNonQuery();
-
-                return true;
             }
             catch (SqlException ex)
             {

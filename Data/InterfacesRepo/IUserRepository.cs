@@ -4,7 +4,7 @@ namespace Bookly.Data.InterfacesRepo
 {
     public interface IUserRepository
     {
-        bool Register(User user);
+        void Register(User user);
         User? LoadUser(string username);
         void UpdateProfile(User newUse);
         User? GetUserById(int id);

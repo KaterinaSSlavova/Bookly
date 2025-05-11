@@ -1,5 +1,4 @@
-﻿using System.Reflection.Metadata;
-using AutoMapper;
+﻿using AutoMapper;
 using Bookly.Business_logic.InterfacesServices;
 using Bookly.ViewModels;
 using Business_logic.DTOs;
@@ -39,19 +38,19 @@ namespace Bookly.Bookly.Controllers
             try
             {
                 UserDTO user = _mapper.Map<UserDTO>(model);
-                if (_userService.Register(user))
-                {
-                    _shelfService.CreateDefaultShelf(user.Username);
-                    return RedirectToAction("LogIn", "User");
-                }
-                ViewBag.ErrorMessage = "There was an error while registering. Email and username must be unique.";
-                return View(model);
+                _userService.Register(user);
+                _shelfService.CreateDefaultShelf(user.Username);
+                return RedirectToAction("LogIn", "User");
             }
-            catch(ArgumentException ex)
+            catch(ArgumentNullException ex)
             {
+                ViewBag.ErrorMessage = "Invalid Data!";
+            }
+            catch (ArgumentException ex)
+            { 
                 ViewBag.ErrorMessage = ex.Message;
             }
-            catch(SqlException ex)
+            catch (SqlException ex)
             {
                 _logger.LogError(ex, "A sql error occurred: {ErrorMessage}", ex.Message);
                 ViewBag.ErrorMessage = "An unexpected error occurred! Please try again later!";
@@ -113,12 +112,17 @@ namespace Bookly.Bookly.Controllers
                 ProfileOverviewModel? viewModel = _mapper.Map<ProfileOverviewModel>(user);
                 return View(viewModel);
             }
-            catch (Exception ex)
+            catch(SqlException ex)
             {
                 _logger.LogError(ex, "An error occurred while trying to load account overview page: {ErrorMessage}", ex.Message);
-                TempData["ProfileError"] = "An unexpected error occurred! Please try again later!";
-                return View();
+                TempData["ProfileError"] = "Profile Overview was not loaded properly! Please try again later!";
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred: {ErrorMessage}", ex.Message);
+                TempData["ProfileError"] = "An unexpected error occurred! Please try again later!";
+            }
+            return View();  
         }
 
         [HttpGet]
@@ -130,12 +134,17 @@ namespace Bookly.Bookly.Controllers
                 EditProfileModel viewModel = _mapper.Map<EditProfileModel>(user);
                 return View(viewModel);
             }
-            catch (Exception ex)
+            catch (SqlException ex)
             {
                 _logger.LogError(ex, "An error occurred while trying to load edit profile page: {ErrorMessage}", ex.Message);
-                TempData["ProfileError"] = "An unexpected error occurred! Please try again later!";
-                return View();
+                TempData["ProfileError"] = "Cannot load user details. Please try again later!";
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred: {ErrorMessage}", ex.Message);
+                TempData["ProfileError"] = "An unexpected error occurred! Please try again later!";
+            }
+            return View();
         }
 
         [HttpPost]
@@ -156,15 +165,15 @@ namespace Bookly.Bookly.Controllers
                 return RedirectToAction("ViewProfile", "User");
 
             }
-            catch(ArgumentNullException ex)
+            catch (ArgumentNullException ex)
             {
                 TempData["ProfileError"] = "Missing required data.";
             }
-            catch(ArgumentException ex)
+            catch (ArgumentException ex)
             {
                 TempData["ProfileError"] = "Your email and username must be unique!";
             }
-            catch(SqlException ex)
+            catch (SqlException ex)
             {
                 _logger.LogError(ex, "An error occurred while trying to edit an account: {ErrorMessage}", ex.Message);
                 TempData["ProfileError"] = "An error occurred while trying to save your data! Please try again later!";

@@ -6,7 +6,7 @@ namespace Bookly.Business_logic.InterfacesServices
 {
     public interface IUserServices
     {
-        bool Register(UserDTO user);
+        void Register(UserDTO user);
         bool LogIn(UserDTO user);
         UserDTO? LoadUser();
         UserDTO? GetUserByUsername(string username);

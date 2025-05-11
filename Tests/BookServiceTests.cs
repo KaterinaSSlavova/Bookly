@@ -208,31 +208,29 @@ namespace Tests
         }
 
         [TestMethod]
-        public void RemoveBook_ShouldReturnTrue_WhenBookExists()
+        public void RemoveBook_ShouldExecuteMethodOnce_WhenBookExists()
         {
             //Arrange
             Book book = new Book(3, "/images/book3.jpg", "Just Words", "Ghost Writer", "Another mystery book", "111-1-11111-111-1", Genre.Fantasy, 150);
             _bookRepo.Setup(r => r.GetBookById(book.Id)).Returns(book);
-            _bookRepo.Setup(r => r.RemoveBook(It.IsAny<int>())).Returns(true);
+            _bookRepo.Setup(r => r.RemoveBook(book.Id)).Verifiable();
 
             //Act
-            bool isRemoved = _bookService.RemoveBook(book.Id);
+           _bookService.RemoveBook(book.Id);
 
             //Assert
-            Assert.IsTrue(isRemoved);   
+            _bookRepo.Verify(r => r.RemoveBook(book.Id), Times.Once);
         }
 
         [TestMethod]
-        public void RemoveBook_ShouldReturnFalse_WhenBookDoesNotExist()
+        public void RemoveBook_ShouldThrowException_WhenBookDoesNotExist()
         {
             //Arrange 
             int bookId = 99999999;
             _bookRepo.Setup(r => r.GetBookById(bookId)).Returns((Book)null);
 
-            //Act
-            bool isRemoved =_bookService.RemoveBook(bookId);
-
-            Assert.IsFalse(isRemoved);
+            //Act and Assert
+            Assert.ThrowsException<ArgumentNullException>(() => _bookService.RemoveBook(bookId));
         }
     }
 }
