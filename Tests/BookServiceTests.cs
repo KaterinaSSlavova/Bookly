@@ -28,58 +28,49 @@ namespace Tests
         }
 
         [TestMethod]
-        public void AddBook_ShouldReturnTrue_WhenBookIsAddedSuccessfully()
+        public void AddBook_ShouldExecuteMethodOnce_WhenBookIsAddedSuccessfully()
         {
             //Arrange
             BookDTO bookDTO = new BookDTO(1, "/images/book1.png", "Book1", "Author1", "Description1", "999-9-99999-999-9", Genre.Thriller, 100);
-            _bookRepo.Setup(r => r.AddBook(It.IsAny<Book>())).Returns(true);
+            _bookRepo.Setup(r => r.AddBook(It.IsAny<Book>())).Verifiable();
 
             //Act
-            bool isAdded = _bookService.AddBook(bookDTO);
+            _bookService.AddBook(bookDTO);
 
             //Assert
-            Assert.IsTrue(isAdded);
+            _bookRepo.Verify(r => r.AddBook(It.IsAny<Book>()), Times.Once);
         }
 
         [TestMethod]
-        public void AddBook_ShouldReturnFalse_WhenBookIsNull()
+        public void AddBook_ShouldThrowException_WhenBookIsNull()
         {
             //Arrange
             BookDTO? book = null;
 
-            //Act
-            bool isAdded = _bookService.AddBook(book);
-
-            //Assert
-            Assert.IsFalse(isAdded);
+            // Act and Assert
+            Assert.ThrowsException<ArgumentNullException>(() => _bookService.AddBook(book));
         }
 
         [TestMethod]
-        public void AddBook_ShouldReturnFalse_WhenBookHasZeroPages()
+        public void AddBook_ShouldThrowException_WhenBookHasZeroPages()
         {
             //Arrange
             BookDTO bookDTO = new BookDTO(1, "/images/book1.png", "Book1", "Author1", "Description1", "999-9-99999-999-9", Genre.Thriller, 0);
 
-            //Act
-            bool isAdded = _bookService.AddBook(bookDTO);
-
-            //Assert
-            Assert.IsFalse(isAdded);
+            // Act and Assert
+            Assert.ThrowsException<ArgumentException>(() => _bookService.AddBook(bookDTO));
         }
 
         [TestMethod]
-        public void AddBook_ShouldReturnFalse_WhenBookWithTheSameISBNExists()
+        public void AddBook_ShouldThrowException_WhenBookWithTheSameISBNExists()
         {
             //Arrange
             BookDTO newBookDTO = new BookDTO(1, "/images/book1.png", "Book1", "Author1", "Description1", "999-9-99999-999-9", Genre.Thriller, 100);
             List<Book> existingBooks = new List<Book>() { new Book(1, "/images/book1.png", "Book1", "Author1", "Description1", "999-9-99999-999-9", Genre.Thriller, 100) };
             _bookRepo.Setup(r => r.LoadBooks()).Returns(existingBooks);
 
-            //Act
-            bool isAdded = _bookService.AddBook(newBookDTO);
-
-            //Assert
-            Assert.IsFalse(isAdded);
+            // Act and Assert
+            Assert.ThrowsException<ArgumentException>(() => _bookService.AddBook(newBookDTO));
         }
 
         [TestMethod]
@@ -170,23 +161,23 @@ namespace Tests
         }
 
         [TestMethod]
-        public void UpdateBook_ShouldReturnTrue_WhenValidUpdate()
+        public void UpdateBook_ShouldExecuteMethodOnce_WhenValidUpdate()
         {
             //Arrange
             Book oldBookVersion = new Book(3, "/images/book3.jpg", "Just Words", "Ghost Writer", "Another mystery book", "111-1-11111-111-1", Genre.Fantasy, 150);
             BookDTO newBookVersion = new BookDTO(3, null, "New Title", "Author", "Updated", "123", Genre.Mystery, 250);
             _bookRepo.Setup(r => r.GetBookById(3)).Returns(oldBookVersion);
-            _bookRepo.Setup(r => r.UpdateBook(It.IsAny<Book>())).Returns(true);
+            _bookRepo.Setup(r => r.UpdateBook(It.IsAny<Book>())).Verifiable();
 
             //Act
-            bool isUpdated = _bookService.UpdateBook(newBookVersion);
+            _bookService.UpdateBook(newBookVersion);
 
             //Assert
-            Assert.IsTrue(isUpdated);
+            _bookRepo.Verify(r => r.UpdateBook(It.IsAny<Book>()), Times.Once);
         }
 
         [TestMethod]
-        public void UpdateBook_ShouldReturnFalse_WhenBookWithTheSameISBNExists()
+        public void UpdateBook_ShouldThrowException_WhenBookWithTheSameISBNExists()
         {
             //Arrange
             Book oldBookVersion = new Book(3, "/images/book3.jpg", "Just Words", "Ghost Writer", "Another mystery book", "111-1-11111-111-1", Genre.Fantasy, 150);
@@ -196,15 +187,12 @@ namespace Tests
                  new Book(2, "/images/book2.jpg", "Empty Shell", "No One", "Empty book", "000-0-00000-000-0", Genre.Mystery, 1),
                 oldBookVersion
             };
-            BookDTO newBookVersion = new BookDTO(3, null, "New Title", "Author", "Updated", "123", Genre.Mystery, 250);
+            BookDTO newBookVersion = new BookDTO(3, null, "New Title", "Author", "Updated", "978-1-23456-789-7", Genre.Mystery, 250);
             _bookRepo.Setup(r => r.GetBookById(3)).Returns(oldBookVersion);
             _bookRepo.Setup(r => r.LoadBooks()).Returns(allBooks.Where(b => b.Id != 3).ToList());
 
-            //Act
-            bool isUpdated = _bookService.UpdateBook(newBookVersion);
-
-            //Assert
-            Assert.IsFalse(isUpdated);
+            // Act and Assert
+            Assert.ThrowsException<ArgumentException>(() => _bookService.UpdateBook(newBookVersion));
         }
 
         [TestMethod]

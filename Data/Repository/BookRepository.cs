@@ -10,7 +10,7 @@ namespace Bookly.Data.Repository
     {
         public BookRepository(IConfiguration configuration): base(configuration) { }
 
-        public bool AddBook(Book book)
+        public void AddBook(Book book)
         {
             try
             {
@@ -30,7 +30,6 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("Pages", book.Pages);
 
                 command.ExecuteNonQuery();
-                return true;
             }
             catch (SqlException ex)
             {
@@ -120,7 +119,7 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public bool UpdateBook(Book book)
+        public void UpdateBook(Book book)
         {
             try
             {
@@ -147,7 +146,6 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("@Pages", book.Pages);
 
                 command.ExecuteNonQuery();
-                return true;
             }
             catch (SqlException ex)
             {

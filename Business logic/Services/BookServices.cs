@@ -16,11 +16,11 @@ namespace Bookly.Business_logic.Services
             _mapper = mapper;
         }
 
-        public bool AddBook(BookDTO bookDTO)
+        public void AddBook(BookDTO bookDTO)
         {
-            if (!ValidateBook(bookDTO)) return false;
+            ValidateBook(bookDTO);
             Book book = _mapper.Map<Book>(bookDTO);
-            return _bookRepo.AddBook(book); 
+            _bookRepo.AddBook(book); 
         }
 
         public List<BookDTO> LoadBooks()
@@ -35,34 +35,33 @@ namespace Bookly.Business_logic.Services
             return _mapper.Map<BookDTO>(book);
         }
 
-        public bool UpdateBook(BookDTO newBookVersion)
+        public void UpdateBook(BookDTO newBookVersion)
         {
             BookDTO oldBookVersion = GetBookById(newBookVersion.Id);
             if (newBookVersion.Picture == null) newBookVersion.Picture = oldBookVersion.Picture;
-            if (!ValidateUpdatedBook(oldBookVersion, newBookVersion)) return false;
-            return _bookRepo.UpdateBook(_mapper.Map<Book>(newBookVersion));
+            ValidateUpdatedBook(oldBookVersion, newBookVersion);
+            _bookRepo.UpdateBook(_mapper.Map<Book>(newBookVersion));
         }
 
-        private bool ValidateUpdatedBook(BookDTO oldBookVersion, BookDTO newBookVersion)
+        private void ValidateUpdatedBook(BookDTO oldBookVersion, BookDTO newBookVersion)
         {
             List<BookDTO> allBooks = LoadBooks().Where(b => b.Id != oldBookVersion.Id).ToList();
             foreach(BookDTO book in allBooks)
             {
-                if (newBookVersion.ISBN == book.ISBN) return false;
+                if (newBookVersion.ISBN == book.ISBN) throw new ArgumentException("ISBN already exists!");
             }
-            return true;
         }
 
-        private bool ValidateBook(BookDTO newBook)
+        private void ValidateBook(BookDTO newBook)
         {
-            if (newBook == null) return false;
-            if(newBook.Pages == 0) return false;
+            if (newBook == null) throw new ArgumentNullException("Invalid data!");
+            if(newBook.Pages == 0) throw new ArgumentException("Book pages should be bigger than zero!");
             List<BookDTO> allBooks = LoadBooks();
             foreach(BookDTO book in allBooks)
             {
-                if (newBook.ISBN == book.ISBN) return false;
+                if (string.Equals(newBook.ISBN?.Trim(), book.ISBN?.Trim(), StringComparison.OrdinalIgnoreCase))
+                    throw new ArgumentException("This ISBN already exists!");
             }
-            return true;
         }
 
         public void RemoveBook(int id)
