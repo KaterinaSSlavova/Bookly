@@ -3,13 +3,17 @@ using Models.Entities;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Models.Enums;
+using Data.Exceptions;
+using Microsoft.Extensions.Logging;
 
 namespace Bookly.Data.Repository
 {
     public class GoalRepository: Repository, IGoalRepository
     {
-        public GoalRepository(IConfiguration configuration): base(configuration) 
+        private readonly ILogger<GoalRepository> _logger;
+        public GoalRepository(IConfiguration configuration, ILogger<GoalRepository> logger): base(configuration) 
         {    
+            _logger = logger;
         }
 
         public void CreateGoal(Goal goal)
@@ -33,11 +37,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while creating a goal.");
+                throw new RepositoryException("Could not create this goal. Please try again later.", ex);
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while creating a goal.");
+                throw new RepositoryException("An unexpected error occurred. Please try again later.", ex);
             }
         }
 
@@ -74,11 +80,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while loading a goal by its id.");
+                throw new RepositoryException("Could not load that goal. Please try again later.", ex);
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while loading a goal by its id.");
+                throw new RepositoryException("An unexpected error occurred. Please try again later.", ex);
             }
         }
 
@@ -115,11 +123,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while loading a goal by its id.");
+                throw new RepositoryException("Could not load that goal. Please try again later.", ex);
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while loading a goal by its id.");
+                throw new RepositoryException("An unexpected error occurred. Please try again later.", ex);
             }
         }
 
@@ -173,11 +183,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while loading the newest goal.");
+                throw new RepositoryException("Could not load the newest goal. Please try again later.", ex);
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while loading the newest goal.");
+                throw new RepositoryException("An unexpected error occurred. Please try again later.", ex);
             }
         }
 
@@ -214,11 +226,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while loading the latest completed goal.");
+                throw new RepositoryException("Could not load that goal. Please try again later.", ex);
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while loading the latest completed goal.");
+                throw new RepositoryException("An unexpected error occurred. Please try again later.", ex);
             }
         }
 
@@ -241,11 +255,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while updating the progress of a goal.");
+                throw new RepositoryException("Could not update the progress of your goal. Please try again later.", ex);
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while updating the progress of a goal.");
+                throw new RepositoryException("An unexpected error occurred. Please try again later.", ex);
             }
         }
 
@@ -268,11 +284,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while updating the status of a goal.");
+                throw new RepositoryException("Could not update your goal. Please try again later.", ex);
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while updating the status of a goal.");
+                throw new RepositoryException("An unexpected error occurred. Please try again later.", ex);
             }
         }
 
@@ -294,11 +312,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while removing a goal.");
+                throw new RepositoryException("Could not remove this goal. Please try again later.", ex);
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while removing a goal.");
+                throw new RepositoryException("An unexpected error occurred. Please try again later.", ex);
             }
         }
         
@@ -336,11 +356,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while loading all goals.");
+                throw new RepositoryException("Could not load all goals. Please try again later.", ex);
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while loading all goals.");
+                throw new RepositoryException("An unexpected error occurred. Please try again later.", ex);
             }
         }
     }

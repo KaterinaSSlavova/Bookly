@@ -3,12 +3,18 @@ using Models.Entities;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Models.Enums;
+using Microsoft.Extensions.Logging;
+using Data.Exceptions;
 
 namespace Bookly.Data.Repository
 {
     public class BookRepository: Repository, IBookRepository
     {
-        public BookRepository(IConfiguration configuration): base(configuration) { }
+        private readonly ILogger<BookRepository> _logger;
+        public BookRepository(IConfiguration configuration, ILogger<BookRepository> logger) : base(configuration)
+        {
+            _logger = logger;
+        }
 
         public void AddBook(Book book)
         {
@@ -33,11 +39,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while adding a book.");
+                throw new RepositoryException("Could not save the book. Please try again later.", ex);
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while adding a book.");
+                throw new RepositoryException("An unexpected error occurred. Please try again later.", ex);
             }
         }
 
@@ -72,11 +80,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while loading all books.");
+                throw new RepositoryException("Could not load all books. Please try again later.", ex);
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while loading all books.");
+                throw new RepositoryException("An unexpected error occurred while loading all books. Please try again later.", ex);
             }
         }
 
@@ -84,7 +94,7 @@ namespace Bookly.Data.Repository
         {
             try
             {
-                SqlConnection connection = GetSqlConnection();
+                using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
                 string sql = @"SELECT Id, Picture, Title, Author, [Description], ISBN, Genre, Pages
@@ -111,11 +121,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while getting a book by its id.");
+                throw new RepositoryException("Could not load this book. Please try again later.", ex);
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while getting a book by its id.");
+                throw new RepositoryException("An unexpected error occurred while loading this book. Please try again later.", ex);
             }
         }
 
@@ -123,7 +135,7 @@ namespace Bookly.Data.Repository
         {
             try
             {
-                SqlConnection connection = GetSqlConnection();
+                using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
                 string sql = @"UPDATE Books
@@ -149,11 +161,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while updating a book");
+                throw new RepositoryException("Could not update this book. Please try again later.", ex);
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while updating a book.");
+                throw new RepositoryException("An unexpected error occurred while updating a book. Please try again later.", ex);
             }
         }
 
@@ -175,11 +189,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while removing a book");
+                throw new RepositoryException("Could not remove this book. Please try again later.", ex);
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while removing a book.");
+                throw new RepositoryException("An unexpected error occurred while removing a book. Please try again later.", ex);
             }
         }
 
