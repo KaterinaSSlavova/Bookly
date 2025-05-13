@@ -40,12 +40,12 @@ namespace Bookly.Data.Repository
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "Sql error occurred while adding a book.");
-                throw new RepositoryException("Could not save the book. Please try again later.", ex);
+                throw new RepositoryException("Could not save the book. Please try again later.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error occurred while adding a book.");
-                throw new RepositoryException("An unexpected error occurred. Please try again later.", ex);
+                throw new RepositoryException("An unexpected error occurred. Please try again later.");
             }
         }
 
@@ -81,12 +81,12 @@ namespace Bookly.Data.Repository
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "Sql error occurred while loading all books.");
-                throw new RepositoryException("Could not load all books. Please try again later.", ex);
+                throw new RepositoryException("Could not load all books. Please try again later.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error occurred while loading all books.");
-                throw new RepositoryException("An unexpected error occurred while loading all books. Please try again later.", ex);
+                throw new RepositoryException("An unexpected error occurred while loading all books. Please try again later.");
             }
         }
 
@@ -122,12 +122,12 @@ namespace Bookly.Data.Repository
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "Sql error occurred while getting a book by its id.");
-                throw new RepositoryException("Could not load this book. Please try again later.", ex);
+                throw new RepositoryException("Could not load this book. Please try again later.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error occurred while getting a book by its id.");
-                throw new RepositoryException("An unexpected error occurred while loading this book. Please try again later.", ex);
+                throw new RepositoryException("An unexpected error occurred while loading this book. Please try again later.");
             }
         }
 
@@ -162,12 +162,12 @@ namespace Bookly.Data.Repository
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "Sql error occurred while updating a book");
-                throw new RepositoryException("Could not update this book. Please try again later.", ex);
+                throw new RepositoryException("Could not update this book. Please try again later.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error occurred while updating a book.");
-                throw new RepositoryException("An unexpected error occurred while updating a book. Please try again later.", ex);
+                throw new RepositoryException("An unexpected error occurred while updating a book. Please try again later.");
             }
         }
 
@@ -190,12 +190,12 @@ namespace Bookly.Data.Repository
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "Sql error occurred while removing a book");
-                throw new RepositoryException("Could not remove this book. Please try again later.", ex);
+                throw new RepositoryException("Could not remove this book. Please try again later.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error occurred while removing a book.");
-                throw new RepositoryException("An unexpected error occurred while removing a book. Please try again later.", ex);
+                throw new RepositoryException("An unexpected error occurred while removing a book. Please try again later.");
             }
         }
 

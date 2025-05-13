@@ -1,16 +1,20 @@
 ﻿using Bookly.Data.InterfacesRepo;
+using Data.Exceptions;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Models.Entities;
 
 namespace Bookly.Data.Repository
 {
     public class ReviewRepository: Repository, IReviewRepository
     {
+        private readonly ILogger<ReviewRepository> _logger;
         private readonly IUserRepository _userRepo;
-        public ReviewRepository(IConfiguration configuration, IUserRepository userRepo) : base(configuration)
+        public ReviewRepository(IConfiguration configuration, IUserRepository userRepo, ILogger<ReviewRepository> logger) : base(configuration)
         {
             this._userRepo = userRepo;
+            _logger = logger;
         }
 
         public void AddReview(Review review)
@@ -33,11 +37,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while adding a review.");
+                throw new RepositoryException("Could not create review. Please try again later.");
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while adding a review.");
+                throw new RepositoryException("An unexpected error occurred. Please try again later.");
             }
         }
 
@@ -72,11 +78,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while loading all book reviews.");
+                throw new RepositoryException("Could not load reviews. Please try again later.");
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while loading all book reviews.");
+                throw new RepositoryException("An unexpected error occurred. Please try again later.");
             }
         }
 
@@ -98,11 +106,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while removing a review.");
+                throw new RepositoryException("Could not remove this review. Please try again later.");
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while removing a review.");
+                throw new RepositoryException("An unexpected error occurred. Please try again later.");
             }
         }
     }

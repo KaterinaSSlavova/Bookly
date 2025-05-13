@@ -38,12 +38,12 @@ namespace Bookly.Data.Repository
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "Sql error occurred while creating a goal.");
-                throw new RepositoryException("Could not create this goal. Please try again later.", ex);
+                throw new RepositoryException("Could not create this goal. Please try again later.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error occurred while creating a goal.");
-                throw new RepositoryException("An unexpected error occurred. Please try again later.", ex);
+                throw new RepositoryException("An unexpected error occurred. Please try again later.");
             }
         }
 
@@ -81,12 +81,12 @@ namespace Bookly.Data.Repository
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "Sql error occurred while loading a goal by its id.");
-                throw new RepositoryException("Could not load that goal. Please try again later.", ex);
+                throw new RepositoryException("Could not load that goal. Please try again later.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error occurred while loading a goal by its id.");
-                throw new RepositoryException("An unexpected error occurred. Please try again later.", ex);
+                throw new RepositoryException("An unexpected error occurred. Please try again later.");
             }
         }
 
@@ -124,12 +124,12 @@ namespace Bookly.Data.Repository
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "Sql error occurred while loading a goal by its id.");
-                throw new RepositoryException("Could not load that goal. Please try again later.", ex);
+                throw new RepositoryException("Could not load that goal. Please try again later.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error occurred while loading a goal by its id.");
-                throw new RepositoryException("An unexpected error occurred. Please try again later.", ex);
+                throw new RepositoryException("An unexpected error occurred. Please try again later.");
             }
         }
 
@@ -184,12 +184,12 @@ namespace Bookly.Data.Repository
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "Sql error occurred while loading the newest goal.");
-                throw new RepositoryException("Could not load the newest goal. Please try again later.", ex);
+                throw new RepositoryException("Could not load the newest goal. Please try again later.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error occurred while loading the newest goal.");
-                throw new RepositoryException("An unexpected error occurred. Please try again later.", ex);
+                throw new RepositoryException("An unexpected error occurred. Please try again later.");
             }
         }
 
@@ -227,12 +227,12 @@ namespace Bookly.Data.Repository
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "Sql error occurred while loading the latest completed goal.");
-                throw new RepositoryException("Could not load that goal. Please try again later.", ex);
+                throw new RepositoryException("Could not load that goal. Please try again later.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error occurred while loading the latest completed goal.");
-                throw new RepositoryException("An unexpected error occurred. Please try again later.", ex);
+                throw new RepositoryException("An unexpected error occurred. Please try again later.");
             }
         }
 
@@ -256,12 +256,12 @@ namespace Bookly.Data.Repository
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "Sql error occurred while updating the progress of a goal.");
-                throw new RepositoryException("Could not update the progress of your goal. Please try again later.", ex);
+                throw new RepositoryException("Could not update the progress of your goal. Please try again later.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error occurred while updating the progress of a goal.");
-                throw new RepositoryException("An unexpected error occurred. Please try again later.", ex);
+                throw new RepositoryException("An unexpected error occurred. Please try again later.");
             }
         }
 
@@ -285,12 +285,12 @@ namespace Bookly.Data.Repository
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "Sql error occurred while updating the status of a goal.");
-                throw new RepositoryException("Could not update your goal. Please try again later.", ex);
+                throw new RepositoryException("Could not update your goal. Please try again later.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error occurred while updating the status of a goal.");
-                throw new RepositoryException("An unexpected error occurred. Please try again later.", ex);
+                throw new RepositoryException("An unexpected error occurred. Please try again later.");
             }
         }
 
@@ -313,12 +313,12 @@ namespace Bookly.Data.Repository
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "Sql error occurred while removing a goal.");
-                throw new RepositoryException("Could not remove this goal. Please try again later.", ex);
+                throw new RepositoryException("Could not remove this goal. Please try again later.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error occurred while removing a goal.");
-                throw new RepositoryException("An unexpected error occurred. Please try again later.", ex);
+                throw new RepositoryException("An unexpected error occurred. Please try again later.");
             }
         }
         
@@ -357,12 +357,12 @@ namespace Bookly.Data.Repository
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "Sql error occurred while loading all goals.");
-                throw new RepositoryException("Could not load all goals. Please try again later.", ex);
+                throw new RepositoryException("Could not load all goals. Please try again later.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error occurred while loading all goals.");
-                throw new RepositoryException("An unexpected error occurred. Please try again later.", ex);
+                throw new RepositoryException("An unexpected error occurred. Please try again later.");
             }
         }
     }

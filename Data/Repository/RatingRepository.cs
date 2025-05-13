@@ -2,12 +2,18 @@
 using Microsoft.Extensions.Configuration;
 using Models.Enums;
 using Bookly.Data.InterfacesRepo;
+using Data.Exceptions;
+using Microsoft.Extensions.Logging;
 
 namespace Bookly.Data.Repository
 {
     public class RatingRepository : Repository, IRatingRepostiory
     {
-        public RatingRepository(IConfiguration configuration) : base(configuration) { }
+        private readonly ILogger<RatingRepository> _logger;
+        public RatingRepository(IConfiguration configuration, ILogger<RatingRepository> logger) : base(configuration) 
+        {
+            _logger = logger;
+        }
 
         public void RateBook(int bookId, int ratingId)
         {
@@ -27,11 +33,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while rating a book.");
+                throw new RepositoryException("Could not rate this book. Please try again later.");
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while rating a book.");
+                throw new RepositoryException("An unexpected error occurred. Please try again later.");
             }
         }
 
@@ -53,11 +61,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while connecting user with rating.");
+                throw new RepositoryException("Could not rate this book. Please try again later.");
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while connecting user with rating.");
+                throw new RepositoryException("An unexpected error occurred. Please try again later.");
             }
         }
 
@@ -87,11 +97,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while loading all ratings for a book.");
+                throw new RepositoryException("Could not load ratings. Please try again later.");
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while loading all ratings for a book.");
+                throw new RepositoryException("An unexpected error occurred. Please try again later.");
             }
         }
 
@@ -123,11 +135,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while loading user rating for a book.");
+                throw new RepositoryException("Could not load this rating. Please try again later.");
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while loading user rating for a book.");
+                throw new RepositoryException("An unexpected error occurred. Please try again later.");
             }
         }
 
@@ -151,11 +165,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while checking for a rating.");
+                throw new RepositoryException("Could not check for rating. Please try again later.");
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while checking for a rating.");
+                throw new RepositoryException("An unexpected error occurred. Please try again later.");
             }
         }
 
@@ -183,11 +199,13 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
+                _logger.LogError(ex, "Sql error occurred while removing this rating.");
+                throw new RepositoryException("Could not remove this rating. Please try again later.");
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred while removing this rating.");
+                throw new RepositoryException("An unexpected error occurred. Please try again later.");
             }
         }
     }
