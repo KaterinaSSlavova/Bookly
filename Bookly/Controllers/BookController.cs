@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Bookly.Business_logic.InterfacesServices;
 using Bookly.ViewModels;
-using BookServiceExceptions;
 using Business_logic.DTOs;
+using Business_logic.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookly.Bookly.Controllers
@@ -64,7 +64,7 @@ namespace Bookly.Bookly.Controllers
                 AddBookModel model = new AddBookModel();
                 return View(model);
             }
-            catch (BookValidationException ex)
+            catch (ServiceValidationException ex)
             {
                 TempData["BookError"] = ex.Message;
                 return View();
@@ -94,7 +94,7 @@ namespace Bookly.Bookly.Controllers
                 return RedirectToAction("Index", "Book");
 
             }
-            catch (BookValidationException ex)
+            catch (ServiceValidationException ex)
             {
                 TempData["BookError"] = ex.Message;
                 return RedirectToAction("AddBookPage", "Book");
@@ -125,7 +125,7 @@ namespace Bookly.Bookly.Controllers
                 TempData["Message"] = "Book updated successfully!";
                 return RedirectToAction("BookDetails", "Book", new { bookId = bookModel.Id });
             }
-            catch (BookValidationException ex)
+            catch (ServiceValidationException ex)
             {
                 TempData["BookError"] = ex.Message;
                 return RedirectToAction("UpdateBook", "Book", new { bookId = bookModel.Id });
@@ -141,7 +141,7 @@ namespace Bookly.Bookly.Controllers
                 TempData["BookCatalogSuccess"] = "Book was removed successfully!";
                 return RedirectToAction("Index", "Book");
             }
-            catch (BookValidationException ex)
+            catch (ServiceValidationException ex)
             {
                 _logger.LogError(ex, "An error occurred while trying to remove a book: {ErrorMessage}", ex.Message);
                 TempData["BookError"] = "Book was not found! Please try again later!";

@@ -7,6 +7,7 @@ using Bookly.Business_logic.InterfacesServices;
 using Business_logic.DTOs;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Business_logic.Exceptions;
 
 namespace Bookly.Controllers
 {
@@ -121,19 +122,12 @@ namespace Bookly.Controllers
             try
             {
                 BookDTO book = _mapper.Map<BookDTO>(bookModel);
-                if (_randomServices.AddToWishList(book))
-                {
-                    TempData["RandomSuccess"] = "Book added to shelf!";
-                }
-                else
-                {
-                    TempData["RandomWarning"] = "This book is already placed on that shelf!";
-                }
+                _randomServices.AddToWishList(book);
+                TempData["RandomSuccess"] = "Book added to shelf!";
             }
-            catch (Exception ex)
+            catch(BookIsAlreadyOnShelfException ex)
             {
-                _logger.LogError(ex, "An error occurred while trying to add a book to wish list: {ErrorMessage}", ex.Message);
-                TempData["Error"] = "An unexpected error occurred! Please try again later!";
+                TempData["RandomWarning"] = ex.Message;
             }
         }
 

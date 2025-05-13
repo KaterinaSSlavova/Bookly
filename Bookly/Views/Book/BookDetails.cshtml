@@ -9,10 +9,10 @@
     <h1 class="mb-3">@Model.Book.Title</h1>
     <hr />
 
-    @if (TempData["Message"] != null)
+    @if (TempData["Success"] != null)
     {
         <div class="alert alert-success" role="alert">
-            <strong>@TempData["Message"]</strong>
+            <strong>@TempData["Success"]</strong>
         </div>
     }
 

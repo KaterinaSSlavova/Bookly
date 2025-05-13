@@ -3,6 +3,7 @@ using Business_logic.DTOs;
 using Business_logic.InterfacesServices;
 using Models.Enums;
 using Newtonsoft.Json;
+using Business_logic.Exceptions;
 
 namespace Business_logic.Services
 {
@@ -67,14 +68,14 @@ namespace Business_logic.Services
             return filteredBooks;
         }
 
-        public bool AddToWishList(BookDTO book)
+        public void AddToWishList(BookDTO book)
         {
             ShelfDTO shelf = _shelfService.GetUserWishList();
-            if (!_shelfService.CheckForBook(shelf, book.Id))
+            if (_shelfService.CheckForBook(shelf, book.Id))
             {
-                return _shelfService.AddBookToShelf(book.Id, shelf.Id);
+                throw new BookIsAlreadyOnShelfException(shelf.Name, book.Title);
             }
-            return false;
+            _shelfService.AddBookToShelf(book.Id, shelf.Id);
         }
 
         public DateWithABookDTO CreateDateDTO(string filteredJson)

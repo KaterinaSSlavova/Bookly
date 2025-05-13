@@ -4,17 +4,17 @@
     ViewData["Title"] = "Currently Reading Overview";
 }
 
-@if (TempData["RemoveBookSuccess"] != null)
+@if (TempData["ShelfBookSuccess"] != null)
 {
     <div class="alert alert-success" role="alert">
-        <strong>@TempData["RemoveBookSuccess"]</strong>
+        <strong>@TempData["ShelfBookSuccess"]</strong>
     </div>
 }
 
-@if (TempData["RemoveBookError"] != null)
+@if (TempData["ShelfBookError"] != null)
 {
     <div class="alert alert-danger" role="alert">
-        <strong>@TempData["RemoveBookError"]</strong>
+        <strong>@TempData["ShelfBookError"]</strong>
     </div>
 }
 

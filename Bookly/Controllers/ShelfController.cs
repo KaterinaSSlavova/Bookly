@@ -2,6 +2,7 @@
 using Bookly.Business_logic.InterfacesServices;
 using Bookly.ViewModels;
 using Business_logic.DTOs;
+using Business_logic.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookly.Bookly.Controllers
@@ -21,18 +22,9 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult ShelfOverview()
         {
-            try
-            {
-                List<ShelfDTO> myShelves = _shelfService.GetUserShelves();
-                List<ShelfViewModel> model = _mapper.Map<List<ShelfViewModel>>(myShelves);
-                return View(model);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while trying to load user shelves: {ErrorMessage}", ex.Message);
-                TempData["ShelfError"] = "An unexpected error occurred! Please try again later!";
-                return View();
-            }
+            List<ShelfDTO> myShelves = _shelfService.GetUserShelves();
+            List<ShelfViewModel> model = _mapper.Map<List<ShelfViewModel>>(myShelves);
+            return View(model);
         }
 
         [HttpGet]
@@ -59,37 +51,27 @@ namespace Bookly.Bookly.Controllers
             try
             {
                 ShelfDTO shelf = _mapper.Map<ShelfDTO>(shelfModel);
-                if (!_shelfService.CreateShelf(shelf))
-                {
-                    TempData["ShelfError"] = "Invalid data! Shelf name must be unique!";
-                    return RedirectToAction("CreateShelf", "Shelf");
-                }
+                _shelfService.CreateShelf(shelf);
                 return RedirectToAction("ShelfOverview", "Shelf");
             }
-            catch (Exception ex)
+            catch (ServiceValidationException ex)
             {
-                _logger.LogError(ex, "An error occurred while trying to create new shelf: {ErrorMessage}", ex.Message);
-                TempData["ShelfError"] = "An unexpected error occurred! Please try again later!";
-                return RedirectToAction("ShelfOverview", "Shelf");
+                TempData["ShelfError"] = ex.Message;
             }
+            catch (ShelfAlreadyExistsException ex)
+            {
+                TempData["ShelfError"] = ex.Message;
+            }
+            return RedirectToAction("CreateShelf", "Shelf");
         }
 
 
         [HttpGet]
         public IActionResult ShelfDetails(int id)
         {
-            try
-            {
-                ShelfDTO shelf = _shelfService.GetShelfById(id);
-                ShelfViewModel shelfModel = _mapper.Map<ShelfViewModel>(shelf);
-                return View(shelfModel);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while trying to load shelf details: {ErrorMessage}", ex.Message);
-                TempData["ShelfError"] = "An unexpected error occurred! Please try again later!";
-                return RedirectToAction("ShelfOverview", "Shelf");
-            }
+            ShelfDTO shelf = _shelfService.GetShelfById(id);
+            ShelfViewModel shelfModel = _mapper.Map<ShelfViewModel>(shelf);
+            return View(shelfModel);
         }
 
         [HttpPost]
@@ -101,18 +83,9 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult CurrentlyReadingOverview()
         {
-            try
-            {
-                CurrentBookShelfDTO currentBooksShelf = _shelfService.GetCurrentlyReadingShelf();
-                CurrentBookShelfViewModel shelfModel = _mapper.Map<CurrentBookShelfViewModel>(currentBooksShelf);
-                return View(shelfModel);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while trying to load currently reading overview page: {ErrorMessage}", ex.Message);
-                TempData["ShelfError"] = "An unexpected error occurred! Please try again later!";
-                return RedirectToAction("ShelfOverview", "Shelf");
-            }
+            CurrentBookShelfDTO currentBooksShelf = _shelfService.GetCurrentlyReadingShelf();
+            CurrentBookShelfViewModel shelfModel = _mapper.Map<CurrentBookShelfViewModel>(currentBooksShelf);
+            return View(shelfModel);
         }
 
         [HttpPost]
@@ -148,14 +121,12 @@ namespace Bookly.Bookly.Controllers
             {
                 CurrentBookDTO bookDTO = _mapper.Map<CurrentBookDTO>(book);
                 _shelfService.UpdateBookProgress(bookDTO, progress);
-                return RedirectToAction("CurrentlyReadingOverview", "Shelf");
             }
-            catch (Exception ex)
+            catch (InvalidProgressException ex)
             {
-                _logger.LogError(ex, "An error occurred while trying to update current book progress: {ErrorMessage}", ex.Message);
-                TempData["ShelfError"] = "An unexpected error occurred! Please try again later!";
-                return RedirectToAction("ShelfOverview", "Shelf");
+                TempData["ShelfBookError"] = ex.Message;
             }
+            return RedirectToAction("CurrentlyReadingOverview", "Shelf");
         }
 
         [HttpPost]
@@ -163,22 +134,14 @@ namespace Bookly.Bookly.Controllers
         {
             try
             {
-                if (_shelfService.AddBookToShelf(bookId, shelfId))
-                {
-                    TempData["Message"] = "Book added to shelf!";
-                }
-                else
-                {
-                    TempData["Warning"] = "This book is already placed on that shelf!";
-                }
-                return RedirectToAction("BookDetails", "Book", new { bookId = bookId });
+                _shelfService.AddBookToShelf(bookId, shelfId);
+                TempData["Success"] = "Book successfully added to shelf!";
             }
-            catch (Exception ex)
+            catch(BookIsAlreadyOnShelfException ex)
             {
-                _logger.LogError(ex, "An error occurred while trying to add book to shelf: {ErrorMessage}", ex.Message);
-                TempData["ShelfError"] = "An unexpected error occurred! Please try again later!";
-                return RedirectToAction("ShelfOverview", "Shelf");
+                TempData["Warning"] = ex.Message;
             }
+            return RedirectToAction("BookDetails", "Book", new { bookId = bookId });
         }
 
         [HttpPost]
@@ -186,41 +149,26 @@ namespace Bookly.Bookly.Controllers
         {
             try
             {
-                if (!_shelfService.RemoveShelf(id))
-                {
-                    TempData["ShelfError"] = "Shelf cannot be removed!";
-                }
-                else
-                {
-                    TempData["ShelfSuccess"] = "Shelf was removed successfully!";
-                }
-                return RedirectToAction("ShelfOverview", "Shelf");
+                _shelfService.RemoveShelf(id);
+                TempData["ShelfSuccess"] = "Shelf was removed successfully!";
             }
-            catch (Exception ex)
+            catch(ServiceValidationException ex)
             {
-                _logger.LogError(ex, "An error occurred while trying to remove a shelf: {ErrorMessage}", ex.Message);
-                TempData["ShelfError"] = "An unexpected error occurred! Please try again later!";
-                return RedirectToAction("ShelfOverview", "Shelf");
+                TempData["ShelfError"] = ex.Message;
             }
+            return RedirectToAction("ShelfOverview", "Shelf");
         }
 
         private void RemoveBookFromShelf(int bookId, int shelfId)
         {
             try
             {
-                if (!_shelfService.RemoveBookFromShelf(bookId, shelfId))
-                {
-                    TempData["RemoveBookError"] = "Book cannot be removed!";
-                }
-                else
-                {
-                    TempData["RemoveBookSuccess"] = "Book was removed successfully!";
-                }
+                _shelfService.RemoveBookFromShelf(bookId, shelfId);
+                TempData["ShelfBookSuccess"] = "Book was removed successfully!";
             }
-            catch (Exception ex)
+            catch(ServiceValidationException ex)
             {
-                _logger.LogError(ex, "An error occurred while trying to remove a book from shelf: {ErrorMessage}", ex.Message);
-                TempData["ShelfError"] = "An unexpected error occurred! Please try again later!";
+                TempData["ShelfBookError"] = ex.Message;
             }
         }
     }

@@ -10,7 +10,7 @@ namespace Bookly.Data.Repository
     {
         public ShelfRepository(IConfiguration configuration): base(configuration) { }
 
-        public bool CreateShelf(RegularShelf shelf, int id)
+        public void CreateShelf(RegularShelf shelf, int id)
         {
             try
             {
@@ -24,7 +24,6 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("@UserId", id);
 
                 command.ExecuteNonQuery();
-                return true;
             }
             catch (SqlException ex)
             {
@@ -187,7 +186,7 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public bool AddBookToShelf(int bookId, int shelfId, int userId)
+        public void AddBookToShelf(int bookId, int shelfId, int userId)
         {
             try
             {
@@ -201,7 +200,6 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("@BookId", bookId);
 
                 command.ExecuteNonQuery();
-                return true;
             }
             catch (SqlException ex)
             {
@@ -253,7 +251,7 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public bool SetCurrentBookProgress(CurrentBook book)
+        public void SetCurrentBookProgress(CurrentBook book)
         {
             try
             {
@@ -270,7 +268,6 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("@StatusId", (int)book.Status);
 
                 command.ExecuteNonQuery();
-                return true;
             }
             catch (SqlException ex)
             {
@@ -282,7 +279,7 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public bool SaveCurrentBookProgress(CurrentBook book)
+        public void SaveCurrentBookProgress(CurrentBook book)
         {
             try
             {
@@ -302,7 +299,6 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("@StatusId", (int)book.Status);
 
                 command.ExecuteNonQuery();
-                return true;
             }
             catch (SqlException ex)
             {
@@ -314,7 +310,7 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public bool RemoveBookFromShelf(int userId, int bookId)
+        public void RemoveBookFromShelf(int userId, int bookId)
         {
             try
             {
@@ -331,7 +327,6 @@ namespace Bookly.Data.Repository
                 deleteCommand.Parameters.AddWithValue("@BookId", bookId);
 
                 deleteCommand.ExecuteNonQuery();
-                return true;
             }
             catch (SqlException ex)
             {
@@ -369,7 +364,7 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public bool RemoveShelf(int id)
+        public void RemoveShelf(int id)
         {
             try
             {
@@ -384,7 +379,6 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("@Id", id);
 
                 command.ExecuteNonQuery();
-                return true;
             }
             catch (SqlException ex)
             {

@@ -3,7 +3,7 @@ using Models.Entities;
 using Bookly.Business_logic.InterfacesServices;
 using AutoMapper;
 using Business_logic.DTOs;
-using BookServiceExceptions;
+using Business_logic.Exceptions;
 
 namespace Bookly.Business_logic.Services
 {
@@ -49,25 +49,25 @@ namespace Bookly.Business_logic.Services
             List<BookDTO> allBooks = LoadBooks().Where(b => b.Id != oldBookVersion.Id).ToList();
             foreach(BookDTO book in allBooks)
             {
-                if (newBookVersion.ISBN == book.ISBN) throw new BookValidationException("ISBN already exists!");
+                if (newBookVersion.ISBN == book.ISBN) throw new ServiceValidationException("ISBN already exists!");
             }
         }
 
         private void ValidateBook(BookDTO newBook)
         {
-            if (newBook == null) throw new BookValidationException("Invalid data!");
-            if(newBook.Pages == 0) throw new BookValidationException("Book pages should be bigger than zero!");
+            if (newBook == null) throw new ServiceValidationException("Invalid data!");
+            if(newBook.Pages == 0) throw new ServiceValidationException("Book pages should be bigger than zero!");
             List<BookDTO> allBooks = LoadBooks();
             foreach(BookDTO book in allBooks)
             {
                 if (string.Equals(newBook.ISBN?.Trim(), book.ISBN?.Trim(), StringComparison.OrdinalIgnoreCase))
-                    throw new BookValidationException("This ISBN already exists!");
+                    throw new ServiceValidationException("This ISBN already exists!");
             }
         }
 
         public void RemoveBook(int id)
         {
-            if (GetBookById(id) == null) throw new BookValidationException("Book was not found.");
+            if (GetBookById(id) == null) throw new ServiceValidationException("Book was not found.");
             _bookRepo.RemoveBook(id);
         }
 

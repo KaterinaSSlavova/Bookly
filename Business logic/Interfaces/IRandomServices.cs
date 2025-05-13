@@ -8,7 +8,7 @@ namespace Business_logic.InterfacesServices
         List<BookDTO> GetUnreadBooks();
         BookDTO RandomResult();
         List<BookDTO> FilterBooks(Genre genre, Ratings rating);
-        bool AddToWishList(BookDTO book);
+        void AddToWishList(BookDTO book);
         DateWithABookDTO CreateDateDTO(string filteredJson);
     }
 }
