@@ -4,6 +4,7 @@ using Bookly.Data.InterfacesRepo;
 using Models.Entities;
 using Models.Enums;
 using Business_logic.DTOs;
+using Business_logic.Exceptions;
 
 namespace Bookly.Business_logic.Services
 {
@@ -85,10 +86,10 @@ namespace Bookly.Business_logic.Services
 
         private void ValidateGoal(GoalDTO goal)
         {
-            if (goal == null) throw new ArgumentNullException("Enter valid data!");
-            if (goal.ReadingGoal <= 0) throw new ArgumentException("Reading goal cannot be negative!");
-            if (goal.Start > goal.End) throw new ArgumentException("Invalid timeframe!");
-            if (goal.End < DateTime.Now) throw new ArgumentException("Invalid end of goal!");
+            if (goal == null) throw new ServiceValidationException("Enter valid data!");
+            if (goal.ReadingGoal <= 0) throw new InvalidReadingGoalException(goal.ReadingGoal);
+            if (goal.Start > goal.End) throw new InvalidGoalStartDateException();
+            if (goal.End < DateTime.Now) throw new InvalidGoalEndDateException();
         }
 
         private void CheckForExpired(List<Goal> goals)

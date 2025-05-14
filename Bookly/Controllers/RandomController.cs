@@ -28,79 +28,43 @@ namespace Bookly.Controllers
         [HttpGet]
         public IActionResult SpinTheWheel()
         {
-            try
+            int? bookId = HttpContext.Session.GetInt32("Id");
+            if (bookId.HasValue)
             {
-                int? bookId = HttpContext.Session.GetInt32("Id");
-                if (bookId.HasValue)
-                {
-                    BookDTO bookDTO = _bookServices.GetBookById(bookId.Value);
-                    BookViewModel bookModel = _mapper.Map<BookViewModel>(bookDTO);
-                    return View(bookModel);
-                }
-                return View();
+                BookDTO bookDTO = _bookServices.GetBookById(bookId.Value);
+                BookViewModel bookModel = _mapper.Map<BookViewModel>(bookDTO);
+                return View(bookModel);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while trying to load spin the wheel page: {ErrorMessage}", ex.Message);
-                TempData["Error"] = "An unexpected error occurred! Please try again later!";
-                return View();
-            }
+            return View();
         }
 
         [HttpPost]
         public IActionResult Spin()
         {
-            try
-            {
-                HttpContext.Session.SetInt32("Id", _randomServices.RandomResult().Id);
-                return RedirectToAction("SpinTheWheel", "Random");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while trying to generate random book choice: {ErrorMessage}", ex.Message);
-                TempData["Error"] = "An unexpected error occurred! Please try again later!";
-                return RedirectToAction("SpinTheWheel", "Random");
-            }
+            HttpContext.Session.SetInt32("Id", _randomServices.RandomResult().Id);
+            return RedirectToAction("SpinTheWheel", "Random");
         }
 
         [HttpGet]
         public IActionResult DateWithABook()
         {
-            try
-            {
-                var filteredBooksJson = TempData["Filtered"] as string;
-                DateWithABookDTO bookDTO = _randomServices.CreateDateDTO(filteredBooksJson);
-                List<BookViewModel> bookModel = _mapper.Map<List<BookViewModel>>(bookDTO.FilteredBooks);
-                DateWithABookViewModel model = new DateWithABookViewModel(bookModel, MapGenres(bookDTO.Genres), MapRatings(bookDTO.Ratings));
-                return View(model);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while trying to load date with a book page: {ErrorMessage}", ex.Message);
-                TempData["Error"] = "An unexpected error occurred! Please try again later!";
-                return View();
-            }
+            var filteredBooksJson = TempData["Filtered"] as string;
+            DateWithABookDTO bookDTO = _randomServices.CreateDateDTO(filteredBooksJson);
+            List<BookViewModel> bookModel = _mapper.Map<List<BookViewModel>>(bookDTO.FilteredBooks);
+            DateWithABookViewModel model = new DateWithABookViewModel(bookModel, MapGenres(bookDTO.Genres), MapRatings(bookDTO.Ratings));
+            return View(model);
         }
 
         [HttpPost]
         public IActionResult FilterBooks(Ratings ratings, Genre genre)
         {
-            try
+            List<BookDTO> filteredBooks = _randomServices.FilterBooks(genre, ratings);
+            TempData["Filtered"] = JsonConvert.SerializeObject(filteredBooks);
+            if (filteredBooks.Count == 0 || filteredBooks == null)
             {
-                List<BookDTO> filteredBooks = _randomServices.FilterBooks(genre, ratings);
-                TempData["Filtered"] = JsonConvert.SerializeObject(filteredBooks);
-                if (filteredBooks.Count == 0 || filteredBooks == null)
-                {
-                    TempData["DateIndication"] = "No matches found!";
-                }
-                return RedirectToAction("DateWithABook", "Random");
+                TempData["DateIndication"] = "No matches found!";
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while trying to filter books for date with a book page: {ErrorMessage}", ex.Message);
-                TempData["Error"] = "An unexpected error occurred! Please try again later!";
-                return RedirectToAction("DateWithABook", "Random");
-            }
+            return RedirectToAction("DateWithABook", "Random");
         }
 
         [HttpPost]
