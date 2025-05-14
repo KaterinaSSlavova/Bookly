@@ -6,7 +6,7 @@ using Models.Enums;
 
 namespace Bookly.Data.Repository
 {
-    public class UserRepository: Repository,IUserRepository
+    public class UserRepository: Repository, IUserRepository
     {
 
         public UserRepository(IConfiguration configuration) : base(configuration) 
@@ -19,15 +19,6 @@ namespace Bookly.Data.Repository
             {
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
-                string checkSql = @"SELECT COUNT(*) FROM Users WHERE Username = @Username or Email=@Email";
-                using SqlCommand commandCheck = new SqlCommand(checkSql, connection);
-                commandCheck.Parameters.AddWithValue("@Username", user.Username);
-                commandCheck.Parameters.AddWithValue("@Email", user.Email);
-                int count = (int)commandCheck.ExecuteScalar();
-                if (count > 0)
-                {
-                    throw new ArgumentException("Username or Password is already taken.");
-                }
 
                 string insertSql = @"INSERT INTO Users([Username], Email, [Password]) 
                                VALUES (@Username, @Email, @Password)";
@@ -158,67 +149,50 @@ namespace Bookly.Data.Repository
             }
         }
         
-        public List<string> GetAllUsernames(User user)
+        public bool DoesUsernameExists(User user, int? excludedUserId = null)
         {
             try
             {
-                List<string> usernames = new List<string>();
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
-                string sql = @"SELECT Username 
-                                FROM Users
-                                WHERE Id <> @Id";
+                string sql = "SELECT COUNT(*) FROM Users WHERE Username = @Username";
+                if(excludedUserId.HasValue) sql += " and Id <> @Id";
 
                 using SqlCommand command = new SqlCommand(sql, connection);
-                command.Parameters.AddWithValue("@Id", user.Id);
 
-                using SqlDataReader reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    usernames.Add(reader.GetString(0));
-                }
-                return usernames;
+                command.Parameters.AddWithValue("@Username", user.Username);
+                if (excludedUserId.HasValue) command.Parameters.AddWithValue("@Id", excludedUserId.Value);
+
+                int count = (int)command.ExecuteScalar();
+                return count > 0;
             }
             catch(SqlException ex)
             {
                 throw;
-            }
-            catch(Exception ex)
-            {
-                throw ;
             }
         }
 
-        public List<string> GetAllEmails(User user)
+        public bool DoesEmailExists(User user, int? excludedUserId = null)
         {
             try
             {
-                List<string> emails = new List<string>();
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
-                string sql = @"SELECT Email 
-                                FROM Users
-                                WHERE Id <> @Id";
+                string sql = "SELECT COUNT(*) FROM Users WHERE Email = @Email";
+                if (excludedUserId.HasValue) sql += " and Id <> @Id";
 
                 using SqlCommand command = new SqlCommand(sql, connection);
-                command.Parameters.AddWithValue("@Id", user.Id);
+                command.Parameters.AddWithValue("@Email", user.Email);
+                if (excludedUserId.HasValue) command.Parameters.AddWithValue("@Id", excludedUserId.Value);
 
-                using SqlDataReader reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    emails.Add(reader.GetString(0));
-                }
-                return emails;
+                int count = (int)command.ExecuteScalar();
+                return count > 0;
             }
-            catch(SqlException ex)
+            catch (SqlException ex)
             {
                 throw;
-            }
-            catch (Exception ex)
-            {
-                throw ;
             }
         }
     }

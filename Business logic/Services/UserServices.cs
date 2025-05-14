@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Business_logic.DTOs;
 using System.Text;
 using Business_logic.InterfacesHelpers;
+using Business_logic.Exceptions;
 
 namespace Bookly.Business_logic.Services
 {
@@ -22,7 +23,7 @@ namespace Bookly.Business_logic.Services
 
         public void Register(UserDTO user)
         {
-            if (user == null) throw new ArgumentNullException("Invalid data!");
+            ValidateUser(user);
             user.Password = _passwordHelper.HashPassword(user.Password);
             _userRepo.Register(ConvertToEntity(user));
         }
@@ -49,18 +50,21 @@ namespace Bookly.Business_logic.Services
 
         public void UpdateProfile(UserDTO userDTO, IFormFile image)
         {
+            UserDTO oldUser = LoadUser();
+            ValidateUser(userDTO, oldUser.Id);
             ValidateUser(userDTO);
             userDTO.Picture = ConvertToString(image);
-            userDTO.Id = LoadUser().Id;
+            userDTO.Id = oldUser.Id;
             _contextAccessor.HttpContext.Session.SetString("Username", userDTO.Username);
             _userRepo.UpdateProfile(ConvertToEntity(userDTO));
         }
 
         public void UpdateProfile(UserDTO userDTO, string image)
         {
-            ValidateUser(userDTO);
+            UserDTO oldUser = LoadUser();
+            ValidateUser(userDTO, oldUser.Id);
             userDTO.Picture = image;
-            userDTO.Id = LoadUser().Id;
+            userDTO.Id = oldUser.Id;
             _contextAccessor.HttpContext.Session.SetString("Username", userDTO.Username);
             User user = ConvertToEntity(userDTO);
             _userRepo.UpdateProfile(user);
@@ -80,15 +84,24 @@ namespace Bookly.Business_logic.Services
             return new User(user.Id, picture, user.Username, user.BirthDate, user.Email, user.Password, user.Role);
         }
 
-        private void ValidateUser(UserDTO userDTO)
+        private void ValidateUser(UserDTO userDTO, int? excludedUserId = null)
         {
-            if (userDTO == null) throw new ArgumentNullException("Invalid data!");
-            if (userDTO.BirthDate.Value > DateTime.Now || userDTO.BirthDate.Value.Year == DateTime.Today.Year) throw new ArgumentException("Invalid birthday!");
+            if (userDTO == null) 
+                throw new ServiceValidationException("Invalid data!");
+
+            if (userDTO.BirthDate.HasValue)
+            {
+                if (userDTO.BirthDate.Value > DateTime.Now || userDTO.BirthDate.Value.Year == DateTime.Today.Year)
+                    throw new InvalidBirthdayException();
+            }
+
             User user = ConvertToEntity(userDTO);
-            User oldUser = ConvertToEntity(LoadUser());
-            List<string> usernames = _userRepo.GetAllUsernames(oldUser);
-            List<string> emails = _userRepo.GetAllEmails(oldUser);
-            if (usernames.Contains(userDTO.Username) || emails.Contains(userDTO.Email)) throw new ArgumentException("Username and email must be unique.");
+
+            if (_userRepo.DoesUsernameExists(user, excludedUserId)) 
+                throw new UsernameAlreadyExistsException(user.Username);
+
+            if(_userRepo.DoesEmailExists(user, excludedUserId))
+                throw new EmailAlreadyExistsException(user.Email);
         }
 
         private string ConvertToString(IFormFile image)

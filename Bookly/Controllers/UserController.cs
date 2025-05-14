@@ -2,6 +2,7 @@
 using Bookly.Business_logic.InterfacesServices;
 using Bookly.ViewModels;
 using Business_logic.DTOs;
+using Business_logic.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 
@@ -42,19 +43,21 @@ namespace Bookly.Bookly.Controllers
                 _shelfService.CreateDefaultShelf(user.Username);
                 return RedirectToAction("LogIn", "User");
             }
-            catch (ArgumentException ex)
+            catch (UsernameAlreadyExistsException ex)
             { 
                 ViewBag.ErrorMessage = ex.Message;
             }
-            catch (SqlException ex)
+            catch(EmailAlreadyExistsException ex)
             {
-                _logger.LogError(ex, "A sql error occurred: {ErrorMessage}", ex.Message);
-                ViewBag.ErrorMessage = "An error occurred while trying to register your profile! Please try again later!";
+                ViewBag.ErrorMessage = ex.Message;
             }
-            catch (Exception ex)
+            catch(InvalidBirthdayException ex)
             {
-                _logger.LogError(ex, "An unexpected error: {ErrorMessage}", ex.Message);
-                ViewBag.ErrorMessage = "An unexpected error occurred! Please try again later!";
+                ViewBag.ErrorMessage = ex.Message;
+            }
+            catch(ServiceValidationException ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
             }
             return View(model);
         }
@@ -73,23 +76,14 @@ namespace Bookly.Bookly.Controllers
                 return View(model);
             }
 
-            try
+            UserDTO user = _mapper.Map<UserDTO>(model);
+            if (_userService.LogIn(user))
             {
-                UserDTO user = _mapper.Map<UserDTO>(model);
-                if (_userService.LogIn(user))
-                {
-                    HttpContext.Session.SetString("Username", user.Username);
-                    return RedirectToAction("Index", "Book");
-                }
-                ViewBag.ErrorMessage = "Invalid username or password! Please try again!";
-                return View(model);
+                HttpContext.Session.SetString("Username", user.Username);
+                return RedirectToAction("Index", "Book");
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while trying to log into an account: {ErrorMessage}", ex.Message);
-                ViewBag.ErrorMessage = "An unexpected error occurred! Please try again later!";
-                return View();
-            }
+            ViewBag.ErrorMessage = "Invalid credentials! Please try again!";
+            return View(model);
         }
 
         [HttpPost]
@@ -102,45 +96,17 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult ViewProfile()
         {
-            try
-            {
-                UserDTO? user = _userService.LoadUser();
-                ProfileOverviewModel? viewModel = _mapper.Map<ProfileOverviewModel>(user);
-                return View(viewModel);
-            }
-            catch(SqlException ex)
-            {
-                _logger.LogError(ex, "An error occurred while trying to load account overview page: {ErrorMessage}", ex.Message);
-                TempData["ProfileError"] = "Profile Overview was not loaded properly! Please try again later!";
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An unexpected error occurred: {ErrorMessage}", ex.Message);
-                TempData["ProfileError"] = "An unexpected error occurred! Please try again later!";
-            }
-            return View();  
+            UserDTO? user = _userService.LoadUser();
+            ProfileOverviewModel? viewModel = _mapper.Map<ProfileOverviewModel>(user);
+            return View(viewModel);
         }
 
         [HttpGet]
         public IActionResult EditProfile()
         {
-            try
-            {
-                UserDTO? user = _userService.LoadUser();
-                EditProfileModel viewModel = _mapper.Map<EditProfileModel>(user);
-                return View(viewModel);
-            }
-            catch (SqlException ex)
-            {
-                _logger.LogError(ex, "An error occurred while trying to load edit profile page: {ErrorMessage}", ex.Message);
-                TempData["ProfileError"] = "Cannot load user details. Please try again later!";
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An unexpected error occurred: {ErrorMessage}", ex.Message);
-                TempData["ProfileError"] = "An unexpected error occurred! Please try again later!";
-            }
-            return View();
+            UserDTO? user = _userService.LoadUser();
+            EditProfileModel viewModel = _mapper.Map<EditProfileModel>(user);
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -161,19 +127,21 @@ namespace Bookly.Bookly.Controllers
                 return RedirectToAction("ViewProfile", "User");
 
             }
-            catch (ArgumentException ex)
+            catch (ServiceValidationException ex)
             {
                 TempData["ProfileError"] = ex.Message;
             }
-            catch (SqlException ex)
+            catch (UsernameAlreadyExistsException ex)
             {
-                _logger.LogError(ex, "An error occurred while trying to edit an account: {ErrorMessage}", ex.Message);
-                TempData["ProfileError"] = "An error occurred while trying to save your data! Please try again later!";
+                TempData["ProfileError"] = ex.Message;
             }
-            catch (Exception ex)
+            catch(EmailAlreadyExistsException ex)
             {
-                _logger.LogError(ex, "An unexpected error occurred: {ErrorMessage}", ex.Message);
-                TempData["ProfileError"] = "An unexpected error occurred! Please try again later!";
+                TempData["ProfileError"] = ex.Message;
+            }
+            catch(InvalidBirthdayException ex)
+            {
+                TempData["ProfileError"] = ex.Message;
             }
             return RedirectToAction("EditProfile", "User");
         }

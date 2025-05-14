@@ -8,7 +8,7 @@ namespace Bookly.Data.InterfacesRepo
         User? LoadUser(string username);
         void UpdateProfile(User newUse);
         User? GetUserById(int id);
-        List<string> GetAllUsernames(User user);
-        List<string> GetAllEmails(User user);
+        bool DoesUsernameExists(User user, int? excludedUserId = null);
+        bool DoesEmailExists(User user, int? excludedUserId = null);
     }
 }
