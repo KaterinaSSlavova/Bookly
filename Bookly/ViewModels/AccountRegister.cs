@@ -11,9 +11,11 @@ namespace Bookly.ViewModels
         public string Email { get; set; }
 
         [Required]
-        public string Password { get; set; }
+		[Compare("ConfirmPassword", ErrorMessage = "Passwords do not match.")]
+		public string Password { get; set; }
 
         [Required]
-        public string ConfirmPassword { get; set; }
+		[Compare("Password", ErrorMessage = "Passwords do not match.")]
+		public string ConfirmPassword { get; set; }
     }
 }

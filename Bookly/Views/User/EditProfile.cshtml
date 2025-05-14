@@ -4,7 +4,7 @@
     ViewData["Title"] = "Edit Profile";
 }
 
-<h1>Profile</h1>
+<h1>Edit Profile</h1>
 <hr />
 
 @if (TempData["ProfileError"] != null)
@@ -15,47 +15,54 @@
 }
 
 <div class="row">
-    <div class="col-md-4">
-        <form asp-controller="User" asp-action="SaveChanges" enctype="multipart/form-data">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form asp-controller="User" asp-action="SaveChanges" enctype="multipart/form-data" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-            <div class="form-group">
-                <label class="control-label">Current Picture:</label><br />
-                @if (!string.IsNullOrEmpty(Model.Image))
-                {
-                    <img src="data:image/jpg;base64,@Model.Image" class="img-thumbnail" alt="@Model.Username" />
-                    <input type="hidden" name="image" value="@Model.Image"/>
-                }
-                else
-                {
-                    <p class="text-muted">No profile picture uploaded.</p>
-                }
-            </div>
+                    <div class="mb-3 text-center">
+                        <label class="form-label d-block">Current Picture:</label>
+                        @if (!string.IsNullOrEmpty(Model.Image))
+                        {
+                            <img src="data:image/jpg;base64,@Model.Image" class="img-thumbnail mb-2" alt="@Model.Username" style="max-width: 150px;" />
+                            <input type="hidden" name="image" value="@Model.Image" />
+                        }
+                        else
+                        {
+                            <p class="text-muted">No profile picture uploaded.</p>
+                        }
+                    </div>
 
+                    <div class="mb-3">
+                        <label asp-for="Picture" class="form-label">New Profile Picture</label>
+                        <input asp-for="Picture" type="file" class="form-control" />
+                        <span asp-validation-for="Picture" class="text-danger"></span>
+                    </div>
 
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Picture" class="control-label">Profile Picture:</label>
-                <input asp-for="Picture" type="file" name="Picture" class="form-control" />
-                <span asp-validation-for="Picture" class="text-danger"></span>
+                    <div class="mb-3">
+                        <label asp-for="Username" class="form-label">Username</label>
+                        <input asp-for="Username" class="form-control" />
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="BirthDate" class="form-label">Birth Date</label>
+                        <input asp-for="BirthDate" type="date" class="form-control" />
+                        <span asp-validation-for="BirthDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">Email</label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="Username" class="control-label">Username:</label>
-                <input asp-for="Username" class="form-control" />
-                <span asp-validation-for="Username" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BirthDate" class="control-label">BirthDate:</label>
-                <input asp-for="BirthDate" type="date" class="form-control" />
-                <span asp-validation-for="BirthDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label">Email:</label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save changes" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
