@@ -4,16 +4,15 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Models.Entities;
+using Models.Enums;
 
 namespace Bookly.Data.Repository
 {
     public class ReviewRepository: Repository, IReviewRepository
     {
         private readonly ILogger<ReviewRepository> _logger;
-        private readonly IUserRepository _userRepo;
-        public ReviewRepository(IConfiguration configuration, IUserRepository userRepo, ILogger<ReviewRepository> logger) : base(configuration)
+        public ReviewRepository(IConfiguration configuration, ILogger<ReviewRepository> logger) : base(configuration)
         {
-            this._userRepo = userRepo;
             _logger = logger;
         }
 
@@ -55,9 +54,11 @@ namespace Bookly.Data.Repository
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
-                string sql = @"SELECT r.Id, r.[Description], r.[Date], r.UserId
-                                    FROM Reviews as r
-                                    WHERE isArchived = @isArchived AND BookId = @BookId";
+                string sql = @"SELECT r.Id, r.[Description], r.[Date], u.Id, u.Picture, u.Username, u.Email, u.[Password], u.BirthDate, u.RoleId
+                                FROM Reviews as r
+                                INNER JOIN Users as u
+                                ON u.Id = r.UserId
+                                WHERE isArchived = @isArchived AND BookId = @BookId";
                 using SqlCommand command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@isArchived", 0);
                 command.Parameters.AddWithValue("@BookId", book.Id);
@@ -70,7 +71,13 @@ namespace Bookly.Data.Repository
                             reader.GetInt32(0),
                             reader.GetString(1),
                             reader.GetDateTime(2),
-                           _userRepo.GetUserById(reader.GetInt32(3)),
+                           new User(reader.GetInt32(3),
+							  reader.IsDBNull(4) ? null : reader.GetSqlBinary(4).Value,
+							  reader.GetString(5),
+							  reader.IsDBNull(8) ? (DateTime?)null : reader.GetDateTime(8),
+							  reader.GetString(6),
+							  reader.GetString(7),
+							  (Role)reader.GetInt32(9)),
                             book
                         ));
                 }

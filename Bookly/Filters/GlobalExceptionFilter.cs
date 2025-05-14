@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Bookly.Filters
 {
-    public class BookExceptionFilter: IExceptionFilter
+    public class GlobalExceptionFilter: IExceptionFilter
     {
-       private readonly ILogger<BookExceptionFilter> _logger;
-        public BookExceptionFilter(ILogger<BookExceptionFilter> logger)
+       private readonly ILogger<GlobalExceptionFilter> _logger;
+        public GlobalExceptionFilter(ILogger<GlobalExceptionFilter> logger)
         {
             _logger = logger;
         }
