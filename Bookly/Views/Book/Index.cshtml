@@ -7,12 +7,8 @@
 <h1>Books</h1>
 <hr />
 
-@if (TempData["BookCatalogSuccess"] != null)
-{
-    <div class="alert alert-success" role="alert">
-        <strong>@TempData["BookCatalogSuccess"]</strong>
-    </div>
-}
+@Html.Partial("_Alert")
+
 <form asp-controller="Book" asp-action="GoToAddBook" method="post">
     <input type="submit" value="Add new book" class="btn btn-primary" />
 </form>

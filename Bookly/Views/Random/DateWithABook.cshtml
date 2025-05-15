@@ -7,27 +7,7 @@
 <h1>Random Date With A Book</h1>
 <hr />
 
-@if (TempData["DateIndication"] != null)
-{
-    <div class="alert alert-info" role="alert">
-        <strong>@TempData["DateIndication"]</strong>
-    </div>
-}
-
-
-@if (TempData["RandomSuccess"] != null)
-{
-    <div class="alert alert-success" role="alert">
-        <strong>@TempData["RandomSuccess"]</strong>
-    </div>
-}
-
-@if (TempData["RandomWarning"] != null)
-{
-    <div class="alert alert-warning" role="alert">
-        <strong>@TempData["RandomWarning"]</strong>
-    </div>
-}
+@Html.Partial("_Alert")
 
 @if (Model.FilteredBooks != null && Model.FilteredBooks.Any())
 {

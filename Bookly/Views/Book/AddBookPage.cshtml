@@ -7,19 +7,7 @@
 <h1>Add New Book</h1>
 <hr />
 
-@if (TempData["BookSuccess"] != null)
-{
-    <div class="alert alert-success" role="alert">
-        <strong>@TempData["BookSuccess"]</strong>
-    </div>
-}
-
-@if (TempData["BookError"] != null)
-{
-    <div class="alert alert-danger" role="alert">
-        <strong>@TempData["BookError"]</strong>
-    </div>
-}
+@Html.Partial("_Alert")
 
 <div class="row">
     <div class="col-md-4">

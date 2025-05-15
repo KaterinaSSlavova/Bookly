@@ -7,12 +7,7 @@
 <h1>Log in</h1>
 <hr />
 
-@if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage))
-{
-    <div class="alert alert-danger" role="alert">
-        <strong>@ViewBag.ErrorMessage</strong>
-    </div>
-}
+@Html.Partial("_Alert")
 
 <div class="row">
     <div class="col-md-4">

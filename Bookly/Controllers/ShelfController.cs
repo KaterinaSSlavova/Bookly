@@ -42,7 +42,7 @@ namespace Bookly.Bookly.Controllers
         {
             if (shelfModel.Name == null)
             {
-                TempData["ShelfError"] = "Please fill all fields!";
+                TempData["Error"] = "Please fill all fields!";
                 return RedirectToAction("CreateShelf", "Shelf");
             }
 
@@ -54,11 +54,11 @@ namespace Bookly.Bookly.Controllers
             }
             catch (ServiceValidationException ex)
             {
-                TempData["ShelfError"] = ex.Message;
+                TempData["Error"] = ex.Message;
             }
             catch (ShelfAlreadyExistsException ex)
             {
-                TempData["ShelfError"] = ex.Message;
+                TempData["Error"] = ex.Message;
             }
             return RedirectToAction("CreateShelf", "Shelf");
         }
@@ -122,7 +122,7 @@ namespace Bookly.Bookly.Controllers
             }
             catch (InvalidProgressException ex)
             {
-                TempData["ShelfBookError"] = ex.Message;
+                TempData["Error"] = ex.Message;
             }
             return RedirectToAction("CurrentlyReadingOverview", "Shelf");
         }
@@ -148,11 +148,11 @@ namespace Bookly.Bookly.Controllers
             try
             {
                 _shelfService.RemoveShelf(id);
-                TempData["ShelfSuccess"] = "Shelf was removed successfully!";
+                TempData["Success"] = "Shelf was removed successfully!";
             }
             catch(ServiceValidationException ex)
             {
-                TempData["ShelfError"] = ex.Message;
+                TempData["Error"] = ex.Message;
             }
             return RedirectToAction("ShelfOverview", "Shelf");
         }
@@ -162,7 +162,7 @@ namespace Bookly.Bookly.Controllers
             try
             {
                 _shelfService.RemoveBookFromShelf(bookId, shelfId);
-                TempData["ShelfBookSuccess"] = "Book was removed successfully!";
+                TempData["Success"] = "Book was removed successfully!";
             }
             catch(ServiceValidationException ex)
             {

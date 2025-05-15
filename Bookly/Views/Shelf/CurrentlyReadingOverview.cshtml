@@ -4,19 +4,7 @@
     ViewData["Title"] = "Currently Reading Overview";
 }
 
-@if (TempData["ShelfBookSuccess"] != null)
-{
-    <div class="alert alert-success" role="alert">
-        <strong>@TempData["ShelfBookSuccess"]</strong>
-    </div>
-}
-
-@if (TempData["ShelfBookError"] != null)
-{
-    <div class="alert alert-danger" role="alert">
-        <strong>@TempData["ShelfBookError"]</strong>
-    </div>
-}
+@Html.Partial("_Alert")
 
 <h1>@Model.Name</h1>
 <hr />

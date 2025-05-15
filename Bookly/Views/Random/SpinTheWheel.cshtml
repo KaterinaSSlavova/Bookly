@@ -5,19 +5,7 @@
     ViewData["Title"] = "Spin the Wheel";
 }
 
-@if (TempData["RandomSuccess"] != null)
-{
-    <div class="alert alert-success" role="alert">
-        <strong>@TempData["RandomSuccess"]</strong>
-    </div>
-}
-
-@if (TempData["RandomWarning"] != null)
-{
-    <div class="alert alert-warning" role="alert">
-        <strong>@TempData["RandomWarning"]</strong>
-    </div>
-}
+@Html.Partial("_Alert")
 
 <h1>Spin The Wheel</h1>
 <hr />

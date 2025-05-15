@@ -15,7 +15,7 @@ namespace Bookly.Controllers
         public IActionResult CreateReview(string description, int bookId)
 		{
 			_reviewServices.AddReview(description, bookId);
-            TempData["Review"] = "Review was successfully created!";
+            TempData["Success"] = "Review was successfully created!";
 
 			return RedirectToAction("BookDetails", "Book", new { bookId = bookId });
         }
@@ -24,7 +24,7 @@ namespace Bookly.Controllers
         public IActionResult RemoveReview(int reviewId, int bookId)
         {
 			_reviewServices.RemoveReview(reviewId);
-			TempData["Review"] = "Review was successfully removed!";
+			TempData["Success"] = "Review was successfully removed!";
 			return RedirectToAction("BookDetails", "Book", new { bookId = bookId });
 		}
     }

@@ -4,7 +4,6 @@ using Bookly.ViewModels;
 using Business_logic.DTOs;
 using Business_logic.Exceptions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 
 namespace Bookly.Bookly.Controllers
 {
@@ -42,20 +41,20 @@ namespace Bookly.Bookly.Controllers
                 return RedirectToAction("LogIn", "User");
             }
             catch (UsernameAlreadyExistsException ex)
-            { 
-                ViewBag.ErrorMessage = ex.Message;
+            {
+                TempData["Error"] = ex.Message;
             }
             catch(EmailAlreadyExistsException ex)
             {
-                ViewBag.ErrorMessage = ex.Message;
+                TempData["Error"] = ex.Message;
             }
             catch(InvalidBirthdayException ex)
             {
-                ViewBag.ErrorMessage = ex.Message;
+                TempData["Error"] = ex.Message;
             }
             catch(ServiceValidationException ex)
             {
-                ViewBag.ErrorMessage = ex.Message;
+                TempData["Error"] = ex.Message;
             }
             return View(model);
         }
@@ -80,7 +79,7 @@ namespace Bookly.Bookly.Controllers
                 HttpContext.Session.SetString("Username", user.Username);
                 return RedirectToAction("Index", "Book");
             }
-            ViewBag.ErrorMessage = "Invalid credentials! Please try again!";
+            TempData["Error"] = "Invalid credentials! Please try again!";
             return View(model);
         }
 
@@ -121,25 +120,25 @@ namespace Bookly.Bookly.Controllers
                 UserDTO user = _mapper.Map<UserDTO>(model);
                 if (model.Picture != null) _userService.UpdateProfile(user, model.Picture);
                 else if (image != null) _userService.UpdateProfile(user, image);
-                TempData["ProfileUpdated"] = "Profile updated successfully!";
+                TempData["Success"] = "Profile updated successfully!";
                 return RedirectToAction("ViewProfile", "User");
 
             }
             catch (ServiceValidationException ex)
             {
-                TempData["ProfileError"] = ex.Message;
+                TempData["Error"] = ex.Message;
             }
             catch (UsernameAlreadyExistsException ex)
             {
-                TempData["ProfileError"] = ex.Message;
+                TempData["Error"] = ex.Message;
             }
             catch(EmailAlreadyExistsException ex)
             {
-                TempData["ProfileError"] = ex.Message;
+                TempData["Error"] = ex.Message;
             }
             catch(InvalidBirthdayException ex)
             {
-                TempData["ProfileError"] = ex.Message;
+                TempData["Error"] = ex.Message;
             }
             return RedirectToAction("EditProfile", "User");
         }

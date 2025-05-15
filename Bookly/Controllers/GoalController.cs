@@ -48,19 +48,19 @@ namespace Bookly.WebApp.Controllers
             }
             catch (ServiceValidationException ex)
             {
-                TempData["InvalidGoal"] = ex.Message;
+                TempData["Error"] = ex.Message;
             }
             catch (InvalidReadingGoalException ex)
             {
-                TempData["InvalidGoal"] = ex.Message;
+                TempData["Error"] = ex.Message;
             }
             catch (InvalidGoalStartDateException ex)
             {
-                TempData["InvalidGoal"] = ex.Message;
+                TempData["Error"] = ex.Message;
             }
             catch (InvalidGoalEndDateException ex)
             {
-                TempData["InvalidGoal"] = ex.Message;
+                TempData["Error"] = ex.Message;
             }
             return RedirectToAction("CreateGoal", "Goal");
         }
@@ -69,7 +69,7 @@ namespace Bookly.WebApp.Controllers
         public IActionResult RemoveGoal(int id)
         {
             _goalService.RemoveGoal(id);
-            TempData["GoalSuccess"] = "Goal was removed successfully!";
+            TempData["Success"] = "Goal was removed successfully!";
             return RedirectToAction("GoalOverview", "Goal");
         }
     }

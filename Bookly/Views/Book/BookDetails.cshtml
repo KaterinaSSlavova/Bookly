@@ -9,40 +9,7 @@
     <h1 class="display-5 mb-3">@Model.Book.Title</h1>
     <hr />
 
-    @if (TempData["Success"] != null)
-    {
-        <div class="alert alert-success" role="alert">
-            <strong>@TempData["Success"]</strong>
-        </div>
-    }
-
-    @if (TempData["Review"] != null)
-    {
-        <div class="alert alert-success" role="alert">
-            <strong>@TempData["Review"]</strong>
-        </div>
-    }
-
-    @if (TempData["Warning"] != null)
-    {
-        <div class="alert alert-warning" role="alert">
-            <strong>@TempData["Warning"]</strong>
-        </div>
-    }
-
-    @if (TempData["BookCatalogError"] != null)
-    {
-        <div class="alert alert-danger" role="alert">
-            <strong>@TempData["BookCatalogError"]</strong>
-        </div>
-    }
-
-    @if (TempData["Rating"] != null)
-    {
-        <div class="alert alert-success" role="alert">
-            <strong>@TempData["Rating"]</strong>
-        </div>
-    }
+    @Html.Partial("_Alert")
 
     <div class="row">
         <div class="col-md-6 mb-4">

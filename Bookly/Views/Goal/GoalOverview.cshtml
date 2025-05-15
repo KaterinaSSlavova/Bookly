@@ -7,19 +7,7 @@
 <h1 class="mb-4">Goals</h1>
 <hr />
 
-@if (TempData["GoalSuccess"] != null)
-{
-    <div class="alert alert-success" role="alert">
-        <strong>@TempData["GoalSuccess"]</strong>
-    </div>
-}
-
-@if (TempData["GoalError"] != null)
-{
-    <div class="alert alert-danger" role="alert">
-        <strong>@TempData["GoalError"]</strong>
-    </div>
-}
+@Html.Partial("_Alert")
 
 <form asp-controller="Goal" asp-action="GoToCreateGoal" method="post">
     <input type="submit" value="Create Goal" class="btn btn-primary mb-3" />

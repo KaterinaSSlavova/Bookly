@@ -64,7 +64,7 @@ namespace Bookly.Bookly.Controllers
             }
             catch (ServiceValidationException ex)
             {
-                TempData["BookError"] = ex.Message;
+                TempData["Error"] = ex.Message;
                 return View();
             }
         }
@@ -80,7 +80,7 @@ namespace Bookly.Bookly.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["BookError"] = "Please fill all fields!";
+                TempData["Error"] = "Please fill all fields!";
                 return RedirectToAction("AddBookPage", "Book");
             }
 
@@ -88,13 +88,13 @@ namespace Bookly.Bookly.Controllers
             {
                 BookDTO book = _mapper.Map<BookDTO>(bookModel);
                 _bookService.AddBook(book);
-                TempData["BookSuccess"] = "Book added successfully!";
+                TempData["Success"] = "Book added successfully!";
                 return RedirectToAction("Index", "Book");
 
             }
             catch (ServiceValidationException ex)
             {
-                TempData["BookError"] = ex.Message;
+                TempData["Error"] = ex.Message;
                 return RedirectToAction("AddBookPage", "Book");
             }
         }
@@ -120,12 +120,12 @@ namespace Bookly.Bookly.Controllers
             {
                 BookDTO book = _mapper.Map<BookDTO>(bookModel);
                 _bookService.UpdateBook(book);
-                TempData["Message"] = "Book updated successfully!";
+                TempData["Success"] = "Book updated successfully!";
                 return RedirectToAction("BookDetails", "Book", new { bookId = bookModel.Id });
             }
             catch (ServiceValidationException ex)
             {
-                TempData["BookError"] = ex.Message;
+                TempData["Error"] = ex.Message;
                 return RedirectToAction("UpdateBook", "Book", new { bookId = bookModel.Id });
             }
         }
@@ -141,7 +141,7 @@ namespace Bookly.Bookly.Controllers
             }
             catch (ServiceValidationException ex)
             {
-                TempData["BookError"] = ex.Message;
+                TempData["Error"] = ex.Message;
             }
             return RedirectToAction("Index", "Book");
         }

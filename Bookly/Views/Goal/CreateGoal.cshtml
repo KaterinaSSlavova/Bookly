@@ -7,12 +7,7 @@
 <h1>Create Goal</h1>
 <hr />
 
-@if (TempData["InvalidGoal"] != null)
-{
-    <div class="alert alert-danger" role="alert">
-        <strong>@TempData["InvalidGoal"]</strong>
-    </div>
-}
+@Html.Partial("_Alert")
 
 <div class="row">
     <div class="col-md-6 col-lg-5">

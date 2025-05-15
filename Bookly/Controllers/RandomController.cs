@@ -60,7 +60,7 @@ namespace Bookly.Controllers
             TempData["Filtered"] = JsonConvert.SerializeObject(filteredBooks);
             if (filteredBooks.Count == 0 || filteredBooks == null)
             {
-                TempData["DateIndication"] = "No matches found!";
+                TempData["Warning"] = "No matches found!";
             }
             return RedirectToAction("DateWithABook", "Random");
         }
@@ -85,11 +85,11 @@ namespace Bookly.Controllers
             {
                 BookDTO book = _mapper.Map<BookDTO>(bookModel);
                 _randomServices.AddToWishList(book);
-                TempData["RandomSuccess"] = "Book added to shelf!";
+                TempData["Success"] = "Book added to shelf!";
             }
             catch(BookIsAlreadyOnShelfException ex)
             {
-                TempData["RandomWarning"] = ex.Message;
+                TempData["Warning"] = ex.Message;
             }
         }
 

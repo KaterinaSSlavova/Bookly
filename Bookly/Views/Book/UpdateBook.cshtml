@@ -7,12 +7,7 @@
 <h1>Update Book</h1>
 <hr />
 
-@if (TempData["BookError"] != null)
-{
-    <div class="alert alert-danger" role="alert">
-        <strong>@TempData["BookError"]</strong>
-    </div>
-}
+@Html.Partial("_Alert")
 
 <div class="row">
     <div class="col-md-4">
