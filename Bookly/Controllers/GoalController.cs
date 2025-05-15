@@ -9,12 +9,10 @@ namespace Bookly.WebApp.Controllers
 {
     public class GoalController : Controller
     {
-        private readonly ILogger<GoalController> _logger;
         private readonly IGoalServices _goalService;
         private readonly IMapper _mapper;
-        public GoalController(ILogger<GoalController> logger, IGoalServices goalService, IMapper mapper)
+        public GoalController(IGoalServices goalService, IMapper mapper)
         {
-            this._logger = logger;
             this._goalService = goalService;
             this._mapper = mapper;
         }

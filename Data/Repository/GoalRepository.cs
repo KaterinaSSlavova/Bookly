@@ -47,48 +47,48 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public Goal GetGoalById(User user, int goalId)
-        {
-            try
-            {
-                using SqlConnection connection = GetSqlConnection();
-                connection.Open();
+        //public Goal GetGoalById(User user, int goalId)
+        //{
+        //    try
+        //    {
+        //        using SqlConnection connection = GetSqlConnection();
+        //        connection.Open();
 
-                string sql = @"SELECT Id, [Start], [End], ReadingGoal, CurrentProgress, StatusId, UserId
-                                FROM Goals
-                                WHERE isArchived = @isArchived and UserId = @UserId and Id = @Id";
-                using SqlCommand command = new SqlCommand(sql, connection);
-                command.Parameters.AddWithValue("@isArchived", 0);
-                command.Parameters.AddWithValue("@UserId", user.Id);
-                command.Parameters.AddWithValue("@Id", goalId);
+        //        string sql = @"SELECT Id, [Start], [End], ReadingGoal, CurrentProgress, StatusId, UserId
+        //                        FROM Goals
+        //                        WHERE isArchived = @isArchived and UserId = @UserId and Id = @Id";
+        //        using SqlCommand command = new SqlCommand(sql, connection);
+        //        command.Parameters.AddWithValue("@isArchived", 0);
+        //        command.Parameters.AddWithValue("@UserId", user.Id);
+        //        command.Parameters.AddWithValue("@Id", goalId);
 
-                using SqlDataReader reader = command.ExecuteReader();
-                if(reader.Read())
-                {
-                    return new Goal
-                        (
-                                reader.GetInt32(0),
-                                reader.GetDateTime(1),
-                                reader.GetDateTime(2),
-                                reader.GetInt32(3),
-                                reader.GetInt32(4),
-                                (Status)reader.GetInt32(5),
-                                user
-                        );
-                }
-                return null;
-            }
-            catch (SqlException ex)
-            {
-                _logger.LogError(ex, "Sql error occurred while loading a goal by its id.");
-                throw new RepositoryException("Could not load that goal. Please try again later.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error occurred while loading a goal by its id.");
-                throw new RepositoryException("An unexpected error occurred. Please try again later.");
-            }
-        }
+        //        using SqlDataReader reader = command.ExecuteReader();
+        //        if(reader.Read())
+        //        {
+        //            return new Goal
+        //                (
+        //                        reader.GetInt32(0),
+        //                        reader.GetDateTime(1),
+        //                        reader.GetDateTime(2),
+        //                        reader.GetInt32(3),
+        //                        reader.GetInt32(4),
+        //                        (Status)reader.GetInt32(5),
+        //                        user
+        //                );
+        //        }
+        //        return null;
+        //    }
+        //    catch (SqlException ex)
+        //    {
+        //        _logger.LogError(ex, "Sql error occurred while loading a goal by its id.");
+        //        throw new RepositoryException("Could not load that goal. Please try again later.");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "Unexpected error occurred while loading a goal by its id.");
+        //        throw new RepositoryException("An unexpected error occurred. Please try again later.");
+        //    }
+        //}
 
         public List<Goal> GetPersonalGoals(User user)
         {

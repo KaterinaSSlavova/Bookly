@@ -3,12 +3,18 @@ using Microsoft.Extensions.Configuration;
 using Models.Entities;
 using Microsoft.Data.SqlClient;
 using Models.Enums;
+using Microsoft.Extensions.Logging;
+using Data.Exceptions;
 
 namespace Bookly.Data.Repository
 {
     public class ShelfRepository: Repository, IShelfRepository
     {
-        public ShelfRepository(IConfiguration configuration): base(configuration) { }
+        private readonly ILogger<ShelfRepository> _logger;
+        public ShelfRepository(IConfiguration configuration, ILogger<ShelfRepository> logger): base(configuration) 
+        {
+            _logger = logger;
+        }
 
         public void CreateShelf(RegularShelf shelf, int id)
         {
@@ -27,12 +33,14 @@ namespace Bookly.Data.Repository
             }
             catch (SqlException ex)
             {
-                throw;
-            }
+				_logger.LogError(ex, "Sql error occurred while creating a shelf.");
+				throw new RepositoryException("Could not create this shelf. Please try again later.");
+			}
             catch (Exception ex)
             {
-                throw;
-            }
+				_logger.LogError(ex, "Unexpected error occurred while creating a shelf.");
+				throw new RepositoryException("An unexpected error occurred. Please try again later.");
+			}
         }
 
         public List<RegularShelf> GetUserRegularShelves(User user)
@@ -59,15 +67,17 @@ namespace Bookly.Data.Repository
                 }
                 return shelves;
             }
-            catch (SqlException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+			catch (SqlException ex)
+			{
+				_logger.LogError(ex, "Sql error occurred while loading user shelves.");
+				throw new RepositoryException("Could not load user shelves. Please try again later.");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Unexpected error occurred while laoding user shelves.");
+				throw new RepositoryException("An unexpected error occurred. Please try again later.");
+			}
+		}
 
         public CurrentBookShelf? GetUserCurrentShelf(User user, string shelfName)
         {
@@ -91,15 +101,17 @@ namespace Bookly.Data.Repository
                 }
                 return null;
             }
-            catch (SqlException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+			catch (SqlException ex)
+			{
+				_logger.LogError(ex, "Sql error occurred while loading user's current shelf.");
+				throw new RepositoryException("Could not load this shelf. Please try again later.");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Unexpected error occurred while loading user's current shelf.");
+				throw new RepositoryException("An unexpected error occurred. Please try again later.");
+			}
+		}
 
         public List<Book> GetBooksFromShelf(int id)
         {
@@ -132,15 +144,17 @@ namespace Bookly.Data.Repository
                 }
                 return books;
             }
-            catch (SqlException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+			catch (SqlException ex)
+			{
+				_logger.LogError(ex, "Sql error occurred while loading books from shelf.");
+				throw new RepositoryException("Could not get the books from this shelf. Please try again later.");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Unexpected error occurred while loading books from shelf.");
+				throw new RepositoryException("An unexpected error occurred. Please try again later.");
+			}
+		}
 
         public RegularShelf? GetShelfById(int id)
         {
@@ -176,15 +190,17 @@ namespace Bookly.Data.Repository
                 }
                 return null;
             }
-            catch (SqlException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+			catch (SqlException ex)
+			{
+				_logger.LogError(ex, "Sql error occurred while getting shelf by its id.");
+				throw new RepositoryException("Could not load shelf. Please try again later.");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Unexpected error occurred while getting shelf by its id.");
+				throw new RepositoryException("An unexpected error occurred. Please try again later.");
+			}
+		}
 
         public void AddBookToShelf(int bookId, int shelfId, int userId)
         {
@@ -201,15 +217,17 @@ namespace Bookly.Data.Repository
 
                 command.ExecuteNonQuery();
             }
-            catch (SqlException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+			catch (SqlException ex)
+			{
+				_logger.LogError(ex, "Sql error occurred while adding book to shelf.");
+				throw new RepositoryException("Could not add this book to the shelf. Please try again later.");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Unexpected error occurred while adding book to shelf.");
+				throw new RepositoryException("An unexpected error occurred. Please try again later.");
+			}
+		}
 
         public List<CurrentBook> GetBooksFromCurrentlyReadingShelf(User user)
         {
@@ -241,15 +259,17 @@ namespace Bookly.Data.Repository
                 }
                 return currentBooks;
             }
-            catch (SqlException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+			catch (SqlException ex)
+			{
+				_logger.LogError(ex, "Sql error occurred while loading books from current shelf.");
+				throw new RepositoryException("Could not load books from this shelf. Please try again later.");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Unexpected error occurred while laoding books from current shelf.");
+				throw new RepositoryException("An unexpected error occurred. Please try again later.");
+			}
+		}
 
         public void SetCurrentBookProgress(CurrentBook book)
         {
@@ -269,15 +289,17 @@ namespace Bookly.Data.Repository
 
                 command.ExecuteNonQuery();
             }
-            catch (SqlException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+			catch (SqlException ex)
+			{
+				_logger.LogError(ex, "Sql error occurred while setting current books progress.");
+				throw new RepositoryException("Could not set book progress. Please try again later.");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Unexpected error occurred while setting current book progress.");
+				throw new RepositoryException("An unexpected error occurred. Please try again later.");
+			}
+		}
 
         public void SaveCurrentBookProgress(CurrentBook book)
         {
@@ -300,15 +322,17 @@ namespace Bookly.Data.Repository
 
                 command.ExecuteNonQuery();
             }
-            catch (SqlException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+			catch (SqlException ex)
+			{
+				_logger.LogError(ex, "Sql error occurred while updating book progress.");
+				throw new RepositoryException("Could not save book progress. Please try again later.");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Unexpected error occurred while updating book progress.");
+				throw new RepositoryException("An unexpected error occurred. Please try again later.");
+			}
+		}
 
         public void RemoveBookFromShelf(int userId, int bookId)
         {
@@ -328,15 +352,17 @@ namespace Bookly.Data.Repository
 
                 deleteCommand.ExecuteNonQuery();
             }
-            catch (SqlException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+			catch (SqlException ex)
+			{
+				_logger.LogError(ex, "Sql error occurred while removing book from shelf.");
+				throw new RepositoryException("Could not remove this book. Please try again later.");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Unexpected error occurred while removing book from shelf.");
+				throw new RepositoryException("An unexpected error occurred. Please try again later.");
+			}
+		}
 
         public void RemoveFromCurrentBookShelf(int userId, int bookId)
         {
@@ -354,15 +380,17 @@ namespace Bookly.Data.Repository
 
                 deleteCommand.ExecuteNonQuery();
             }
-            catch (SqlException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+			catch (SqlException ex)
+			{
+				_logger.LogError(ex, "Sql error occurred while removing book from current shelf.");
+				throw new RepositoryException("Could not remove this book. Please try again later.");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Unexpected error occurred while removing book from current shelf");
+				throw new RepositoryException("An unexpected error occurred. Please try again later.");
+			}
+		}
 
         public void RemoveShelf(int id)
         {
@@ -380,14 +408,16 @@ namespace Bookly.Data.Repository
 
                 command.ExecuteNonQuery();
             }
-            catch (SqlException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+			catch (SqlException ex)
+			{
+				_logger.LogError(ex, "Sql error occurred while removing shelf.");
+				throw new RepositoryException("Could not remove this shelf. Please try again later.");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Unexpected error occurred while removing shelf.");
+				throw new RepositoryException("An unexpected error occurred. Please try again later.");
+			}
+		}
     }
 }

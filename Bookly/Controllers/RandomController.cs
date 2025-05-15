@@ -13,13 +13,11 @@ namespace Bookly.Controllers
 {
     public class RandomController : Controller
     {
-        private readonly ILogger<RandomController> _logger;  
         private readonly IRandomServices _randomServices;
         private readonly IBookServices _bookServices;
         private readonly IMapper _mapper;
-        public RandomController(ILogger<RandomController> logger, IRandomServices randomServices, IBookServices bookServices, IMapper mapper)
+        public RandomController(IRandomServices randomServices, IBookServices bookServices, IMapper mapper)
         {
-            _logger = logger;
             _randomServices = randomServices;
             _bookServices = bookServices;
             _mapper = mapper;

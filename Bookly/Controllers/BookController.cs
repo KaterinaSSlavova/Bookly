@@ -9,17 +9,15 @@ namespace Bookly.Bookly.Controllers
 {
     public class BookController : Controller
     {
-        private readonly ILogger<BookController> _logger;
         private readonly IBookServices _bookService;
         private readonly IBookDetailsService _bookDetailsService;
         private readonly IMapper _mapper;
 
-        public BookController(ILogger<BookController> logger, IBookServices bookService, IMapper mapper, IBookDetailsService bookDetailsService)
+        public BookController(IBookServices bookService, IMapper mapper, IBookDetailsService bookDetailsService)
         {
             _bookService = bookService;
             _mapper = mapper;
             _bookDetailsService = bookDetailsService;
-            _logger = logger;
         }
 
         [HttpGet]
@@ -143,8 +141,7 @@ namespace Bookly.Bookly.Controllers
             }
             catch (ServiceValidationException ex)
             {
-                _logger.LogError(ex, "An error occurred while trying to remove a book: {ErrorMessage}", ex.Message);
-                TempData["BookError"] = "Book was not found! Please try again later!";
+                TempData["BookError"] = ex.Message;
             }
             return RedirectToAction("Index", "Book");
         }

@@ -11,9 +11,7 @@ namespace Bookly.Data.InterfacesRepo
         Goal? GetLatestCompletedGoal(User user);
         void UpdateProgress(int userId, Goal goal);
         void UpdateStatus(Status status, int goalId, int userId);
-        Goal GetGoalById(User user, int goalId);
         void RemoveGoal(int id);
         Task<List<Goal>> GetAllGoals();
-
     }
 }

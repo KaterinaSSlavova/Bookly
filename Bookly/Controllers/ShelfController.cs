@@ -9,14 +9,12 @@ namespace Bookly.Bookly.Controllers
 {
     public class ShelfController : Controller
     {
-        private readonly ILogger<ShelfController> _logger;
         private readonly IShelfServices _shelfService;
         private readonly IMapper _mapper;
-        public ShelfController(IShelfServices shelfService, IMapper mapper, ILogger<ShelfController> logger)
+        public ShelfController(IShelfServices shelfService, IMapper mapper)
         {
             _shelfService = shelfService;
             _mapper = mapper;
-            _logger = logger;
         }
 
         [HttpGet]

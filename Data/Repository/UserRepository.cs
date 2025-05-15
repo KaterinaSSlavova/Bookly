@@ -3,14 +3,17 @@ using Models.Entities;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Models.Enums;
+using Microsoft.Extensions.Logging;
+using Data.Exceptions;
 
 namespace Bookly.Data.Repository
 {
     public class UserRepository: Repository, IUserRepository
     {
-
-        public UserRepository(IConfiguration configuration) : base(configuration) 
+        private readonly ILogger<UserRepository> _logger;
+        public UserRepository(IConfiguration configuration, ILogger<UserRepository> logger) : base(configuration) 
         { 
+            _logger = logger;
         }
 
         public void Register(User user)
@@ -29,15 +32,17 @@ namespace Bookly.Data.Repository
 
                 commandInsert.ExecuteNonQuery();
             }
-            catch (SqlException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+			catch (SqlException ex)
+			{
+				_logger.LogError(ex, "Sql error occurred while registering a user.");
+				throw new RepositoryException("Could not create an account. Please try again later.");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Unexpected error occurred while registering a user.");
+				throw new RepositoryException("An unexpected error occurred. Please try again later.");
+			}
+		}
 
         public User LoadUser(string username)
         {
@@ -67,15 +72,17 @@ namespace Bookly.Data.Repository
                 }
                 return null;
             }
-            catch (SqlException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw ;
-            }
-        }
+			catch (SqlException ex)
+			{
+				_logger.LogError(ex, "Sql error occurred while loading user.");
+				throw new RepositoryException("Could not load this user. Please try again later.");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Unexpected error occurred while loading user.");
+				throw new RepositoryException("An unexpected error occurred. Please try again later.");
+			}
+		}
 
         public User? GetUserById(int id)
         {
@@ -106,15 +113,17 @@ namespace Bookly.Data.Repository
                 }
                 return null;
             }
-            catch(SqlException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw ;
-            }
-        }
+			catch (SqlException ex)
+			{
+				_logger.LogError(ex, "Sql error occurred while getting user by its id.");
+				throw new RepositoryException("Could not get this user. Please try again later.");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Unexpected error occurred while getting user by its id.");
+				throw new RepositoryException("An unexpected error occurred. Please try again later.");
+			}
+		}
 
         public void UpdateProfile(User newUser)
         {
@@ -139,15 +148,17 @@ namespace Bookly.Data.Repository
 
                 command.ExecuteNonQuery();
             }
-            catch(SqlException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+			catch (SqlException ex)
+			{
+				_logger.LogError(ex, "Sql error occurred while updating a profile.");
+				throw new RepositoryException("Could not update this profile. Please try again later.");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Unexpected error occurred while updating a profile.");
+				throw new RepositoryException("An unexpected error occurred. Please try again later.");
+			}
+		}
         
         public bool DoesUsernameExists(User user, int? excludedUserId = null)
         {
@@ -167,11 +178,17 @@ namespace Bookly.Data.Repository
                 int count = (int)command.ExecuteScalar();
                 return count > 0;
             }
-            catch(SqlException ex)
-            {
-                throw;
-            }
-        }
+			catch (SqlException ex)
+			{
+				_logger.LogError(ex, "Sql error occurred while checking for username.");
+				throw new RepositoryException("Could not check for username. Please try again later.");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Unexpected error occurred while checking for username.");
+				throw new RepositoryException("An unexpected error occurred. Please try again later.");
+			}
+		}
 
         public bool DoesEmailExists(User user, int? excludedUserId = null)
         {
@@ -190,10 +207,16 @@ namespace Bookly.Data.Repository
                 int count = (int)command.ExecuteScalar();
                 return count > 0;
             }
-            catch (SqlException ex)
-            {
-                throw;
-            }
-        }
+			catch (SqlException ex)
+			{
+				_logger.LogError(ex, "Sql error occurred while checking for email.");
+				throw new RepositoryException("Could not checking for email. Please try again later.");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Unexpected error occurred while checking for email.");
+				throw new RepositoryException("An unexpected error occurred. Please try again later.");
+			}
+		}
     }
 }
