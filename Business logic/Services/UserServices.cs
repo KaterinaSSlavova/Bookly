@@ -52,7 +52,6 @@ namespace Bookly.Business_logic.Services
         {
             UserDTO oldUser = LoadUser();
             ValidateUser(userDTO, oldUser.Id);
-            ValidateUser(userDTO);
             userDTO.Picture = ConvertToString(image);
             userDTO.Id = oldUser.Id;
             _contextAccessor.HttpContext.Session.SetString("Username", userDTO.Username);

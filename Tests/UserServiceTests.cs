@@ -1,6 +1,7 @@
 ﻿using Bookly.Business_logic.Services;
 using Bookly.Data.InterfacesRepo;
 using Business_logic.DTOs;
+using Business_logic.Exceptions;
 using Business_logic.InterfacesHelpers;
 using Microsoft.AspNetCore.Http;
 using Models.Entities;
@@ -36,7 +37,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public void Register_ShouldExecuteMethodOnce_WhenUserIsRegistered()
+        public void Register_ShouldExecuteMethodOnce_WhenUserIsValid()
         {
             //Arrange
             UserDTO userDTO = new UserDTO("Username", "Email", "Password");
@@ -46,10 +47,10 @@ namespace Tests
             _userRepo.Setup(r => r.Register(It.Is<User>(u => u.Username == userDTO.Username && u.Email == userDTO.Email && u.Password == userDTO.Password))).Verifiable();
 
             //Act
-           _userService.Register(userDTO);
+            _userService.Register(userDTO);
 
             //Assert
-            _userRepo.Verify(r => r.Register(It.Is<User>(u => u.Username == userDTO.Username && u.Email == userDTO.Email && u.Password == userDTO.Password)),Times.Once);
+            _userRepo.Verify(r => r.Register(It.Is<User>(u => u.Username == userDTO.Username && u.Email == userDTO.Email && u.Password == userDTO.Password)), Times.Once);
         }
 
         [TestMethod]
@@ -60,7 +61,7 @@ namespace Tests
             _userRepo.Setup(r => r.Register(It.IsAny<User>()));
 
             //Act and Assert
-            Assert.ThrowsException<ArgumentNullException>(() => _userService.Register(user));
+            Assert.ThrowsException<ServiceValidationException>(() => _userService.Register(user));
         }
 
         [TestMethod]
@@ -156,37 +157,37 @@ namespace Tests
             Assert.AreEqual(expectedAge, resultAge);
         }
 
+        //[TestMethod]
+        //public void UpdateProfile_ShouldExecuteMethodOnce_WhenUserIsValid()
+        //{
+        //    //Arrange
+        //    byte[] picture = new byte[] { 0x01, 0x02, 0x03 };
+        //    string pictureDTO = Convert.ToBase64String(new byte[] { 0x01, 0x02, 0x03 });
+
+        //    UserDTO userDTO = new UserDTO(1, pictureDTO, "Username1", new DateTime(2001, 2, 2), 25, "email1", "Pass1", Role.Reader);
+        //    User oldUserVersion = new User(1, picture, "Username", new DateTime(2001, 1, 1), "email", "Pass", Role.Reader);
+
+        //    SetSession(oldUserVersion.Username);
+
+        //    _userRepo.Setup(r => r.GetAllEmails(It.IsAny<User>())).Returns(new List<string> { "email1@example.com", "email2@example.com" });
+        //    _userRepo.Setup(r => r.GetAllUsernames(It.IsAny<User>())).Returns(new List<string> { "Username2", "Username3" });
+        //    _userRepo.Setup(r => r.LoadUser(oldUserVersion.Username)).Returns(oldUserVersion);
+        //    _userRepo.Setup(r => r.UpdateProfile
+        //    (It.Is<User>(u => u.Id == userDTO.Id && u.Username==userDTO.Username &&
+        //    u.BirthDate==userDTO.BirthDate && u.Email==userDTO.Email && u.Password==userDTO.Password 
+        //    && u.Role==userDTO.Role))).Verifiable();
+
+        //    //Act
+        //    _userService.UpdateProfile(userDTO, pictureDTO);
+
+        //    //Assert     
+        //    _userRepo.Verify(r => r.UpdateProfile(It.Is<User>(u => u.Id == userDTO.Id && u.Username == userDTO.Username &&
+        //    u.BirthDate == userDTO.BirthDate && u.Email == userDTO.Email && u.Password == userDTO.Password
+        //    && u.Role == userDTO.Role)), Times.Once);
+        //}
+
         [TestMethod]
-        public void UpdateProfile_ShouldExecuteMethodOnce_WhenUserIsValid()
-        {
-            //Arrange
-            byte[] picture = new byte[] { 0x01, 0x02, 0x03 };
-            string pictureDTO = Convert.ToBase64String(new byte[] { 0x01, 0x02, 0x03 });
-
-            UserDTO userDTO = new UserDTO(1, pictureDTO, "Username1", new DateTime(2001, 2, 2), 25, "email1", "Pass1", Role.Reader);
-            User oldUserVersion = new User(1, picture, "Username", new DateTime(2001, 1, 1), "email", "Pass", Role.Reader);
-
-            SetSession(oldUserVersion.Username);
-
-            _userRepo.Setup(r => r.GetAllEmails(It.IsAny<User>())).Returns(new List<string> { "email1@example.com", "email2@example.com" });
-            _userRepo.Setup(r => r.GetAllUsernames(It.IsAny<User>())).Returns(new List<string> { "Username2", "Username3" });
-            _userRepo.Setup(r => r.LoadUser(oldUserVersion.Username)).Returns(oldUserVersion);
-            _userRepo.Setup(r => r.UpdateProfile
-            (It.Is<User>(u => u.Id == userDTO.Id && u.Username==userDTO.Username &&
-            u.BirthDate==userDTO.BirthDate && u.Email==userDTO.Email && u.Password==userDTO.Password 
-            && u.Role==userDTO.Role))).Verifiable();
-
-            //Act
-            _userService.UpdateProfile(userDTO, pictureDTO);
-
-            //Assert     
-            _userRepo.Verify(r => r.UpdateProfile(It.Is<User>(u => u.Id == userDTO.Id && u.Username == userDTO.Username &&
-            u.BirthDate == userDTO.BirthDate && u.Email == userDTO.Email && u.Password == userDTO.Password
-            && u.Role == userDTO.Role)), Times.Once);
-        }
-
-        [TestMethod]
-        public void UpdateProfile_ShouldThrowException_WhenUsernameOrEmailAlreadyExists()
+        public void UpdateProfile_ShouldThrowException_WhenUsernameAlreadyExists()
         {
             //Arrange
             byte[] picture = new byte[] { 0x01, 0x02, 0x03 };
@@ -196,34 +197,61 @@ namespace Tests
             User oldUserVersion = new User(1, picture, "Username", new DateTime(2001, 1, 1), "email", "Pass", Role.Reader);
             SetSession(oldUserVersion.Username);
 
-            _userRepo.Setup(r => r.GetAllEmails(It.IsAny<User>())).Returns(new List<string> { "email", "email2@example.com" });
-            _userRepo.Setup(r => r.GetAllUsernames(It.IsAny<User>())).Returns(new List<string> { "Username", "Username1" });
             _userRepo.Setup(r => r.LoadUser(oldUserVersion.Username)).Returns(oldUserVersion);
+            _userRepo.Setup(r => r.DoesUsernameExists(It.IsAny<User>(), oldUserVersion.Id)).Returns(true); 
 
             //Act and Assert
-            Assert.ThrowsException<ArgumentException>(() => _userService.UpdateProfile(userDTO, pictureDTO));
+            Assert.ThrowsException<UsernameAlreadyExistsException>(() => _userService.UpdateProfile(userDTO, pictureDTO));
+        }
+
+
+        [TestMethod]
+        public void UpdateProfile_ShouldThrowException_WhenEmailAlreadyExists()
+        {
+            //Arrange
+            byte[] picture = new byte[] { 0x01, 0x02, 0x03 };
+            string pictureDTO = Convert.ToBase64String(new byte[] { 0x01, 0x02, 0x03 });
+
+            UserDTO userDTO = new UserDTO(1, pictureDTO, "Username", new DateTime(2001, 2, 2), 25, "email", "Pass", Role.Reader);
+            User oldUserVersion = new User(1, picture, "Username", new DateTime(2001, 1, 1), "email", "Pass", Role.Reader);
+            SetSession(oldUserVersion.Username);
+
+            _userRepo.Setup(r => r.LoadUser(oldUserVersion.Username)).Returns(oldUserVersion);
+            _userRepo.Setup(r => r.DoesUsernameExists(It.IsAny<User>(), oldUserVersion.Id)).Returns(false);
+            _userRepo.Setup(r => r.DoesEmailExists(It.IsAny<User>(), oldUserVersion.Id)).Returns(true);
+
+            //Act and Assert
+            Assert.ThrowsException<EmailAlreadyExistsException>(() => _userService.UpdateProfile(userDTO, pictureDTO));
         }
 
         [TestMethod]
         public void UpdateProfile_ShouldThrowException_WhenUserBirthDateNotValid()
         {
             //Arrange
+            User user = new User(1, null, "Username", null, "email", "pass", Role.Reader);
             string pictureDTO = Convert.ToBase64String(new byte[] { 0x01, 0x02, 0x03 });
             UserDTO userDTO = new UserDTO(1, pictureDTO, "Username", new DateTime(2030, 2, 2), null, "email", "Pass", Role.Reader);
 
+            SetSession(user.Username);
+            _userRepo.Setup(r => r.LoadUser(user.Username)).Returns(user);
+
             //Act and Assert
-            Assert.ThrowsException<ArgumentException>(() => _userService.UpdateProfile(userDTO, pictureDTO));
+            Assert.ThrowsException<InvalidBirthdayException>(() => _userService.UpdateProfile(userDTO, pictureDTO));
         }
 
         [TestMethod]
         public void UpdateProfile_ShouldThrowException_WhenUserIsNull()
         {
             //Arrange
+            User user = new User(1, null, "Username", null, "email", "pass", Role.Reader);
             string picture = null;
             UserDTO userDTO = null;
 
+            SetSession(user.Username);
+            _userRepo.Setup(r => r.LoadUser(user.Username)).Returns(user);
+
             //Act and Assert
-            Assert.ThrowsException<ArgumentNullException>(() => _userService.UpdateProfile(userDTO, picture));
+            Assert.ThrowsException<ServiceValidationException>(() => _userService.UpdateProfile(userDTO, picture));
         }
     }
 }

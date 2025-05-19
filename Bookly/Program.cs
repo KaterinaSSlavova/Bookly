@@ -1,7 +1,9 @@
-using Business_logic.Mappers;
-using Bookly.Mappers;
+using Bookly.Business_logic.InterfacesServices;
 using Bookly.Extensions;
 using Bookly.Filters;
+using Bookly.Mappers;
+using Business_logic.Mappers;
+using Hangfire;
 
 namespace WebApp
 {
@@ -10,12 +12,12 @@ namespace WebApp
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-			builder.Services.AddControllersWithViews(options =>
-			{
-				options.Filters.Add<GlobalExceptionFilter>();
-			});
+            builder.Services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add<GlobalExceptionFilter>();
+            });
 
-			// Add services to the container
+            // Add services to the container
             builder.Services.AddSession();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddAutoMapper(typeof(UserModelMapper).Assembly, typeof(ShelfMapper).Assembly);
@@ -23,7 +25,7 @@ namespace WebApp
             builder.Services.RegisterRepositories();
             builder.Services.RegisterServices();
 
-			var app = builder.Build();
+            var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

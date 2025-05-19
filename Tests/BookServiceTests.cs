@@ -2,6 +2,7 @@ using AutoMapper;
 using Bookly.Business_logic.Services;
 using Bookly.Data.InterfacesRepo;
 using Business_logic.DTOs;
+using Business_logic.Exceptions;
 using Business_logic.Mappers;
 using Models.Entities;
 using Models.Enums;
@@ -48,7 +49,7 @@ namespace Tests
             BookDTO? book = null;
 
             // Act and Assert
-            Assert.ThrowsException<ArgumentNullException>(() => _bookService.AddBook(book));
+            Assert.ThrowsException<ServiceValidationException>(() => _bookService.AddBook(book));
         }
 
         [TestMethod]
@@ -58,7 +59,7 @@ namespace Tests
             BookDTO bookDTO = new BookDTO(1, "/images/book1.png", "Book1", "Author1", "Description1", "999-9-99999-999-9", Genre.Thriller, 0);
 
             // Act and Assert
-            Assert.ThrowsException<ArgumentException>(() => _bookService.AddBook(bookDTO));
+            Assert.ThrowsException<InvalidBookPagesException>(() => _bookService.AddBook(bookDTO));
         }
 
         [TestMethod]
@@ -70,7 +71,7 @@ namespace Tests
             _bookRepo.Setup(r => r.LoadBooks()).Returns(existingBooks);
 
             // Act and Assert
-            Assert.ThrowsException<ArgumentException>(() => _bookService.AddBook(newBookDTO));
+            Assert.ThrowsException<DuplicateISBNException>(() => _bookService.AddBook(newBookDTO));
         }
 
         [TestMethod]
@@ -192,7 +193,7 @@ namespace Tests
             _bookRepo.Setup(r => r.LoadBooks()).Returns(allBooks.Where(b => b.Id != 3).ToList());
 
             // Act and Assert
-            Assert.ThrowsException<ArgumentException>(() => _bookService.UpdateBook(newBookVersion));
+            Assert.ThrowsException<DuplicateISBNException>(() => _bookService.UpdateBook(newBookVersion));
         }
 
         [TestMethod]
@@ -213,12 +214,12 @@ namespace Tests
         [TestMethod]
         public void RemoveBook_ShouldThrowException_WhenBookDoesNotExist()
         {
-            //Arrange 
+            //Arrange
             int bookId = 99999999;
             _bookRepo.Setup(r => r.GetBookById(bookId)).Returns((Book)null);
 
             //Act and Assert
-            Assert.ThrowsException<ArgumentNullException>(() => _bookService.RemoveBook(bookId));
+            Assert.ThrowsException<ServiceValidationException>(() => _bookService.RemoveBook(bookId));
         }
     }
 }

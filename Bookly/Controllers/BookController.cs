@@ -57,16 +57,8 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult AddBookPage()
         {
-            try
-            {
                 AddBookModel model = new AddBookModel();
                 return View(model);
-            }
-            catch (ServiceValidationException ex)
-            {
-                TempData["Error"] = ex.Message;
-                return View();
-            }
         }
 
         [HttpPost]
@@ -95,8 +87,16 @@ namespace Bookly.Bookly.Controllers
             catch (ServiceValidationException ex)
             {
                 TempData["Error"] = ex.Message;
-                return RedirectToAction("AddBookPage", "Book");
             }
+            catch (InvalidBookPagesException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            catch (DuplicateISBNException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            return RedirectToAction("AddBookPage", "Book");
         }
 
         [HttpGet]
@@ -126,8 +126,16 @@ namespace Bookly.Bookly.Controllers
             catch (ServiceValidationException ex)
             {
                 TempData["Error"] = ex.Message;
-                return RedirectToAction("UpdateBook", "Book", new { bookId = bookModel.Id });
             }
+            catch (InvalidBookPagesException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            catch (DuplicateISBNException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            return RedirectToAction("UpdateBook", "Book", new { bookId = bookModel.Id });
         }
 
         [HttpPost]
@@ -137,7 +145,6 @@ namespace Bookly.Bookly.Controllers
             {
                 _bookService.RemoveBook(id);
                 TempData["BookCatalogSuccess"] = "Book was removed successfully!";
-                return RedirectToAction("Index", "Book");
             }
             catch (ServiceValidationException ex)
             {

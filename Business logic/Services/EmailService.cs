@@ -20,18 +20,16 @@ namespace Business_logic.Services
         {
             while (!token.IsCancellationRequested)
             {
+                DateTime now = DateTime.Now;
+                DateTime nextRun = DateTime.Today.AddDays(1);
+
+                TimeSpan delay = nextRun - now;
+                await Task.Delay(delay, token);
+
                 using (var scope = _serviceProvider.CreateScope())
                 {
                     var goalService = scope.ServiceProvider.GetRequiredService<IGoalServices>();
                     await goalService.SendRemindersAsync();
-                }
-
-                var nextRun = DateTime.Today.AddDays(1).AddHours(8);
-                var delay = nextRun - DateTime.Now;
-
-                if (delay.TotalMilliseconds > 0)
-                {
-                    await Task.Delay(delay, token);
                 }
             }
         }

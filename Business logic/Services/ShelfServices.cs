@@ -81,7 +81,8 @@ namespace Bookly.Business_logic.Services
         public void AddBookToShelf(int bookId, int shelfId)
         {
             ShelfDTO shelf = GetShelfById(shelfId);
-            if (CheckForBook(shelf, bookId)) throw new BookIsAlreadyOnShelfException(shelf.Name, _bookServices.GetBookById(bookId).Title);
+            BookDTO bookDTO = _bookServices.GetBookById(bookId);   
+            if (CheckForBook(shelf, bookId)) throw new BookIsAlreadyOnShelfException(shelf.Name, bookDTO.Title);
             CheckForPreviousShelf(bookId);
             if (shelf?.Name == completedBooksShelf)
             {
@@ -89,8 +90,7 @@ namespace Bookly.Business_logic.Services
                 IncreaseProgress(goal);
             }
             if (shelf?.Name == currentBooksShelf)
-            {
-                BookDTO bookDTO = _bookServices.GetBookById(bookId);
+            { 
                 CurrentBookDTO currentBook = _mapper.Map<CurrentBookDTO>(bookDTO);
                 currentBook.User = GetUser();
                 CurrentBook book = _mapper.Map<CurrentBook>(currentBook);
@@ -160,7 +160,7 @@ namespace Bookly.Business_logic.Services
 
         public void RemoveShelf(int id)
         {
-            if (id == 0) throw new ServiceValidationException("Shelf was not found!");
+            if (id <= 0) throw new ServiceValidationException("Shelf was not found!");
             _shelfRepo.RemoveShelf(id);
         }
         
