@@ -10,9 +10,10 @@ namespace Bookly.Business_logic.InterfacesServices
         bool LogIn(UserDTO user);
         UserDTO? LoadUser();
         UserDTO? GetUserByUsername(string username);
-        void UpdateProfile(UserDTO User, IFormFile image);
-        void UpdateProfile(UserDTO User, string image);
-        UserDTO ConvertToDTO(User user);
+        //void UpdateProfile(UserDTO User, IFormFile image);
+        void UpdateProfile(UserDTO User);
         User ConvertToEntity(UserDTO user);
+        UserDTO? ConvertToDTO(User user);
+        string ConvertToString(IFormFile image);
     }
 }

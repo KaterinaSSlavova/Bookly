@@ -118,8 +118,19 @@ namespace Bookly.Bookly.Controllers
             try
             {
                 UserDTO user = _mapper.Map<UserDTO>(model);
-                if (model.Picture != null) _userService.UpdateProfile(user, model.Picture);
-                else if (image != null) _userService.UpdateProfile(user, image);
+                UserDTO oldUser = _userService.LoadUser();
+                user.Id = oldUser.Id;
+                if (model.Picture != null)
+                {
+                    user.Picture = _userService.ConvertToString(model.Picture);
+                    _userService.UpdateProfile(user);
+                }
+                else if (image != null)
+                {
+                    user.Picture = image;
+                    _userService.UpdateProfile(user);
+                }
+                HttpContext.Session.SetString("Username", user.Username);
                 TempData["Success"] = "Profile updated successfully!";
                 return RedirectToAction("ViewProfile", "User");
 

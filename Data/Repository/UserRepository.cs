@@ -160,7 +160,7 @@ namespace Bookly.Data.Repository
 			}
 		}
         
-        public bool DoesUsernameExists(User user, int? excludedUserId = null)
+        public bool DoesUsernameExists(User user)
         {
             try
             {
@@ -168,12 +168,12 @@ namespace Bookly.Data.Repository
                 connection.Open();
 
                 string sql = "SELECT COUNT(*) FROM Users WHERE Username = @Username";
-                if(excludedUserId.HasValue) sql += " and Id <> @Id";
+                if(user.Id != null || user.Id != 0) sql += " and Id <> @Id";
 
                 using SqlCommand command = new SqlCommand(sql, connection);
 
                 command.Parameters.AddWithValue("@Username", user.Username);
-                if (excludedUserId.HasValue) command.Parameters.AddWithValue("@Id", excludedUserId.Value);
+                if (user.Id != null || user.Id != 0) command.Parameters.AddWithValue("@Id", user.Id);
 
                 int count = (int)command.ExecuteScalar();
                 return count > 0;
@@ -190,7 +190,7 @@ namespace Bookly.Data.Repository
 			}
 		}
 
-        public bool DoesEmailExists(User user, int? excludedUserId = null)
+        public bool DoesEmailExists(User user)
         {
             try
             {
@@ -198,11 +198,11 @@ namespace Bookly.Data.Repository
                 connection.Open();
 
                 string sql = "SELECT COUNT(*) FROM Users WHERE Email = @Email";
-                if (excludedUserId.HasValue) sql += " and Id <> @Id";
+                if (user.Id != null || user.Id != 0) sql += " and Id <> @Id";
 
                 using SqlCommand command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@Email", user.Email);
-                if (excludedUserId.HasValue) command.Parameters.AddWithValue("@Id", excludedUserId.Value);
+                if (user.Id != null || user.Id !=0) command.Parameters.AddWithValue("@Id", user.Id);
 
                 int count = (int)command.ExecuteScalar();
                 return count > 0;

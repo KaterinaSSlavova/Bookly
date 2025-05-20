@@ -3,41 +3,44 @@ using Bookly.Data.InterfacesRepo;
 using Bookly.Business_logic.InterfacesServices;
 using Microsoft.AspNetCore.Http;
 using Business_logic.DTOs;
-using System.Text;
 using Business_logic.InterfacesHelpers;
-using Business_logic.Exceptions;
+using Business_logic.Interfaces;
 
 namespace Bookly.Business_logic.Services
 {
     public class UserServices: IUserServices
     {
         private readonly IUserRepository _userRepo;
-        private readonly IHttpContextAccessor _contextAccessor;
         private readonly IPasswordHelper _passwordHelper;
-        public UserServices(IUserRepository userRepo, IHttpContextAccessor contextAccessor, IPasswordHelper passwordHelper)
+        private readonly ISessionHelper _sessionHelper;
+        private readonly IUserValidation _userValidation;
+        public UserServices(IUserRepository userRepo, IPasswordHelper passwordHelper, ISessionHelper sessionHelper, IUserValidation userValidation)
         {
             _userRepo = userRepo;
-            _contextAccessor = contextAccessor;
+            _sessionHelper = sessionHelper;
             _passwordHelper = passwordHelper;
+            _userValidation = userValidation;
         }
 
-        public void Register(UserDTO user)
+        public void Register(UserDTO userDTO)
         {
-            ValidateUser(user);
-            user.Password = _passwordHelper.HashPassword(user.Password);
-            _userRepo.Register(ConvertToEntity(user));
+            userDTO.Password = _passwordHelper.HashPassword(userDTO.Password);
+            User user = ConvertToEntity(userDTO);
+            _userValidation.ValidateUser(user);
+            _userRepo.Register(user);
         }
 
         public bool LogIn(UserDTO loggingUser)
         {
             UserDTO? storedUser = GetUserByUsername(loggingUser.Username);
-            if (storedUser == null) return false; 
+            if (storedUser == null) return false;
+            _sessionHelper.SetSession("Role", storedUser.Role.ToString());
             return _passwordHelper.VerifyPassword(loggingUser.Password, storedUser.Password);
         }
 
         public UserDTO? LoadUser()
         {
-            string username = _contextAccessor.HttpContext.Session.GetString("Username");
+            string username = _sessionHelper.GetSession("Username");
             User user = _userRepo.LoadUser(username);
             return ConvertToDTO(user);  
         }
@@ -48,31 +51,43 @@ namespace Bookly.Business_logic.Services
             return ConvertToDTO(user);
         }
 
-        public void UpdateProfile(UserDTO userDTO, IFormFile image)
+        public void UpdateUser(UserDTO userDTO, int oldUserId)
         {
-            UserDTO oldUser = LoadUser();
-            ValidateUser(userDTO, oldUser.Id);
-            userDTO.Picture = ConvertToString(image);
-            userDTO.Id = oldUser.Id;
-            _contextAccessor.HttpContext.Session.SetString("Username", userDTO.Username);
-            _userRepo.UpdateProfile(ConvertToEntity(userDTO));
+            User user = ConvertToEntity(userDTO);
+            _userValidation.ValidateUser(user);
+            _userRepo.UpdateProfile(user);
+            _sessionHelper.SetSession("Username", userDTO.Username);
         }
 
-        public void UpdateProfile(UserDTO userDTO, string image)
+        //public void UpdateProfile(UserDTO userDTO, IFormFile image)
+        //{
+        //    _userValidation.ValidateUser(ConvertToEntity(userDTO));
+        //    _sessionHelper.SetSession("Username", userDTO.Username);
+        //    _userRepo.UpdateProfile(ConvertToEntity(userDTO));
+        //}
+
+        public void UpdateProfile(UserDTO userDTO)
         {
-            UserDTO oldUser = LoadUser();
-            ValidateUser(userDTO, oldUser.Id);
-            userDTO.Picture = image;
-            userDTO.Id = oldUser.Id;
-            _contextAccessor.HttpContext.Session.SetString("Username", userDTO.Username);
             User user = ConvertToEntity(userDTO);
+            _userValidation.ValidateUser(user);
             _userRepo.UpdateProfile(user);
+            _sessionHelper.SetSession("Username", userDTO.Username);
+        }
+
+        public string ConvertToString(IFormFile image)
+        {
+            using (var ms = new MemoryStream())
+            {
+                image.CopyTo(ms);
+                byte[] imageBytes = ms.ToArray();
+                return Convert.ToBase64String(imageBytes);
+            }
         }
 
         public UserDTO? ConvertToDTO(User user)
         {
             if (user == null) return null;
-            string picture = user.Picture !=null ? Convert.ToBase64String(user.Picture): null;
+            string picture = user.Picture != null ? Convert.ToBase64String(user.Picture) : null;
             int age = CalculateAge(user);
             return new UserDTO(user.Id, picture, user.Username, user.BirthDate, age, user.Email, user.Password, user.Role);
         }
@@ -83,45 +98,14 @@ namespace Bookly.Business_logic.Services
             return new User(user.Id, picture, user.Username, user.BirthDate, user.Email, user.Password, user.Role);
         }
 
-        private void ValidateUser(UserDTO userDTO, int? excludedUserId = null)
-        {
-            if (userDTO == null) 
-                throw new ServiceValidationException("Invalid data!");
-
-            if (userDTO.BirthDate.HasValue)
-            {
-                if (userDTO.BirthDate.Value > DateTime.Now || userDTO.BirthDate.Value.Year == DateTime.Today.Year)
-                    throw new InvalidBirthdayException();
-            }
-
-            User user = ConvertToEntity(userDTO);
-
-            if (_userRepo.DoesUsernameExists(user, excludedUserId)) 
-                throw new UsernameAlreadyExistsException(user.Username);
-
-            if(_userRepo.DoesEmailExists(user, excludedUserId))
-                throw new EmailAlreadyExistsException(user.Email);
-        }
-
-        private string ConvertToString(IFormFile image)
-        {
-            using (var ms = new MemoryStream())
-            {
-                image.CopyTo(ms);
-                byte[] imageBytes = ms.ToArray();
-                return Convert.ToBase64String(imageBytes);
-            }
-
-        }
-
         public int CalculateAge(User user)
         {
-            if(user.BirthDate == null) return 0;
+            if (user.BirthDate == null) return 0;
 
             DateTime today = DateTime.Today;
             DateTime birthDate = user.BirthDate.Value;
             int age = today.Year - birthDate.Year;
-            if(birthDate.Month > today.Month || birthDate.Month == today.Month && birthDate.Day > today.Day)
+            if (birthDate.Month > today.Month || birthDate.Month == today.Month && birthDate.Day > today.Day)
             {
                 age--;
             }

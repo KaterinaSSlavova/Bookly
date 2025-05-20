@@ -3,6 +3,7 @@ using Bookly.Business_logic.Services;
 using Bookly.Data.InterfacesRepo;
 using Bookly.Data.Repository;
 using Business_logic.Helpers;
+using Business_logic.Interfaces;
 using Business_logic.InterfacesHelpers;
 using Business_logic.InterfacesServices;
 using Business_logic.Services;
@@ -34,6 +35,8 @@ namespace Bookly.Extensions
             Services.AddScoped<IRatingServices, RatingServices>();
             Services.AddScoped<IBookDetailsService, BookDetailsService>();
             Services.AddScoped<IPasswordHelper, PasswordHelper>();
+            Services.AddScoped<ISessionHelper, SessionHelper>();
+            Services.AddScoped<IUserValidation, UserValidation>();
 
             Services.AddTransient<IEmailSender, EmailSender>();
 

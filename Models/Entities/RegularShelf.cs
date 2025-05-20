@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace Models.Entities
+﻿namespace Models.Entities
 {
     public class RegularShelf: Shelf
     {

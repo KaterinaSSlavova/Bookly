@@ -1,6 +1,7 @@
 ﻿@model List<BookViewModel>
 
 @{
+    string? role = HttpContextAccessor.HttpContext.Session.GetString("Role");
     ViewData["Title"] = "Home Page";
 }
 
@@ -9,9 +10,12 @@
 
 @Html.Partial("_Alert")
 
-<form asp-controller="Book" asp-action="GoToAddBook" method="post">
-    <input type="submit" value="Add new book" class="btn btn-primary" />
-</form>
+@if(role == Role.Manager.ToString())
+{
+    <form asp-controller="Book" asp-action="GoToAddBook" method="post">
+        <input type="submit" value="Add new book" class="btn btn-primary" />
+    </form>
+}
 
 <table class="table">
     <thead>

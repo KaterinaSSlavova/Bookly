@@ -2,6 +2,7 @@
 
 @{
     string username = HttpContextAccessor.HttpContext.Session.GetString("Username");
+    string role = HttpContextAccessor.HttpContext.Session.GetString("Role");
     ViewData["Title"] = "Book Details";
 }
 
@@ -29,7 +30,6 @@
         <div class="col-md-6">
             <h4>Rate This Book</h4>
             <form asp-controller="Rating" asp-action="RateABook" method="post" class="mb-4">
-                <!-- Added mb-4 -->
                 <input type="hidden" name="bookId" value="@Model.Book.Id" />
                 <div class="d-flex justify-content-between flex-wrap gap-2">
                     @foreach (var rating in new[] {
@@ -102,15 +102,18 @@
             </form>
 
             <div class="d-grid gap-2 mb-4">
-                <form asp-controller="Book" asp-action="GoToUpdateBook">
-                    <input type="hidden" name="id" value="@Model.Book.Id" />
-                    <button class="btn btn-warning">Update</button>
-                </form>
+                @if (role == Role.Manager.ToString())
+                {
+                    <form asp-controller="Book" asp-action="GoToUpdateBook">
+                        <input type="hidden" name="id" value="@Model.Book.Id" />
+                        <button class="btn btn-warning">Update</button>
+                    </form>
 
-                <form asp-controller="Book" asp-action="RemoveBook">
-                    <input type="hidden" name="id" value="@Model.Book.Id" />
-                    <button class="btn btn-danger">Remove Book</button>
-                </form>
+                    <form asp-controller="Book" asp-action="RemoveBook">
+                        <input type="hidden" name="id" value="@Model.Book.Id" />
+                        <button class="btn btn-danger">Remove Book</button>
+                    </form>
+                }
 
                 <form asp-controller="Book" asp-action="GoBack">
                     <button class="btn btn-primary">Go Back</button>
