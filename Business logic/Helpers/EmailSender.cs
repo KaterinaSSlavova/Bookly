@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Net.Mail;
-using Bookly.Business_logic.InterfacesServices;
+using Interfaces;
 
 namespace Business_logic.Helpers
 {

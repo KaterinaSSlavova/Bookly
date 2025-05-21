@@ -1,6 +1,5 @@
-﻿using Bookly.Data.InterfacesRepo;
+﻿using Interfaces;
 using Models.Entities;
-using Bookly.Business_logic.InterfacesServices;
 using AutoMapper;
 using Business_logic.DTOs;
 using Exceptions;

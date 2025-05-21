@@ -1,7 +1,7 @@
 ﻿using Models.Enums;
 using Business_logic.DTOs;
 
-namespace Business_logic.InterfacesServices
+namespace Interfaces
 {
     public interface IRandomServices
     {

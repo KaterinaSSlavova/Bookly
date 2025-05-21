@@ -1,4 +1,4 @@
-﻿using Business_logic.InterfacesHelpers;
+﻿using Interfaces;
 
 namespace Business_logic.Helpers
 {

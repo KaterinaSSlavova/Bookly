@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Models.Entities;
 
-namespace Bookly.Business_logic.InterfacesServices
+namespace Interfaces
 {
     public interface IUserServices
     {

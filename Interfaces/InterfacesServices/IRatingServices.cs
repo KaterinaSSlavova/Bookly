@@ -1,6 +1,6 @@
 ﻿using Models.Enums;
 
-namespace Bookly.Business_logic.InterfacesServices
+namespace Interfaces
 {
     public interface IRatingServices
     {

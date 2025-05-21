@@ -1,4 +1,4 @@
-﻿using Bookly.Data.InterfacesRepo;
+﻿using Interfaces;
 using Microsoft.Extensions.Configuration;
 using Models.Entities;
 using Microsoft.Data.SqlClient;

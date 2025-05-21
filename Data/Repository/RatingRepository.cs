@@ -1,7 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Models.Enums;
-using Bookly.Data.InterfacesRepo;
+using Interfaces;
 using Exceptions;
 using Microsoft.Extensions.Logging;
 

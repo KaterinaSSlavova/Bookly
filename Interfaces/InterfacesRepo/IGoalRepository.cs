@@ -1,7 +1,7 @@
 ﻿using Models.Entities;
 using Models.Enums;
 
-namespace Bookly.Data.InterfacesRepo
+namespace Interfaces
 {
     public interface IGoalRepository
     {

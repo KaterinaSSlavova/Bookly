@@ -1,4 +1,4 @@
-﻿namespace Business_logic.Interfaces
+﻿namespace Interfaces
 {
     public interface ISessionHelper
     {

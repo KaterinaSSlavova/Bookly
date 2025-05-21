@@ -1,6 +1,6 @@
 ﻿using Models.Entities;
 
-namespace Bookly.Data.InterfacesRepo
+namespace Interfaces
 {
     public interface IBookRepository
     {

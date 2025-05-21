@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using Bookly.Business_logic.InterfacesServices;
-using Bookly.Data.InterfacesRepo;
+using Interfaces;
 using Models.Entities;
 using Models.Enums;
 using Business_logic.DTOs;

@@ -1,6 +1,5 @@
-﻿using Bookly.Data.InterfacesRepo;
+﻿using Interfaces;
 using Exceptions;
-using Business_logic.Interfaces;
 using Models.Entities;
 
 namespace Business_logic.Helpers

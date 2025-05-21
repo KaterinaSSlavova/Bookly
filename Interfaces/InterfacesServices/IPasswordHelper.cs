@@ -1,4 +1,4 @@
-﻿namespace Business_logic.InterfacesHelpers
+﻿namespace Interfaces
 {
     public interface IPasswordHelper
     {

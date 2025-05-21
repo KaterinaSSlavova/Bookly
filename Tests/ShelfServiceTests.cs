@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using Bookly.Business_logic.InterfacesServices;
+using Interfaces;
 using Bookly.Business_logic.Services;
-using Bookly.Data.InterfacesRepo;
 using Business_logic.DTOs;
 using Exceptions;
 using Business_logic.Mappers;

@@ -1,6 +1,6 @@
 ﻿using Models.Enums;
 
-namespace Bookly.Data.InterfacesRepo
+namespace Interfaces
 {
     public interface IRatingRepostiory
     {

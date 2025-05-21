@@ -1,6 +1,4 @@
-﻿using Microsoft.Data.SqlClient.Diagnostics;
-
-namespace Business_logic.DTOs
+﻿namespace Business_logic.DTOs
 {
     public class ShelfDTO
     {

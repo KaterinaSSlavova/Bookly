@@ -1,11 +1,7 @@
-﻿using Bookly.Business_logic.InterfacesServices;
+﻿using Interfaces;
 using Bookly.Business_logic.Services;
-using Bookly.Data.InterfacesRepo;
 using Bookly.Data.Repository;
 using Business_logic.Helpers;
-using Business_logic.Interfaces;
-using Business_logic.InterfacesHelpers;
-using Business_logic.InterfacesServices;
 using Business_logic.Services;
 
 namespace Bookly.Extensions

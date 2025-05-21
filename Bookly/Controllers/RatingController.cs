@@ -1,4 +1,4 @@
-﻿using Bookly.Business_logic.InterfacesServices;
+﻿using Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookly.Controllers

@@ -1,4 +1,4 @@
-﻿namespace Bookly.Business_logic.InterfacesServices
+﻿namespace Interfaces
 {
     public interface IEmailSender
     {

@@ -1,9 +1,8 @@
-﻿using Business_logic.InterfacesServices;
+﻿using Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Models.Enums;
 using Newtonsoft.Json;
 using Bookly.ViewModels;
-using Bookly.Business_logic.InterfacesServices;
 using Business_logic.DTOs;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
