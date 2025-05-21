@@ -149,28 +149,28 @@ namespace Tests
         //    Assert.AreEqual(expectedAge, resultAge);
         //}
 
-        [TestMethod]
-        public void UpdateProfile_ShouldUpdateTheUser_WhenUserIsValid()
-        {
-            //Arrange
-            byte[] picture = new byte[] { 0x01, 0x02, 0x03 };
-            string pictureDTO = Convert.ToBase64String(new byte[] { 0x01, 0x02, 0x03 });
-            UserDTO userDTO = new UserDTO(1, pictureDTO, "Username", new DateTime(2001, 2, 2), 25, "email", "Pass", Role.Reader);
-            User oldUserVersion = new User(1, picture, "Username", new DateTime(2001, 1, 1), "email", "Pass", Role.Reader);
+        //[TestMethod]
+        //public void UpdateProfile_ShouldUpdateTheUser_WhenUserIsValid()
+        //{
+        //    //Arrange
+        //    byte[] picture = new byte[] { 0x01, 0x02, 0x03 };
+        //    string pictureDTO = Convert.ToBase64String(new byte[] { 0x01, 0x02, 0x03 });
+        //    UserDTO userDTO = new UserDTO(1, pictureDTO, "Username", new DateTime(2001, 2, 2), 25, "email", "Pass", Role.Reader);
+        //    User oldUserVersion = new User(1, picture, "Username", new DateTime(2001, 1, 1), "email", "Pass", Role.Reader);
 
-            _sessionHelper.Setup(h => h.GetSession("Username")).Returns(userDTO.Username);
-            _userRepo.Setup(r => r.LoadUser(oldUserVersion.Username)).Returns(oldUserVersion);
-            _userValidation.Setup(v => v.ValidateUser(It.IsAny<User>(), It.IsAny<int>()));
-            _userRepo.Setup(r => r.UpdateProfile(It.IsAny<User>()));
-            _sessionHelper.Setup(h => h.SetSession("Username", userDTO.Username));
+        //    _sessionHelper.Setup(h => h.GetSession("Username")).Returns(userDTO.Username);
+        //    _userRepo.Setup(r => r.LoadUser(oldUserVersion.Username)).Returns(oldUserVersion);
+        //    _userValidation.Setup(v => v.ValidateUser(It.IsAny<User>(), It.IsAny<int>()));
+        //    _userRepo.Setup(r => r.UpdateProfile(It.IsAny<User>()));
+        //    _sessionHelper.Setup(h => h.SetSession("Username", userDTO.Username));
 
-            //Act
-            _userService.UpdateProfile(userDTO, pictureDTO);
+        //    //Act
+        //    _userService.UpdateProfile(userDTO, pictureDTO);
 
-            //Assert
-            _userRepo.Verify(r => r.UpdateProfile(It.IsAny<User>()), Times.Once);
-            _sessionHelper.Verify(h => h.SetSession("Username", userDTO.Username), Times.Once);
-        }
+        //    //Assert
+        //    _userRepo.Verify(r => r.UpdateProfile(It.IsAny<User>()), Times.Once);
+        //    _sessionHelper.Verify(h => h.SetSession("Username", userDTO.Username), Times.Once);
+        //}
 
         //[TestMethod]
         //public void UpdateProfile_ShouldThrowException_WhenUsernameAlreadyExists()

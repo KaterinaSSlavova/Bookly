@@ -2,6 +2,7 @@ using Bookly.Extensions;
 using Bookly.Filters;
 using Bookly.Mappers;
 using Business_logic.Mappers;
+using Serilog;
 
 namespace WebApp
 {
@@ -9,6 +10,12 @@ namespace WebApp
     {
         public static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .Enrich.FromLogContext()
+                .WriteTo.Seq("http://localhost:5341")
+                .CreateLogger();
+
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddControllersWithViews(options =>
             {
@@ -22,6 +29,7 @@ namespace WebApp
 
             builder.Services.RegisterRepositories();
             builder.Services.RegisterServices();
+            builder.Host.UseSerilog();
 
             var app = builder.Build();
 

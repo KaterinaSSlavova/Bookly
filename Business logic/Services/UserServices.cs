@@ -59,13 +59,6 @@ namespace Bookly.Business_logic.Services
             _sessionHelper.SetSession("Username", userDTO.Username);
         }
 
-        //public void UpdateProfile(UserDTO userDTO, IFormFile image)
-        //{
-        //    _userValidation.ValidateUser(ConvertToEntity(userDTO));
-        //    _sessionHelper.SetSession("Username", userDTO.Username);
-        //    _userRepo.UpdateProfile(ConvertToEntity(userDTO));
-        //}
-
         public void UpdateProfile(UserDTO userDTO)
         {
             User user = ConvertToEntity(userDTO);
