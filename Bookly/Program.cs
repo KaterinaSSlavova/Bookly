@@ -3,6 +3,7 @@ using Bookly.Filters;
 using Bookly.Mappers;
 using Business_logic.Mappers;
 using Serilog;
+using Serilog.Exceptions;
 
 namespace WebApp
 {
@@ -13,6 +14,7 @@ namespace WebApp
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .Enrich.FromLogContext()
+                .Enrich.WithExceptionDetails()
                 .WriteTo.Seq("http://localhost:5341")
                 .CreateLogger();
 
