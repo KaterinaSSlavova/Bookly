@@ -1,6 +1,5 @@
 ﻿using Bookly.Business_logic.InterfacesServices;
 using Business_logic.DTOs;
-using Models.Entities;
 using Models.Enums;
 
 namespace Business_logic.Services

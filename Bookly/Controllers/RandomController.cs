@@ -7,7 +7,7 @@ using Bookly.Business_logic.InterfacesServices;
 using Business_logic.DTOs;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Business_logic.Exceptions;
+using Exceptions;
 
 namespace Bookly.Controllers
 {

@@ -2,7 +2,7 @@ using AutoMapper;
 using Bookly.Business_logic.Services;
 using Bookly.Data.InterfacesRepo;
 using Business_logic.DTOs;
-using Business_logic.Exceptions;
+using Exceptions;
 using Business_logic.Mappers;
 using Models.Entities;
 using Models.Enums;
@@ -49,7 +49,7 @@ namespace Tests
             BookDTO? book = null;
 
             // Act and Assert
-            Assert.ThrowsException<ServiceValidationException>(() => _bookService.AddBook(book));
+            Assert.ThrowsException<NullReferenceException>(() => _bookService.AddBook(book));
         }
 
         [TestMethod]
@@ -219,7 +219,7 @@ namespace Tests
             _bookRepo.Setup(r => r.GetBookById(bookId)).Returns((Book)null);
 
             //Act and Assert
-            Assert.ThrowsException<ServiceValidationException>(() => _bookService.RemoveBook(bookId));
+            Assert.ThrowsException<NullReferenceException>(() => _bookService.RemoveBook(bookId));
         }
     }
 }

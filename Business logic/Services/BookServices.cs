@@ -3,7 +3,7 @@ using Models.Entities;
 using Bookly.Business_logic.InterfacesServices;
 using AutoMapper;
 using Business_logic.DTOs;
-using Business_logic.Exceptions;
+using Exceptions;
 
 namespace Bookly.Business_logic.Services
 {
@@ -46,7 +46,7 @@ namespace Bookly.Business_logic.Services
 
         private void ValidateUpdatedBook(BookDTO oldBookVersion, BookDTO newBookVersion)
         {
-            if (newBookVersion == null) throw new ServiceValidationException("Invalid data!");
+            if (newBookVersion == null) throw new NullReferenceException("Invalid data!");
             if (newBookVersion.Pages == 0) throw new InvalidBookPagesException(newBookVersion.Pages);
             List<BookDTO> allBooks = LoadBooks().Where(b => b.Id != oldBookVersion.Id).ToList();
             foreach(BookDTO book in allBooks)
@@ -57,7 +57,7 @@ namespace Bookly.Business_logic.Services
 
         private void ValidateBook(BookDTO newBook)
         {
-            if (newBook == null) throw new ServiceValidationException("Invalid data!");
+            if (newBook == null) throw new NullReferenceException("Invalid data!");
             if(newBook.Pages == 0) throw new InvalidBookPagesException(newBook.Pages);
             List<BookDTO> allBooks = LoadBooks();
             foreach(BookDTO book in allBooks)
@@ -69,7 +69,7 @@ namespace Bookly.Business_logic.Services
 
         public void RemoveBook(int id)
         {
-            if (GetBookById(id) == null) throw new ServiceValidationException("Book was not found.");
+            if (GetBookById(id) == null) throw new NullReferenceException("Book was not found.");
             _bookRepo.RemoveBook(id);
         }
 

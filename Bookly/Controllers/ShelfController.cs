@@ -2,7 +2,7 @@
 using Bookly.Business_logic.InterfacesServices;
 using Bookly.ViewModels;
 using Business_logic.DTOs;
-using Business_logic.Exceptions;
+using Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookly.Bookly.Controllers
@@ -52,7 +52,7 @@ namespace Bookly.Bookly.Controllers
                 _shelfService.CreateShelf(shelf);
                 return RedirectToAction("ShelfOverview", "Shelf");
             }
-            catch (ServiceValidationException ex)
+            catch (NullReferenceException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -150,7 +150,7 @@ namespace Bookly.Bookly.Controllers
                 _shelfService.RemoveShelf(id);
                 TempData["Success"] = "Shelf was removed successfully!";
             }
-            catch(ServiceValidationException ex)
+            catch(NullReferenceException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -164,7 +164,7 @@ namespace Bookly.Bookly.Controllers
                 _shelfService.RemoveBookFromShelf(bookId, shelfId);
                 TempData["Success"] = "Book was removed successfully!";
             }
-            catch(ServiceValidationException ex)
+            catch(NullReferenceException ex)
             {
                 TempData["ShelfBookError"] = ex.Message;
             }

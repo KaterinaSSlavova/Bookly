@@ -2,7 +2,7 @@
 using Bookly.Business_logic.InterfacesServices;
 using Bookly.ViewModels;
 using Business_logic.DTOs;
-using Business_logic.Exceptions;
+using Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookly.WebApp.Controllers
@@ -46,7 +46,7 @@ namespace Bookly.WebApp.Controllers
                 _goalService.CreateGoal(goal);
                 return RedirectToAction("GoalOverview", "Goal");
             }
-            catch (ServiceValidationException ex)
+            catch (NullReferenceException ex)
             {
                 TempData["Error"] = ex.Message;
             }

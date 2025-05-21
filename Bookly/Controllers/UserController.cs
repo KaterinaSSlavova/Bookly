@@ -2,7 +2,7 @@
 using Bookly.Business_logic.InterfacesServices;
 using Bookly.ViewModels;
 using Business_logic.DTOs;
-using Business_logic.Exceptions;
+using Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookly.Bookly.Controllers
@@ -52,7 +52,7 @@ namespace Bookly.Bookly.Controllers
             {
                 TempData["Error"] = ex.Message;
             }
-            catch(ServiceValidationException ex)
+            catch(NullReferenceException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -135,7 +135,7 @@ namespace Bookly.Bookly.Controllers
                 return RedirectToAction("ViewProfile", "User");
 
             }
-            catch (ServiceValidationException ex)
+            catch (NullReferenceException ex)
             {
                 TempData["Error"] = ex.Message;
             }

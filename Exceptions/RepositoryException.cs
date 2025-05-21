@@ -1,4 +1,4 @@
-﻿namespace Data.Exceptions
+﻿namespace Exceptions
 {
     public class RepositoryException: Exception
     {

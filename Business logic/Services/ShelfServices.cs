@@ -4,7 +4,7 @@ using Bookly.Data.InterfacesRepo;
 using Business_logic.DTOs;
 using AutoMapper;
 using Models.Enums;
-using Business_logic.Exceptions;
+using Exceptions;
 
 namespace Bookly.Business_logic.Services
 {
@@ -123,7 +123,7 @@ namespace Bookly.Business_logic.Services
         public void RemoveBookFromShelf(int bookId, int shelfId)
         {   
             ShelfDTO shelf = GetShelfById(shelfId);
-            if (shelf == null) throw new ServiceValidationException("Shelf was not found!");
+            if (shelf == null) throw new NullReferenceException("Shelf was not found!");
             bool isBookOnShelf = CheckForBook(shelf, bookId);
             if (isBookOnShelf)
             {
@@ -160,7 +160,7 @@ namespace Bookly.Business_logic.Services
 
         public void RemoveShelf(int id)
         {
-            if (id <= 0) throw new ServiceValidationException("Shelf was not found!");
+            if (id <= 0) throw new NullReferenceException("Shelf was not found!");
             _shelfRepo.RemoveShelf(id);
         }
         
@@ -178,7 +178,7 @@ namespace Bookly.Business_logic.Services
 
         public void ValidateShelf(ShelfDTO shelf)
         {
-            if (shelf == null || shelf.Name == null) throw new ServiceValidationException("Invalid shelf!");
+            if (shelf == null || shelf.Name == null) throw new NullReferenceException("Invalid shelf!");
             List<ShelfDTO> shelves = GetUserShelves();
             foreach (ShelfDTO userShelf in shelves)
             {

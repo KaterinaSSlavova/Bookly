@@ -4,7 +4,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Models.Enums;
 using Microsoft.Extensions.Logging;
-using Data.Exceptions;
+using Exceptions;
 
 namespace Bookly.Data.Repository
 {

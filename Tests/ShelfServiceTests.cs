@@ -3,7 +3,7 @@ using Bookly.Business_logic.InterfacesServices;
 using Bookly.Business_logic.Services;
 using Bookly.Data.InterfacesRepo;
 using Business_logic.DTOs;
-using Business_logic.Exceptions;
+using Exceptions;
 using Business_logic.Mappers;
 using Models.Entities;
 using Models.Enums;
@@ -67,7 +67,7 @@ namespace Tests
             _shelfRepo.Setup(r => r.GetUserRegularShelves(user)).Returns(It.IsAny<List<RegularShelf>>());
 
             //Act and Assert
-            Assert.ThrowsException<ServiceValidationException>(() => _shelfServices.CreateShelf(shelfDTO));
+            Assert.ThrowsException<NullReferenceException>(() => _shelfServices.CreateShelf(shelfDTO));
         }
 
         [TestMethod]
@@ -108,7 +108,7 @@ namespace Tests
             int shelfId = -1;
 
             //Act and Assert
-            Assert.ThrowsException<ServiceValidationException>(() => _shelfServices.RemoveShelf(shelfId));
+            Assert.ThrowsException<NullReferenceException>(() => _shelfServices.RemoveShelf(shelfId));
         }
 
         //[TestMethod]
@@ -309,7 +309,7 @@ namespace Tests
             _shelfRepo.Setup(r => r.GetShelfById(shelfId)).Returns((RegularShelf)null);
 
             //Act and Assert
-            Assert.ThrowsException<ServiceValidationException>(() => _shelfServices.RemoveBookFromShelf(book.Id, shelfId));
+            Assert.ThrowsException<NullReferenceException>(() => _shelfServices.RemoveBookFromShelf(book.Id, shelfId));
         }
     }
 }

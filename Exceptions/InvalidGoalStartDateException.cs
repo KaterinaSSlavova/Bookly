@@ -1,4 +1,4 @@
-﻿namespace Business_logic.Exceptions
+﻿namespace Exceptions
 {
     public class InvalidGoalStartDateException: Exception
     {

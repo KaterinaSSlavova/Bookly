@@ -3,7 +3,7 @@ using Business_logic.DTOs;
 using Business_logic.InterfacesServices;
 using Models.Enums;
 using Newtonsoft.Json;
-using Business_logic.Exceptions;
+using Exceptions;
 
 namespace Business_logic.Services
 {

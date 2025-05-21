@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Models.Enums;
 using Bookly.Data.InterfacesRepo;
-using Data.Exceptions;
+using Exceptions;
 using Microsoft.Extensions.Logging;
 
 namespace Bookly.Data.Repository

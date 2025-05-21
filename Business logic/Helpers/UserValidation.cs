@@ -1,5 +1,5 @@
 ﻿using Bookly.Data.InterfacesRepo;
-using Business_logic.Exceptions;
+using Exceptions;
 using Business_logic.Interfaces;
 using Models.Entities;
 
@@ -16,7 +16,7 @@ namespace Business_logic.Helpers
         public void ValidateUser(User user)
         {
             if (user == null)
-                throw new ServiceValidationException("Invalid data!");
+                throw new NullReferenceException("Invalid data!");
 
             if (user.BirthDate.HasValue)
             {

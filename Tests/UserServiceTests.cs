@@ -1,7 +1,7 @@
 ﻿using Bookly.Business_logic.Services;
 using Bookly.Data.InterfacesRepo;
 using Business_logic.DTOs;
-using Business_logic.Exceptions;
+using Exceptions;
 using Business_logic.Interfaces;
 using Business_logic.InterfacesHelpers;
 using Models.Entities;
