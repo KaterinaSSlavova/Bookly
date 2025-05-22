@@ -25,6 +25,11 @@ namespace Business_logic.DTOs
             this.Pages = pages;
         }
 
-        //public BookDTO() { }
+        public BookDTO(int id)
+        {
+            this.Id = id;
+        }
+
+        public BookDTO() { }
     }
 }

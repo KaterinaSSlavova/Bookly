@@ -16,7 +16,7 @@ namespace Bookly.Data.Repository
             _logger = logger;
         }
 
-        public void CreateShelf(RegularShelf shelf, int id)
+        public void CreateShelf(Shelf shelf, int id)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace Bookly.Data.Repository
                 {
                     Shelf shelf = new Shelf(reader.GetInt32(0), reader.GetString(1), user);
                     List<Book> books = GetBooksFromShelf(shelf.Id);
-                    shelves.Add(new RegularShelf(shelf.Id, shelf.Name, user, books));
+                    shelves.Add(new RegularShelf(shelf, books));
                 }
                 return shelves;
             }
@@ -97,7 +97,7 @@ namespace Bookly.Data.Repository
 
                 if (reader.Read())
                 {
-                    return new CurrentBookShelf(reader.GetInt32(0), reader.GetString(1), user, GetBooksFromCurrentlyReadingShelf(user));
+                    return new CurrentBookShelf(new Shelf(reader.GetInt32(0), reader.GetString(1), user), GetBooksFromCurrentlyReadingShelf(user));
                 }
                 return null;
             }
@@ -175,7 +175,7 @@ namespace Bookly.Data.Repository
                 {
                     int shelfId = reader.GetInt32(0);
                     return new RegularShelf(
-                        shelfId,
+                        new Shelf(shelfId,
                         reader.GetString(1),
                          new User(
                             reader.GetInt32(2),
@@ -184,7 +184,7 @@ namespace Bookly.Data.Repository
                             reader.IsDBNull(5) ? (DateTime?)null : reader.GetDateTime(5),
                             reader.GetString(6),
                             reader.GetString(7),
-                            (Role)reader.GetInt32(8)),
+                            (Role)reader.GetInt32(8))),
                          GetBooksFromShelf(shelfId)
                          );
                 }
@@ -249,10 +249,10 @@ namespace Bookly.Data.Repository
                 while (reader.Read())
                 {
                     currentBooks.Add(new CurrentBook(
-                        user,
-                        reader.GetInt32(0), reader.GetString(1), reader.GetString(2),
+                        new Book(reader.GetInt32(0), reader.GetString(1), reader.GetString(2),
                         reader.GetString(3), reader.GetString(4), reader.GetString(5),
-                        (Genre)Enum.Parse(typeof(Genre), reader.GetString(6)), reader.GetInt32(7),
+                        (Genre)Enum.Parse(typeof(Genre), reader.GetString(6)), reader.GetInt32(7)),
+                        user,
                         reader.GetInt32(8),
                         (Status)reader.GetInt32(9)
                         ));
@@ -266,7 +266,7 @@ namespace Bookly.Data.Repository
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError(ex, "Unexpected error occurred while laoding books from current shelf.");
+				_logger.LogError(ex, "Unexpected error occurred while loading books from current shelf.");
 				throw new RepositoryException("An unexpected error occurred. Please try again later.");
 			}
 		}
@@ -283,7 +283,7 @@ namespace Bookly.Data.Repository
 
                 using SqlCommand command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@UserId", book.User.Id);
-                command.Parameters.AddWithValue("@BookId", book.Id);
+                command.Parameters.AddWithValue("@BookId", book.Book.Id);
                 command.Parameters.AddWithValue("@Progress", book.CurrentProgress);
                 command.Parameters.AddWithValue("@StatusId", (int)book.Status);
 
@@ -316,7 +316,7 @@ namespace Bookly.Data.Repository
 
                 using SqlCommand command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@UserId", book.User.Id);
-                command.Parameters.AddWithValue("@BookId", book.Id);
+                command.Parameters.AddWithValue("@BookId", book.Book.Id);
                 command.Parameters.AddWithValue("@Progress", book.CurrentProgress);
                 command.Parameters.AddWithValue("@StatusId", (int)book.Status);
 

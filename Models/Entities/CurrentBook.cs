@@ -2,19 +2,18 @@
 
 namespace Models.Entities
 {
-    public class CurrentBook: Book
+    public class CurrentBook
     {
+        public Book Book {  get; private set; }
         public User User { get; private set; }  
         public int CurrentProgress { get; private set; }
         public Status Status { get; private set; }
 
-        public CurrentBook(User user, int Id, string picture, string title, 
-            string author, string description, string isbn, Genre genre, int pages,
-            int progress, Status status): 
-            base(Id, picture, title,author, description, isbn, genre, pages)
+        public CurrentBook(Book book, User user, int currentProgress, Status status)
         {
-            this.User = user;   
-            this.CurrentProgress = progress;
+            this.Book = book;
+            this.User = user;
+            this.CurrentProgress = currentProgress;
             this.Status = status;
         }
 

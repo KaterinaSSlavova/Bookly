@@ -1,26 +1,19 @@
 ﻿namespace Models.Entities
 {
-    public class RegularShelf: Shelf
-    {
+    public class RegularShelf
+    { 
+        public Shelf Shelf { get; private set; }    
         public List<Book> BooksOnShelf { get;  private set; }
-
-        public RegularShelf(int id, string name, List<Book> books) : base(id, name)
+        public RegularShelf(Shelf shelf, List<Book> books)
         {
-            this.BooksOnShelf = books;
-        }
-        public RegularShelf(int id, string name, User user, List<Book> books): base(id, name, user)
-        {
-            this.BooksOnShelf = books; 
-        }
-
-        public RegularShelf(string name, User user, List<Book> books) : base(name, user)
-        {
+            this.Shelf = shelf;
             this.BooksOnShelf = books;
         }
 
-        public RegularShelf(string name): base (name) 
+        public RegularShelf(Shelf shelf)
         {
-            BooksOnShelf = new List<Book>();
+            this.Shelf = shelf;
+            this.BooksOnShelf = new List<Book>();
         }
     }
 }

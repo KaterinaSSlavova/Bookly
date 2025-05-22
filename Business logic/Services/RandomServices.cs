@@ -23,9 +23,9 @@ namespace Business_logic.Services
 
         private List<BookDTO>? GetBooksFromHaveReadShelf()
         {
-            foreach (ShelfDTO shelf in _shelfService.GetUserShelves())
+            foreach (RegularShelfDTO shelf in _shelfService.GetUserShelves())
             {
-                if(shelf.Name == completedShelf) return shelf.BooksOnShelf;
+                if(shelf.Shelf.Name == completedShelf) return shelf.BooksOnShelf;
             }
             return null;
         }
@@ -69,12 +69,12 @@ namespace Business_logic.Services
 
         public void AddToWishList(BookDTO book)
         {
-            ShelfDTO shelf = _shelfService.GetUserWishList();
+            RegularShelfDTO shelf = _shelfService.GetUserWishList();
             if (_shelfService.CheckForBook(shelf, book.Id))
             {
-                throw new BookIsAlreadyOnShelfException(shelf.Name, book.Title);
+                throw new BookIsAlreadyOnShelfException(shelf.Shelf.Name, book.Title);
             }
-            _shelfService.AddBookToShelf(book.Id, shelf.Id);
+            _shelfService.AddBookToShelf(book.Id, shelf.Shelf.Id);
         }
 
         public DateWithABookDTO CreateDateDTO(string filteredJson)

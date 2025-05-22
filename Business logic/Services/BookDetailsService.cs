@@ -22,7 +22,7 @@ namespace Business_logic.Services
         {
             BookDTO? book = _bookServices.GetBookById(bookId);
             Ratings? rating = _ratingServices.GetUserRatingForBook(bookId);
-            List<ShelfDTO> userShelves = _shelfServices.GetUserShelves();
+            List<RegularShelfDTO> userShelves = _shelfServices.GetUserShelves();
             List<ReviewDTO> bookReviews = _reviewServices.GetBookReviews(book);
             return new BookDetailsDTO(book, userShelves, bookReviews, rating);
         }

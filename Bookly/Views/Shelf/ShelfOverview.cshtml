@@ -1,4 +1,4 @@
-﻿@model List<ShelfViewModel>
+﻿@model List<RegularShelfViewModel>
 
 @{
     ViewData["Title"] = "Shelf Overview";
@@ -16,31 +16,31 @@
 </div>
 
 <div class="row">
-    @foreach (ShelfViewModel shelf in Model)
+    @foreach (RegularShelfViewModel shelf in Model)
     {
         <div class="col-md-6 col-lg-4 mb-3">
             <div class="card shadow-sm border-0">
                 <div class="card-body">
-                    <h5 class="card-title">@shelf.Name</h5>
+                    <h5 class="card-title">@shelf.Shelf.Name</h5>
                     <div class="d-flex justify-content-between">
-                        @if (shelf.Name != "Currently Reading")
+                        @if (shelf.Shelf.Name != "Currently Reading")
                         {
                             <form asp-controller="Shelf" asp-action="ViewShelf">
-                                <input type="hidden" name="id" value="@shelf.Id" />
+                                <input type="hidden" name="id" value="@shelf.Shelf.Id" />
                                 <button type="submit" class="btn btn-primary">View</button>
                             </form>
                         }
                         else
                         {
                             <form asp-controller="Shelf" asp-action="ViewCurrentlyReadingShelf">
-                                <input type="hidden" name="id" value="@shelf.Id" />
+                                <input type="hidden" name="id" value="@shelf.Shelf.Id" />
                                 <button type="submit" class="btn btn-primary">View</button>
                             </form>
                         }
-                        @if(shelf.Name!="Have Read" && shelf.Name != "Want To Read" && shelf.Name != "Currently Reading")
+                        @if(shelf.Shelf.Name!="Have Read" && shelf.Shelf.Name != "Want To Read" && shelf.Shelf.Name != "Currently Reading")
                         {
                             <form asp-controller="Shelf" asp-action="RemoveShelf" method="post">
-                                <input type="hidden" name="id" value="@shelf.Id" />
+                                <input type="hidden" name="id" value="@shelf.Shelf.Id" />
                                 <button type="submit" class="btn btn-danger">Remove Shelf</button>
                             </form>
                         }

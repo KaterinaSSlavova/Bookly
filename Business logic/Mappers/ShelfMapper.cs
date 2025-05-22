@@ -1,7 +1,6 @@
 ﻿using Models.Entities;
 using AutoMapper;
 using Business_logic.DTOs;
-using AutoMapper.Configuration.Conventions;
 
 namespace Business_logic.Mappers
 {
@@ -9,8 +8,10 @@ namespace Business_logic.Mappers
     {
         public ShelfMapper()
         {
-            CreateMap<RegularShelf, ShelfDTO>()
-                .ReverseMap(); 
+            CreateMap<Shelf, ShelfDTO>().ReverseMap();
+
+            CreateMap<RegularShelf, RegularShelfDTO>().ReverseMap();
+
             CreateMap<CurrentBookShelf, CurrentBookShelfDTO>()
                 .ReverseMap();
         }

@@ -20,8 +20,8 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult ShelfOverview()
         {
-            List<ShelfDTO> myShelves = _shelfService.GetUserShelves();
-            List<ShelfViewModel> model = _mapper.Map<List<ShelfViewModel>>(myShelves);
+            List<RegularShelfDTO> myShelves = _shelfService.GetUserShelves();
+            List<RegularShelfViewModel> model = _mapper.Map<List<RegularShelfViewModel>>(myShelves);
             return View(model);
         }
 
@@ -67,8 +67,8 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult ShelfDetails(int id)
         {
-            ShelfDTO shelf = _shelfService.GetShelfById(id);
-            ShelfViewModel shelfModel = _mapper.Map<ShelfViewModel>(shelf);
+            RegularShelfDTO shelf = _shelfService.GetShelfById(id);
+            RegularShelfViewModel shelfModel = _mapper.Map<RegularShelfViewModel>(shelf);
             return View(shelfModel);
         }
 

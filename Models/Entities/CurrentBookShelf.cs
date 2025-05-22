@@ -1,16 +1,20 @@
 ﻿namespace Models.Entities
 {
-    public class CurrentBookShelf: Shelf
+    public class CurrentBookShelf
     {
-        public List<CurrentBook> CurrentBooks { get;  private set; }
-        public CurrentBookShelf(int id, string name,User user, List<CurrentBook> currentBooks): base(id, name, user)
+        public Shelf Shelf { get; private set; }
+        public List<CurrentBook> CurrentBooks { get; private set; }
+
+        public CurrentBookShelf(Shelf shelf, List<CurrentBook> books)
         {
-            this.CurrentBooks = currentBooks;
+            this.Shelf = shelf;
+            this.CurrentBooks = books;
         }
 
-        public CurrentBookShelf(string name,User user, List<CurrentBook> currentBooks) : base(name, user)
+        public CurrentBookShelf(Shelf shelf)
         {
-            this.CurrentBooks = currentBooks;
+            this.Shelf = shelf;
+            this.CurrentBooks = new List<CurrentBook>();
         }
     }
 }

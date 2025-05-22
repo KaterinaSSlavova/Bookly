@@ -34,6 +34,11 @@ namespace Models.Entities
             this.Genre = genre;
             this.Pages = pages;
         }
+
+        public Book(int id)
+        {
+            this.Id= id;
+        }
       
         public Book()
         {

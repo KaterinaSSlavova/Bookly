@@ -59,7 +59,7 @@
                         @foreach (var shelf in Model.Shelves)
                         {
                             <li>
-                                <button type="submit" class="dropdown-item" name="shelfId" value="@shelf.Id">@shelf.Name</button>
+                                <button type="submit" class="dropdown-item" name="shelfId" value="@shelf.Shelf.Id">@shelf.Shelf.Name</button>
                             </li>
                         }
                     </ul>

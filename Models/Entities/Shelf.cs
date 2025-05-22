@@ -29,5 +29,10 @@
         {
             this.Name = name;
         }
+
+        public Shelf()
+        {
+            
+        }
     }
 }

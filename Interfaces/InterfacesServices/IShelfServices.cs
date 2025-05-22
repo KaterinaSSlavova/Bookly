@@ -6,10 +6,10 @@ namespace Interfaces
     {
         void CreateShelf(ShelfDTO shelf);
         void CreateDefaultShelf(string username);
-        List<ShelfDTO> GetUserShelves();
-        ShelfDTO GetUserWishList();
-       ShelfDTO? GetShelfById(int id);
-        bool CheckForBook(ShelfDTO shelf, int bookId);
+        List<RegularShelfDTO> GetUserShelves();
+        RegularShelfDTO GetUserWishList();
+       RegularShelfDTO? GetShelfById(int id);
+        bool CheckForBook(RegularShelfDTO shelf, int bookId);
         void AddBookToShelf(int bookId, int shelfId);
         void UpdateBookProgress(CurrentBookDTO book, int progress);
         void RemoveBookFromShelf(int bookId, int shelfId);

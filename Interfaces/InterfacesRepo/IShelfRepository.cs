@@ -4,7 +4,7 @@ namespace Interfaces
 {
     public interface IShelfRepository
     {
-        void CreateShelf(RegularShelf shelf, int id);
+        void CreateShelf(Shelf shelf, int id);
         List<RegularShelf> GetUserRegularShelves(User user);
         CurrentBookShelf? GetUserCurrentShelf(User user, string shelfName);
         List<Book> GetBooksFromShelf(int id);

@@ -13,7 +13,6 @@ namespace Bookly.Filters
 
         public void OnException(ExceptionContext context)
         {
-            _logger.LogError(context.Exception, "Book-related unhandled exception occurred.");
             context.Result = new ViewResult { ViewName = "Error" };
             context.ExceptionHandled = true;    
         }
