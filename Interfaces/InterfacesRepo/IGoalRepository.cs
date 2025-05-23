@@ -1,5 +1,4 @@
-﻿using Models.Entities;
-using Models.Enums;
+﻿using EFDataLayer.DBContext;
 
 namespace Interfaces
 {

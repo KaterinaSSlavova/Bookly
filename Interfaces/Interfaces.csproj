@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DTOs\DTOs.csproj" />
-    <ProjectReference Include="..\Models\Models.csproj" />
+    <ProjectReference Include="..\EFDataLayer\EFDataLayer.csproj" />
   </ItemGroup>
 
 </Project>

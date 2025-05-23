@@ -1,6 +1,6 @@
 ﻿using Interfaces;
 using Bookly.Business_logic.Services;
-using Bookly.Data.Repository;
+using Repositories;
 using Business_logic.Helpers;
 using Business_logic.Services;
 
