@@ -67,5 +67,10 @@ namespace Repositories
                 _context.SaveChanges();
             }
         }
+
+        public async Task<List<Goal>> GetAllGoals()
+        {
+            return _context.Goals.ToList();
+        }
     }
 }
