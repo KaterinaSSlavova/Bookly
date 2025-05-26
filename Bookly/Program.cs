@@ -26,15 +26,16 @@ namespace WebApp
                 options.Filters.Add<GlobalExceptionFilter>();
             });
 
-
-
             // Add services to the container
             builder.Services.AddSession();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddAutoMapper(typeof(UserModelMapper).Assembly, typeof(ShelfMapper).Assembly);
 
             builder.Services.AddDbContext<BooklyDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Server=DESKTOP-GPBCRNQ;Database=BooklyDB;Trusted_Connection=True; TrustServerCertificate=True;")));
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("Server=DESKTOP-GPBCRNQ;Database=BooklyDB;Trusted_Connection=True; TrustServerCertificate=True;"));
+               // options.EnableSensitiveDataLogging(); 
+            });
 
             builder.Services.RegisterRepositories();
             builder.Services.RegisterServices();

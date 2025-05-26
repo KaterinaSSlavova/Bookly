@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookly", "Bookly\Bookly.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Business logic", "Business logic\Business logic.csproj", "{27A5A058-4036-4344-B28E-EF66C51CAA00}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data Access Layer", "Data Access Layer", "{78699633-7DBD-4C97-A2E0-3382F13A66F2}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Business Access Layer", "Business Access Layer", "{A7382CF1-9F50-4744-BCD9-0EA1FE347C0C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation Layer", "Presentation Layer", "{AEAEC47B-AAED-4681-8F2D-AFAEE6425C86}"

@@ -36,10 +36,10 @@ namespace Bookly.Business_logic.Services
         }
 
         public UserDTO? LoadUser()
-        {
-            string username = _sessionHelper.GetSession("Username");
-            User user = _userRepo.LoadUser(username);
-            return ConvertToDTO(user);  
+        { 
+                string username = _sessionHelper.GetSession("Username");
+                User loadedUser = _userRepo.LoadUser(username);
+                return ConvertToDTO(loadedUser);
         }
 
         public UserDTO? GetUserByUsername(string username)

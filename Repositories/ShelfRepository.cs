@@ -15,9 +15,16 @@ namespace Repositories
 
         public void CreateShelf(Shelf shelf, int id)
         {
-            shelf.UserId = id;
-            _context.Shelves.Add(shelf);
-            _context.SaveChanges();
+            try
+            {
+                shelf.UserId = id;
+                _context.Shelves.Add(shelf);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public List<Book> GetBooksFromShelf(int id)
@@ -74,7 +81,8 @@ namespace Repositories
 
         public List<RegularShelf> GetUserRegularShelves(User user)
         {
-            List<Shelf> shelves = _context.Shelves.Where(s => s.UserId == user.Id).ToList();
+            List<Shelf> shelves = _context.Shelves.Where(s => s.UserId == user.Id && s.IsArchived == false).ToList();
+            shelves.ForEach(s => s.User= user); 
             return shelves.Select(s => ConvertToRegularShelf(s)).ToList();
         }
 
@@ -104,9 +112,7 @@ namespace Repositories
         {
             RegularShelf regularShelf = new RegularShelf()
             {
-                Id = shelf.Id,
-                Name = shelf.Name,
-                User = shelf.User,
+                Shelf = shelf,  
                 Books = shelf.Books
             };
             return regularShelf;    

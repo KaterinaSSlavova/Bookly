@@ -13,6 +13,11 @@ namespace Repositories
 
         public void CreateGoal(Goal goal)
         {
+            int id = goal.User.Id;
+            goal.StatusId = 1;
+            goal.CurrentProgress = 0;
+            goal.User = _context.Users.Find(id);
+            goal.UserId = id;
             _context.Goals.Add(goal);
             _context.SaveChanges();
         }

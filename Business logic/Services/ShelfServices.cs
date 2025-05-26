@@ -29,9 +29,9 @@ namespace Bookly.Business_logic.Services
         public void CreateShelf(ShelfDTO shelfDTO)
         {
             ValidateShelf(shelfDTO);
-            shelfDTO.User = GetUser();
+            int id = GetUser().Id;
             Shelf shelf = _mapper.Map<Shelf>(shelfDTO);
-            _shelfRepo.CreateShelf(shelf, shelf.User.Id);
+            _shelfRepo.CreateShelf(shelf, id);
         }
 
         public void CreateDefaultShelf(string username)
