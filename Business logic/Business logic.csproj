@@ -16,7 +16,7 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Data\Data.csproj" />
+		<ProjectReference Include="..\Exceptions\Exceptions.csproj" />
 		<ProjectReference Include="..\Interfaces\Interfaces.csproj" />
 	</ItemGroup>
 </Project>
