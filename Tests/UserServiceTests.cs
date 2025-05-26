@@ -4,6 +4,7 @@ using Business_logic.DTOs;
 using Exceptions;
 using Models.Entities;
 using Models.Enums;
+using Microsoft.AspNetCore.Http;
 using Moq;
 
 namespace Tests
@@ -13,17 +14,15 @@ namespace Tests
     {
         private readonly Mock<IUserRepository> _userRepo;
         private readonly Mock<IPasswordHelper> _passwordHelper;
-        private readonly Mock<ISessionHelper> _sessionHelper;
-        private readonly Mock<IUserValidation> _userValidation;
+        private readonly Mock<IHttpContextAccessor> _contextAccessor;
         private readonly UserServices _userService;
 
         public UserServiceTests()
         {
             _userRepo = new Mock<IUserRepository>();
             _passwordHelper = new Mock<IPasswordHelper>();
-            _sessionHelper = new Mock<ISessionHelper>();
-            _userValidation = new Mock<IUserValidation>();
-            _userService = new UserServices(_userRepo.Object, _passwordHelper.Object, _sessionHelper.Object, _userValidation.Object);
+            _contextAccessor = new Mock<IHttpContextAccessor>();
+            _userService = new UserServices(_userRepo.Object, _passwordHelper.Object, _contextAccessor.Object);
         }
 
         [TestMethod]
@@ -31,9 +30,8 @@ namespace Tests
         {
             //Arrange
             UserDTO userDTO = new UserDTO("Username", "Email", "Password");
-            string hashedPass = "HashedPassword";
-            User user = new User("Username", "Email", hashedPass);
-            _passwordHelper.Setup(h => h.HashPassword(userDTO.Password)).Returns(hashedPass);
+            User user = new User("Username", "Email", "HashedPassword");
+            _passwordHelper.Setup(h => h.HashPassword(userDTO.Password)).Returns(user.Password);
             _userRepo.Setup(r => r.Register(It.Is<User>(u => u.Username == userDTO.Username && u.Email == userDTO.Email && u.Password == userDTO.Password))).Verifiable();
 
             //Act
@@ -43,16 +41,16 @@ namespace Tests
             _userRepo.Verify(r => r.Register(It.Is<User>(u => u.Username == userDTO.Username && u.Email == userDTO.Email && u.Password == userDTO.Password)), Times.Once);
         }
 
-        //[TestMethod]
-        //public void Register_ShouldThrowException_WhenUserIsNull()
-        //{
-        //    //Arrange
-        //    UserDTO user = null;
-        //    _userRepo.Setup(r => r.Register(It.IsAny<User>()));
+        [TestMethod]
+        public void Register_ShouldThrowException_WhenUserIsNull()
+        {
+            //Arrange
+            UserDTO user = null;
+            _userRepo.Setup(r => r.Register(It.IsAny<User>()));
 
-        //    //Act and Assert
-        //    Assert.ThrowsException<ServiceValidationException>(() => _userService.Register(user));
-        //}
+            //Act and Assert
+            Assert.ThrowsException<NullReferenceException>(() => _userService.Register(user));
+        }
 
         [TestMethod]
         public void LogIn_ShouldReturnTrue_WhenUserExists()
@@ -119,33 +117,33 @@ namespace Tests
             Assert.IsNull(user);
         }
 
-        //[TestMethod]
-        //public void CalculateAge_ShouldReturnExpectedAge_WhenUserHasValidBirthDate()
-        //{
-        //    //Arrange
-        //    int expectedAge = 24;
-        //    User user = new User(1, null, "Username", new DateTime(2000, 12, 1), "email", "pass", Role.Reader);
+        [TestMethod]
+        public void CalculateAge_ShouldReturnExpectedAge_WhenUserHasValidBirthDate()
+        {
+            //Arrange
+            int expectedAge = 24;
+            User user = new User(1, null, "Username", new DateTime(2000, 12, 1), "email", "pass", Role.Reader);
 
-        //    //Act
-        //    int resultAge = _userService.CalculateAge(user);
+            //Act
+            int resultAge = _userService.CalculateAge(user);
 
-        //    //Assert
-        //    Assert.AreEqual(expectedAge, resultAge);
-        //}
+            //Assert
+            Assert.AreEqual(expectedAge, resultAge);
+        }
 
-        //[TestMethod]
-        //public void CalculateAge_ShouldReturnZero_WhenBirthDateIsNull()
-        //{
-        //    //Arrange
-        //    int expectedAge = 0;
-        //    User user = new User(1, null, "Username", null, "email", "pass", Role.Reader);
+        [TestMethod]
+        public void CalculateAge_ShouldReturnZero_WhenBirthDateIsNull()
+        {
+            //Arrange
+            int expectedAge = 0;
+            User user = new User(1, null, "Username", null, "email", "pass", Role.Reader);
 
-        //    //Act
-        //    int resultAge = _userService.CalculateAge(user);
+            //Act
+            int resultAge = _userService.CalculateAge(user);
 
-        //    //Assert
-        //    Assert.AreEqual(expectedAge, resultAge);
-        //}
+            //Assert
+            Assert.AreEqual(expectedAge, resultAge);
+        }
 
         //[TestMethod]
         //public void UpdateProfile_ShouldUpdateTheUser_WhenUserIsValid()

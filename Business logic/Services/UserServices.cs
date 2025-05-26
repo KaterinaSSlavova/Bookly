@@ -3,7 +3,6 @@ using Interfaces;
 using Microsoft.AspNetCore.Http;
 using Business_logic.DTOs;
 using Exceptions;
-using Microsoft.Extensions.Configuration;
 
 namespace Bookly.Business_logic.Services
 {
