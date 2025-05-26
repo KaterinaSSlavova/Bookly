@@ -3,9 +3,11 @@
 @{
     ViewData["Title"] = "Log in";
 }
-
-<h1>Log in</h1>
-<hr />
+<div class="welcome">
+    <h1>Welcome to Bookly!</h1>
+</div>
+<h4>Log in</h4>
+<hr class="short-ln" />
 
 @Html.Partial("_Alert")
 
@@ -27,8 +29,10 @@
             </div>
 
             <div class="form-group">
-                <input type="submit" value="Log in" class="btn btn-primary w-100" />
+                <input type="submit" value="Log in" class="btn btn-dark w-100" />
             </div>
         </form>
     </div>
 </div>
+
+<img src="~/images/giphy.gif" alt="Waving Cat" class="cat-icon" />

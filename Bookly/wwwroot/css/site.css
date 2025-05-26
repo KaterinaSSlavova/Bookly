@@ -40,3 +40,36 @@ body {
 .progress-bar {
     color: black;
 }
+
+.cat-icon {
+    position: fixed; 
+    top: 50%;
+    right: 15%;
+    transform: translateY(-50%);
+    width: 350px;
+    height: auto;
+}
+
+.short-ln {
+    width: 360px; 
+}
+
+.welcome {
+    text-align: center;
+}
+
+.welcome-rg {
+    position: absolute;
+    right: 300px;
+    top: 65px;
+}
+
+.avatar {
+    position: fixed;
+    top: 10px;
+    left: 20px;
+    width: 40px;
+    height: auto;
+    z-index: 1000;
+}
+
