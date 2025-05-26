@@ -2,6 +2,8 @@
 using Interfaces;
 using Microsoft.AspNetCore.Http;
 using Business_logic.DTOs;
+using Exceptions;
+using Microsoft.Extensions.Configuration;
 
 namespace Bookly.Business_logic.Services
 {
@@ -9,21 +11,19 @@ namespace Bookly.Business_logic.Services
     {
         private readonly IUserRepository _userRepo;
         private readonly IPasswordHelper _passwordHelper;
-        private readonly ISessionHelper _sessionHelper;
-        private readonly IUserValidation _userValidation;
-        public UserServices(IUserRepository userRepo, IPasswordHelper passwordHelper, ISessionHelper sessionHelper, IUserValidation userValidation)
+        private readonly IHttpContextAccessor _contextAccessor;
+        public UserServices(IUserRepository userRepo, IPasswordHelper passwordHelper, IHttpContextAccessor contextAccessor)
         {
             _userRepo = userRepo;
-            _sessionHelper = sessionHelper;
             _passwordHelper = passwordHelper;
-            _userValidation = userValidation;
+            _contextAccessor = contextAccessor;
         }
 
         public void Register(UserDTO userDTO)
         {
             userDTO.Password = _passwordHelper.HashPassword(userDTO.Password);
             User user = ConvertToEntity(userDTO);
-            _userValidation.ValidateUser(user);
+            ValidateUser(user);
             _userRepo.Register(user);
         }
 
@@ -31,13 +31,12 @@ namespace Bookly.Business_logic.Services
         {
             UserDTO? storedUser = GetUserByUsername(loggingUser.Username);
             if (storedUser == null) return false;
-            _sessionHelper.SetSession("Role", storedUser.Role.ToString());
             return _passwordHelper.VerifyPassword(loggingUser.Password, storedUser.Password);
         }
 
         public UserDTO? LoadUser()
         {
-            string username = _sessionHelper.GetSession("Username");
+            string username = _contextAccessor.HttpContext.Session.GetString("Username");
             User user = _userRepo.LoadUser(username);
             return ConvertToDTO(user);  
         }
@@ -48,20 +47,11 @@ namespace Bookly.Business_logic.Services
             return ConvertToDTO(user);
         }
 
-        public void UpdateUser(UserDTO userDTO, int oldUserId)
-        {
-            User user = ConvertToEntity(userDTO);
-            _userValidation.ValidateUser(user);
-            _userRepo.UpdateProfile(user);
-            _sessionHelper.SetSession("Username", userDTO.Username);
-        }
-
         public void UpdateProfile(UserDTO userDTO)
         {
             User user = ConvertToEntity(userDTO);
-            _userValidation.ValidateUser(user);
+            ValidateUser(user);
             _userRepo.UpdateProfile(user);
-            _sessionHelper.SetSession("Username", userDTO.Username);
         }
 
         public string ConvertToString(IFormFile image)
@@ -100,6 +90,24 @@ namespace Bookly.Business_logic.Services
                 age--;
             }
             return age;
+        }
+
+        public void ValidateUser(User user)
+        {
+            if (user == null)
+                throw new NullReferenceException("Invalid data!");
+
+            if (user.BirthDate.HasValue)
+            {
+                if (user.BirthDate.Value > DateTime.Now || user.BirthDate.Value.Year == DateTime.Today.Year)
+                    throw new InvalidBirthdayException();
+            }
+
+            if (_userRepo.DoesUsernameExists(user))
+                throw new UsernameAlreadyExistsException(user.Username);
+
+            if (_userRepo.DoesEmailExists(user))
+                throw new EmailAlreadyExistsException(user.Email);
         }
     }
 }

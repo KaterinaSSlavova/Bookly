@@ -31,8 +31,6 @@ namespace Bookly.Extensions
             Services.AddScoped<IRatingServices, RatingServices>();
             Services.AddScoped<IBookDetailsService, BookDetailsService>();
             Services.AddScoped<IPasswordHelper, PasswordHelper>();
-            Services.AddScoped<ISessionHelper, SessionHelper>();
-            Services.AddScoped<IUserValidation, UserValidation>();
 
             Services.AddTransient<IEmailSender, EmailSender>();
 

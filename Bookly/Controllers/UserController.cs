@@ -77,6 +77,7 @@ namespace Bookly.Bookly.Controllers
             if (_userService.LogIn(user))
             {
                 HttpContext.Session.SetString("Username", user.Username);
+                HttpContext.Session.SetString("Role", user.Role.ToString());
                 return RedirectToAction("Index", "Book");
             }
             TempData["Error"] = "Invalid credentials! Please try again!";

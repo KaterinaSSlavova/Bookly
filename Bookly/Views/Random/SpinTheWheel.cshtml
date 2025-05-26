@@ -10,13 +10,34 @@
 <h1>Spin The Wheel</h1>
 <hr />
 
+<div id="wrapper">
+    <div id="wheel">
+        <div id="inner-wheel">
+            <div class="sec"><span class="fas fa-couch"></span></div>
+            <div class="sec"><span class="fas fa-apple-alt"></span></div>
+            <div class="sec"><span class="fas fa-laptop"></span></div>
+            <div class="sec"><span class="fas fa-utensils"></span></div>
+            <div class="sec"><span class="fas fa-box-open"></span></div>
+            <div class="sec"><span class="fas fa-bed"></span></div>
+            <div class="sec"><span class="fas fa-bed"></span></div>
+            <div class="sec"><span class="fas fa-bed"></span></div>
+        </div>
+
+        <div id="shine"></div>
+    </div>
+
+    <div id="txt"></div>
+
+</div>
+
+
 <form asp-controller="Random" asp-action="Spin" method="post" class="mb-3">
     <button type="submit" class="btn btn-secondary">Spin</button>
 </form>
-
 <button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#bookModal">
     Show Book
 </button>
+
 
 @if (Model != null)
 {
@@ -56,65 +77,4 @@
         </form>
     </div>
 }
-
-
-@*  @model BookViewModel
-
-@{
-    ViewData["Title"] = "Spin the Wheel";
-    var showModal = Model?.Id != 0;
-}
-
-<h1>Spin The Wheel</h1>
-<hr />
-
-<!-- ONE BUTTON -->
-<form asp-action="Spin" method="post">
-    <button type="submit" class="btn btn-primary">Spin & Show Book</button>
-</form>
-
-@if (showModal)
-{
-    <!-- Open modal automatically (using Bootstrap classes only) -->
-    <div class="modal fade show d-block" id="bookModal" tabindex="-1" aria-labelledby="bookModalLabel" aria-modal="true" role="dialog">
-        <form asp-action="AddBookFromSpinTheWheel" method="post">
-            <div class="modal-dialog">
-                <div class="modal-content">
-
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="bookModalLabel">@Model.Title</h5>
-                        <input type="hidden" name="Id" value="@Model.Id" />
-                        <input type="hidden" name="Title" value="@Model.Title" />
-                        <button type="submit" class="btn-close" formaction="/" formmethod="get"></button>
-                    </div>
-
-                    <div class="modal-body">
-                        <input type="hidden" name="Picture" value="@Model.Picture" />
-                        <img src="@Model.Picture" class="img-fluid mb-3" alt="Book Picture" />
-
-                        <input type="hidden" name="Author" value="@Model.Author" />
-                        <p><strong>Author:</strong> @Model.Author</p>
-
-                        <input type="hidden" name="Description" value="@Model.Description" />
-                        <p><strong>Description:</strong> @Model.Description</p>
-
-                        <input type="hidden" name="Genre" value="@Model.Genre" />
-                        <p><strong>Genre:</strong> @Model.Genre</p>
-
-                        <input type="hidden" name="ISBN" value="@Model.ISBN" />
-                        <p><strong>ISBN:</strong> @Model.ISBN</p>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Add to Want To Read</button>
-                        <a href="@Url.Action("SpinTheWheel", "Random")" class="btn btn-secondary">Close</a>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-
-    <!-- Modal backdrop -->
-    <div class="modal-backdrop fade show"></div>
-}*@
 
