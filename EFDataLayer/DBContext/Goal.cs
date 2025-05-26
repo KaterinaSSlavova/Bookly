@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EFDataLayer.DBContext;
 
@@ -21,7 +22,28 @@ public partial class Goal
 
     public bool IsArchived { get; set; }
 
-    public virtual Status Status { get; set; } = null!;
+    [NotMapped]
+    public virtual Status Status
+    {
+        get => (Status)StatusId;
+        set => StatusId = (int)value;
+    }
 
     public virtual User? User { get; set; }
+
+    public Goal(int id, DateTime start, DateTime end, int readingGoal, int currentProgress, Status status, User user)
+    {
+        this.Id = id;
+        this.Start = start;
+        this.End = end;
+        this.ReadingGoal = readingGoal;
+        this.CurrentProgress = currentProgress;
+        this.Status = status;
+        this.User = user;
+    }
+
+    public Goal ()
+    {
+
+    }
 }

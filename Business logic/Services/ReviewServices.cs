@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Interfaces;
-using Models.Entities;
+using EFDataLayer.DBContext;
 using Business_logic.DTOs;
 
 namespace Bookly.Business_logic.Services

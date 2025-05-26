@@ -2,6 +2,8 @@ using Bookly.Extensions;
 using Bookly.Filters;
 using Bookly.Mappers;
 using Business_logic.Mappers;
+using EFDataLayer.DBContext;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Exceptions;
 
@@ -24,10 +26,15 @@ namespace WebApp
                 options.Filters.Add<GlobalExceptionFilter>();
             });
 
+
+
             // Add services to the container
             builder.Services.AddSession();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddAutoMapper(typeof(UserModelMapper).Assembly, typeof(ShelfMapper).Assembly);
+
+            builder.Services.AddDbContext<BooklyDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Server=DESKTOP-GPBCRNQ;Database=BooklyDB;Trusted_Connection=True; TrustServerCertificate=True;")));
 
             builder.Services.RegisterRepositories();
             builder.Services.RegisterServices();

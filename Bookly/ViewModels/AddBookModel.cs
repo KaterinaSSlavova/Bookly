@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using Models.Enums;
+using EFDataLayer.DBContext;
 
 namespace Bookly.ViewModels
 {

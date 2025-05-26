@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Interfaces;
-using Models.Entities;
-using Models.Enums;
+using EFDataLayer.DBContext;
 using Business_logic.DTOs;
 using Exceptions;
 

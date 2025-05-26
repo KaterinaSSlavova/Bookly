@@ -2,8 +2,7 @@
 using Interfaces;
 using Business_logic.DTOs;
 using Exceptions;
-using Models.Entities;
-using Models.Enums;
+using EFDataLayer.DBContext;
 using Moq;
 
 namespace Tests

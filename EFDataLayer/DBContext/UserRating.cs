@@ -1,4 +1,6 @@
-﻿namespace EFDataLayer.DBContext;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace EFDataLayer.DBContext;
 
 public partial class UserRating
 {
@@ -8,7 +10,12 @@ public partial class UserRating
 
     public int Id { get; set; }
 
-    public virtual Ratings Rating { get; set; } 
+    [NotMapped]
+    public virtual Ratings Rating
+    {
+        get => (Ratings)RatingId;
+        set => RatingId = (int)value;
+    }
 
     public virtual User User { get; set; } = null!;
 }

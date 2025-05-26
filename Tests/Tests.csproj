@@ -20,7 +20,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Bookly\Bookly.csproj" />
     <ProjectReference Include="..\Business logic\Business logic.csproj" />
-    <ProjectReference Include="..\Data\Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>

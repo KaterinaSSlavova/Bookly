@@ -1,7 +1,7 @@
 ﻿using EFDataLayer.DBContext;
 using Interfaces;
 
-; namespace Repositories
+ namespace Repositories
 {
     public class ReviewRepository: IReviewRepository
     {

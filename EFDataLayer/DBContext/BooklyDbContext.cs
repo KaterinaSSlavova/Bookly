@@ -27,6 +27,8 @@ public partial class BooklyDbContext : DbContext
 
     public virtual DbSet<UserRating> UserRatings { get; set; }
 
+    public virtual DbSet<BookRating> BookRatings { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=DESKTOP-GPBCRNQ;Database=BooklyDB;Trusted_Connection=True;TrustServerCertificate=True;");
@@ -38,7 +40,9 @@ public partial class BooklyDbContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK__Books__3214EC07FEA26F79");
 
             entity.Property(e => e.Author).HasMaxLength(255);
-            entity.Property(e => e.Genre).HasMaxLength(255);
+            entity.Property(e => e.Genre)
+        .HasConversion<string>() 
+        .HasMaxLength(255);
             entity.Property(e => e.IsArchived).HasColumnName("isArchived");
             entity.Property(e => e.Isbn)
                 .HasMaxLength(20)
@@ -56,9 +60,8 @@ public partial class BooklyDbContext : DbContext
             entity.Property(e => e.Start).HasColumnType("datetime");
             entity.Property(e => e.StatusId).HasDefaultValue(1);
 
-            entity.Property(e => e.Status)
-                 .HasConversion<int>()
-                 .HasDefaultValue(Status.Not_started);
+            entity.Property(e => e.StatusId)
+        .HasDefaultValue((int)Status.Not_started);
 
             entity.HasOne(d => d.User).WithMany(p => p.Goals)
                 .HasForeignKey(d => d.UserId)
@@ -123,9 +126,8 @@ public partial class BooklyDbContext : DbContext
             entity.Property(e => e.BirthDate).HasColumnType("datetime");
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.Password).HasMaxLength(255);
-            entity.Property(e => e.Role)
-                  .HasConversion<int>() 
-                  .HasDefaultValue(Role.Reader);
+            entity.Property(e => e.RoleId)
+        .HasDefaultValue((int)Role.Reader);
             entity.Property(e => e.Username).HasMaxLength(255);
 
         });
@@ -160,6 +162,21 @@ public partial class BooklyDbContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.UserRatings)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK__UserRatin__UserI__151B244E");
+        });
+
+        modelBuilder.Entity<BookRating>(entity =>
+        {
+            entity.HasKey(br => new { br.RatingId, br.BookId });
+
+            entity.ToTable("BookRating");
+
+            entity.Property(e => e.RatingId)
+        .HasDefaultValue((int)Ratings.Neutral);
+
+            entity.HasOne(br => br.Book)
+                  .WithMany(b => b.BookRatings)
+                  .HasForeignKey(br => br.BookId);
+
         });
 
         OnModelCreatingPartial(modelBuilder);

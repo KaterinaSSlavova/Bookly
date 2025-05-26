@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Business_logic.DTOs;
-using Models.Enums;
+using EFDataLayer.DBContext;
 using Bookly.ViewModels;
 
 namespace Bookly.Mappers

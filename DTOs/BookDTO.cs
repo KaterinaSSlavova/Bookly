@@ -1,4 +1,4 @@
-﻿using Models.Enums;
+﻿using EFDataLayer.DBContext;
 
 namespace Business_logic.DTOs
 {

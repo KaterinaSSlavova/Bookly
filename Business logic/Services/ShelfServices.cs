@@ -1,8 +1,7 @@
 ﻿using Interfaces;
-using Models.Entities;
+using EFDataLayer.DBContext;
 using Business_logic.DTOs;
 using AutoMapper;
-using Models.Enums;
 using Exceptions;
 
 namespace Bookly.Business_logic.Services

@@ -1,14 +1,17 @@
 ﻿using EFDataLayer.DBContext;
 using Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Repositories
 {
     public class BookRepository: IBookRepository
     {
         private readonly BooklyDbContext _context;
+        //private readonly ILogger _logger;   
         public BookRepository(BooklyDbContext context)
         {
             _context = context;
+           // _logger = logger;
         }
 
         public void AddBook(Book book)
@@ -19,7 +22,15 @@ namespace Repositories
 
         public List<Book> LoadBooks()
         {
-            return _context.Books.Where(b => b.IsArchived != true).ToList();
+            //try
+            //{
+                return _context.Books.Where(b => b.IsArchived != true).ToList();
+            //}
+            //catch (Exception ex)
+            //{
+            //    _logger.LogError(ex.Message, "Error when loading books");
+            //    return new List<Book>();
+            //}
         }
 
         public Book? GetBookById(int id)

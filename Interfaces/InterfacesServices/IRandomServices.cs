@@ -1,4 +1,4 @@
-﻿using Models.Enums;
+﻿using EFDataLayer.DBContext;
 using Business_logic.DTOs;
 
 namespace Interfaces

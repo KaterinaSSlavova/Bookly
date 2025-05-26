@@ -20,4 +20,18 @@ public partial class Review
     public virtual Book? Book { get; set; }
 
     public virtual User? User { get; set; }
+
+    public Review(int id, string description, DateTime date, User user, Book book)
+    {
+         this.Id = id;
+        this.Description = description;
+        this.Date = date;
+        this.User = user;
+        this.Book = book;
+    }
+
+    public Review()
+    {
+        
+    }
 }

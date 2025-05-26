@@ -1,6 +1,6 @@
 ﻿using Business_logic.DTOs;
 using Microsoft.AspNetCore.Http;
-using Models.Entities;
+using EFDataLayer.DBContext;
 
 namespace Interfaces
 {

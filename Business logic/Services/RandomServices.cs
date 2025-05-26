@@ -1,6 +1,6 @@
 ﻿using Interfaces;
 using Business_logic.DTOs;
-using Models.Enums;
+using EFDataLayer.DBContext;
 using Newtonsoft.Json;
 using Exceptions;
 

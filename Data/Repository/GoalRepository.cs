@@ -1,8 +1,7 @@
 ﻿using Interfaces;
-using Models.Entities;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using Models.Enums;
+using EFDataLayer.DBContext;
 using Exceptions;
 using Microsoft.Extensions.Logging;
 
