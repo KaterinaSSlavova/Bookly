@@ -145,93 +145,80 @@ namespace Tests
             Assert.AreEqual(expectedAge, resultAge);
         }
 
-        //[TestMethod]
-        //public void UpdateProfile_ShouldUpdateTheUser_WhenUserIsValid()
-        //{
-        //    //Arrange
-        //    byte[] picture = new byte[] { 0x01, 0x02, 0x03 };
-        //    string pictureDTO = Convert.ToBase64String(new byte[] { 0x01, 0x02, 0x03 });
-        //    UserDTO userDTO = new UserDTO(1, pictureDTO, "Username", new DateTime(2001, 2, 2), 25, "email", "Pass", Role.Reader);
-        //    User oldUserVersion = new User(1, picture, "Username", new DateTime(2001, 1, 1), "email", "Pass", Role.Reader);
+        [TestMethod]
+        public void UpdateProfile_ShouldUpdateTheUser_WhenUserIsValid()
+        {
+            //Arrange
+            UserDTO userDTO = new UserDTO(1, null, "Username", new DateTime(2001, 2, 2), 25, "email", "Pass", Role.Reader);
+            User oldUserVersion = new User(1, null, "Username", new DateTime(2001, 1, 1), "email", "Pass", Role.Reader);
 
-        //    _sessionHelper.Setup(h => h.GetSession("Username")).Returns(userDTO.Username);
-        //    _userRepo.Setup(r => r.LoadUser(oldUserVersion.Username)).Returns(oldUserVersion);
-        //    _userValidation.Setup(v => v.ValidateUser(It.IsAny<User>(), It.IsAny<int>()));
-        //    _userRepo.Setup(r => r.UpdateProfile(It.IsAny<User>()));
-        //    _sessionHelper.Setup(h => h.SetSession("Username", userDTO.Username));
+            _userRepo.Setup(r => r.LoadUser(oldUserVersion.Username)).Returns(oldUserVersion);
+            _userRepo.Setup(r => r.DoesUsernameExists(It.IsAny<User>())).Returns(false);
+            _userRepo.Setup(r => r.DoesEmailExists(It.IsAny<User>())).Returns(false);
+            _userRepo.Setup(r => r.UpdateProfile(It.IsAny<User>()));
 
-        //    //Act
-        //    _userService.UpdateProfile(userDTO, pictureDTO);
+            //Act
+            _userService.UpdateProfile(userDTO);
 
-        //    //Assert
-        //    _userRepo.Verify(r => r.UpdateProfile(It.IsAny<User>()), Times.Once);
-        //    _sessionHelper.Verify(h => h.SetSession("Username", userDTO.Username), Times.Once);
-        //}
+            //Assert
+            _userRepo.Verify(r => r.UpdateProfile(It.IsAny<User>()), Times.Once);
+        }
 
-        //[TestMethod]
-        //public void UpdateProfile_ShouldThrowException_WhenUsernameAlreadyExists()
-        //{
-        //    //Arrange
-        //    byte[] picture = new byte[] { 0x01, 0x02, 0x03 };
-        //    string pictureDTO = Convert.ToBase64String(new byte[] { 0x01, 0x02, 0x03 });
-        //    UserDTO userDTO = new UserDTO(1, pictureDTO, "Username", new DateTime(2001, 2, 2), 25, "email", "Pass", Role.Reader);
-        //    User oldUserVersion = new User(1, picture, "Username", new DateTime(2001, 1, 1), "email", "Pass", Role.Reader);
+        [TestMethod]
+        public void UpdateProfile_ShouldThrowException_WhenUsernameAlreadyExists()
+        {
+            //Arrange
+            UserDTO userDTO = new UserDTO(1, null, "Username", new DateTime(2001, 2, 2), 25, "email", "Pass", Role.Reader);
+            User oldUserVersion = new User(1, null, "Username", new DateTime(2001, 1, 1), "email", "Pass", Role.Reader);
 
-        //    _sessionHelper.Setup(h => h.GetSession("Username")).Returns(userDTO.Username);
-        //    _userRepo.Setup(r => r.LoadUser(oldUserVersion.Username)).Returns(oldUserVersion);
-        //    _userRepo.Setup(r => r.DoesUsernameExists(It.IsAny<User>(), oldUserVersion.Id)).Returns(true); 
+            _userRepo.Setup(r => r.LoadUser(oldUserVersion.Username)).Returns(oldUserVersion);
+            _userRepo.Setup(r => r.DoesUsernameExists(It.IsAny<User>())).Returns(true);
 
-        //    //Act and Assert
-        //    Assert.ThrowsException<UsernameAlreadyExistsException>(() => _userService.UpdateProfile(userDTO, pictureDTO));
-        //}
+            //Act and Assert
+            Assert.ThrowsException<UsernameAlreadyExistsException>(() => _userService.UpdateProfile(userDTO));
+        }
 
-        //[TestMethod]
-        //public void UpdateProfile_ShouldThrowException_WhenEmailAlreadyExists()
-        //{
-        //    //Arrange
-        //    byte[] picture = new byte[] { 0x01, 0x02, 0x03 };
-        //    string pictureDTO = Convert.ToBase64String(new byte[] { 0x01, 0x02, 0x03 });
-        //    UserDTO userDTO = new UserDTO(1, pictureDTO, "Username", new DateTime(2001, 2, 2), 25, "email", "Pass", Role.Reader);
-        //    User oldUserVersion = new User(1, picture, "Username", new DateTime(2001, 1, 1), "email", "Pass", Role.Reader);
+        [TestMethod]
+        public void UpdateProfile_ShouldThrowException_WhenEmailAlreadyExists()
+        {
+            //Arrange
+            UserDTO userDTO = new UserDTO(1, null, "Username", new DateTime(2001, 2, 2), 25, "email", "Pass", Role.Reader);
+            User oldUserVersion = new User(1, null, "Username", new DateTime(2001, 1, 1), "email", "Pass", Role.Reader);
 
-        //    _sessionHelper.Setup(h => h.GetSession("Username")).Returns(userDTO.Username);
-        //    _userRepo.Setup(r => r.LoadUser(oldUserVersion.Username)).Returns(oldUserVersion);
-        //    _userRepo.Setup(r => r.DoesUsernameExists(It.IsAny<User>(), oldUserVersion.Id)).Returns(false);
-        //    _userRepo.Setup(r => r.DoesEmailExists(It.IsAny<User>(), oldUserVersion.Id)).Returns(true);
+            _userRepo.Setup(r => r.LoadUser(oldUserVersion.Username)).Returns(oldUserVersion);
+            _userRepo.Setup(r => r.DoesUsernameExists(It.IsAny<User>())).Returns(false);
+            _userRepo.Setup(r => r.DoesEmailExists(It.IsAny<User>())).Returns(true);
 
-        //    //Act and Assert
-        //    Assert.ThrowsException<EmailAlreadyExistsException>(() => _userService.UpdateProfile(userDTO, pictureDTO));
-        //}
+            //Act and Assert
+            Assert.ThrowsException<EmailAlreadyExistsException>(() => _userService.UpdateProfile(userDTO));
+        }
 
-        //[TestMethod]
-        //public void UpdateProfile_ShouldThrowException_WhenUserBirthDateNotValid()
-        //{
-        //    //Arrange
-        //    User user = new User(1, null, "Username", null, "email", "pass", Role.Reader);
-        //    string pictureDTO = Convert.ToBase64String(new byte[] { 0x01, 0x02, 0x03 });
-        //    UserDTO userDTO = new UserDTO(1, pictureDTO, "Username", new DateTime(2030, 2, 2), null, "email", "Pass", Role.Reader);
+        [TestMethod]
+        public void UpdateProfile_ShouldThrowException_WhenUserBirthDateNotValid()
+        {
+            //Arrange
+            User user = new User(1, null, "Username", null, "email", "pass", Role.Reader);
+            string pictureDTO = Convert.ToBase64String(new byte[] { 0x01, 0x02, 0x03 });
+            UserDTO userDTO = new UserDTO(1, pictureDTO, "Username", new DateTime(2030, 2, 2), null, "email", "Pass", Role.Reader);
 
-        //    _sessionHelper.Setup(h => h.GetSession("Username")).Returns(userDTO.Username);
-        //    _userRepo.Setup(r => r.LoadUser(user.Username)).Returns(user);
+            _userRepo.Setup(r => r.LoadUser(user.Username)).Returns(user);
 
-        //    //Act and Assert
-        //    Assert.ThrowsException<InvalidBirthdayException>(() => _userService.UpdateProfile(userDTO, pictureDTO));
-        //}
+            //Act and Assert
+            Assert.ThrowsException<InvalidBirthdayException>(() => _userService.UpdateProfile(userDTO));
+        }
 
-        //[TestMethod]
-        //public void UpdateProfile_ShouldThrowException_WhenUserIsNull()
-        //{
-        //    //Arrange
-        //    User user = new User(1, null, "Username", null, "email", "pass", Role.Reader);
-        //    string picture = null;
-        //    UserDTO userDTO = null;
+        [TestMethod]
+        public void UpdateProfile_ShouldThrowException_WhenUserIsNull()
+        {
+            //Arrange
+            User user = new User(1, null, "Username", null, "email", "pass", Role.Reader);
+            UserDTO userDTO = null;
 
-        //    _sessionHelper.Setup(h => h.GetSession("Username")).Returns(user.Username);
-        //    _userRepo.Setup(r => r.LoadUser(user.Username)).Returns(user);
+            _userRepo.Setup(r => r.LoadUser(user.Username)).Returns(user);
 
-        //    //Act and Assert
-        //    Assert.ThrowsException<ServiceValidationException>(() => _userService.UpdateProfile(userDTO, picture));
-        //}
+            //Act and Assert
+            Assert.ThrowsException<NullReferenceException>(() => _userService.UpdateProfile(userDTO));
+        }
 
     }
 }

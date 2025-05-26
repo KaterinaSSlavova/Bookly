@@ -86,6 +86,7 @@ namespace Tests
             Assert.ThrowsException<ShelfAlreadyExistsException>(() => _shelfServices.CreateShelf(shelfDTO));
         }
 
+
         [TestMethod]
         public void RemoveShelf_ShouldExecuteMethodOnce_WhenShelfIdIsNotZero()
         {
