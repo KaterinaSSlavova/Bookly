@@ -12,7 +12,7 @@ namespace Interfaces
         bool CheckForBook(RegularShelfDTO shelf, int bookId);
         void AddBookToShelf(int bookId, int shelfId);
         void UpdateBookProgress(CurrentBookDTO book, int progress);
-        void RemoveBookFromShelf(int bookId, int shelfId);
+        void RemoveBookFromShelf(int bookId, RegularShelfDTO shelf);
         void RemoveShelf(int id);
         CurrentBookShelfDTO GetCurrentlyReadingShelf();
     }

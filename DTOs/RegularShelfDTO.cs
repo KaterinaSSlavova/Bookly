@@ -5,7 +5,7 @@
         public ShelfDTO Shelf { get; set; }
         public List<BookDTO> BooksOnShelf { get; set; }
 
-		public RegularShelfDTO(ShelfDTO shelf, UserDTO user)
+		public RegularShelfDTO(ShelfDTO shelf)
 		{
 			this.Shelf = shelf;
 			this.BooksOnShelf = new List<BookDTO>();

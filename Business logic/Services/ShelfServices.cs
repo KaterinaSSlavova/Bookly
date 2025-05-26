@@ -115,13 +115,12 @@ namespace Bookly.Business_logic.Services
             RegularShelfDTO? oldShelf = GetUserShelves().FirstOrDefault(s => s.BooksOnShelf.Any(b => b.Id == bookId));
             if(oldShelf != null)
             {
-                RemoveBookFromShelf(bookId, oldShelf.Shelf.Id);
+                RemoveBookFromShelf(bookId, oldShelf);
             }
         }
 
-        public void RemoveBookFromShelf(int bookId, int shelfId)
+        public void RemoveBookFromShelf(int bookId, RegularShelfDTO shelf)
         {   
-            RegularShelfDTO shelf = GetShelfById(shelfId);
             if (shelf == null) throw new NullReferenceException("Shelf was not found!");
             bool isBookOnShelf = CheckForBook(shelf, bookId);
             if (isBookOnShelf)

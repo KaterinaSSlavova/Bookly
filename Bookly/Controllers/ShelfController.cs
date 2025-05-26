@@ -161,7 +161,8 @@ namespace Bookly.Bookly.Controllers
         {
             try
             {
-                _shelfService.RemoveBookFromShelf(bookId, shelfId);
+                RegularShelfDTO? shelf = _shelfService.GetShelfById(shelfId);
+                _shelfService.RemoveBookFromShelf(bookId, shelf);
                 TempData["Success"] = "Book was removed successfully!";
             }
             catch(NullReferenceException ex)

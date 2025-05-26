@@ -23,6 +23,13 @@
             this.Name = name;
         }
 
+        public ShelfDTO(int id, string name, UserDTO user)
+        {
+            this.Id = id;
+            this.Name = name;
+            this.User = user;
+        }
+
         public ShelfDTO()
         {
             
