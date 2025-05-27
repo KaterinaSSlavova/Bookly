@@ -41,7 +41,7 @@ namespace Bookly.Business_logic.Services
 
         private Review ConvertToEntity(ReviewDTO review)
         {
-            return new Review(review.Id, review.Description, review.Date, _userServices.ConvertToEntity(review.User), _mapper.Map<Book>(review.Book));
+            return new Review(review.Id, review.Description, review.Date, review.User.Id, review.Book.Id);
         }
 
         private ReviewDTO ConvertToDTO(Review review)

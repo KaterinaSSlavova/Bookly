@@ -1,21 +1,32 @@
 ﻿using EFDataLayer.DBContext;
 using Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Repositories
 {
     public class RatingRepository : IRatingRepostiory
     {
         private readonly BooklyDbContext _context;
-        public RatingRepository(BooklyDbContext context)
+        private readonly ILogger<RatingRepository> _logger;
+        public RatingRepository(BooklyDbContext context, ILogger<RatingRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public void RateBook(int bookId, int ratingId)
         {
-            BookRating bookRating = new BookRating() { BookId = bookId, Book = _context.Books.Find(bookId), Rating = (Ratings)ratingId };
-            _context.BookRatings.Add(bookRating);
-            _context.SaveChanges();
+            try
+            {
+                BookRating bookRating = new BookRating() { BookId = bookId, Book = _context.Books.Find(bookId), Rating = (Ratings)ratingId };
+                _context.BookRatings.Add(bookRating);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
 
         public void ConnectUserWithRating(int userId, int ratingId)

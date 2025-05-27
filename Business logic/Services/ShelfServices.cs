@@ -28,8 +28,8 @@ namespace Bookly.Business_logic.Services
 
         public void CreateShelf(ShelfDTO shelfDTO)
         {
+            ValidateShelf(shelfDTO);
             UserDTO user = GetUser();
-            ValidateShelf(shelfDTO, user);
             Shelf shelf = _mapper.Map<Shelf>(shelfDTO);
             _shelfRepo.CreateShelf(shelf, user.Id);
         }
@@ -174,11 +174,10 @@ namespace Bookly.Business_logic.Services
             return false;
         }
 
-        public void ValidateShelf(ShelfDTO shelf, UserDTO user)
+        public void ValidateShelf(ShelfDTO shelf)
         {
             if (shelf == null || shelf.Name == null) throw new NullReferenceException("Invalid shelf!");
-            List<RegularShelf> shelves = _shelfRepo.GetUserRegularShelves(_userServices.ConvertToEntity(user));
-            List<RegularShelfDTO> shelvesDTO = _mapper.Map<List<RegularShelfDTO>>(shelves);
+            List<RegularShelfDTO> shelvesDTO = GetUserShelves();
             foreach (RegularShelfDTO userShelf in shelvesDTO)
             {
                 if (shelf.Name.Equals(userShelf.Shelf.Name, StringComparison.OrdinalIgnoreCase)) throw new ShelfAlreadyExistsException(shelf.Name);

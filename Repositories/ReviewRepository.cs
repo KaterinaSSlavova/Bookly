@@ -1,9 +1,9 @@
 ﻿using EFDataLayer.DBContext;
 using Interfaces;
 
- namespace Repositories
+namespace Repositories
 {
-    public class ReviewRepository: IReviewRepository
+    public class ReviewRepository : IReviewRepository
     {
         private readonly BooklyDbContext _context;
         public ReviewRepository(BooklyDbContext context)
@@ -19,7 +19,7 @@ using Interfaces;
 
         public List<Review> GetBookReviews(Book book)
         {
-            return _context.Reviews.Where(r => r.Book.Id == book.Id).ToList();
+            return _context.Reviews.Where(r => r.Book.Id == book.Id && r.IsArchived == false).ToList();
         }
 
         public void RemoveReview(int reviewId)

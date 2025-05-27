@@ -30,6 +30,15 @@ public partial class Review
         this.Book = book;
     }
 
+    public Review(int id, string description, DateTime date, int userId, int bookId)
+    {
+        this.Id = id;
+        this.Description = description;
+        this.Date = date;
+        this.UserId = userId;
+        this.BookId = bookId;
+    }
+
     public Review()
     {
         
