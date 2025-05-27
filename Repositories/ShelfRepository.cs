@@ -17,7 +17,7 @@ namespace Repositories
         {
             try
             {
-                shelf.UserId = id;
+                shelf.UserId = _context.Users.Find(id).Id;
                 _context.Shelves.Add(shelf);
                 _context.SaveChanges();
             }
