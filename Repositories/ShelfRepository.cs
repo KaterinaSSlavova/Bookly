@@ -84,7 +84,7 @@ namespace Repositories
         public RegularShelf? GetShelfById(int id)
         {
             Shelf? shelf = _context.Shelves.Where(s => s.Id == id).FirstOrDefault();
-            if (shelf == null)
+            if (shelf != null)
             {
                 return ConvertToRegularShelf(shelf);
             }
@@ -117,8 +117,7 @@ namespace Repositories
         {
             CurrentBookShelf currentShelf = new CurrentBookShelf()
             {
-                Id= shelf.Id,
-                Name = shelf.Name,
+                Shelf = shelf,
                 Books = books 
             };
             return currentShelf;

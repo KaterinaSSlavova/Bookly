@@ -8,7 +8,8 @@ namespace Bookly.Mappers
     {
         public ShelfModelMapper() 
         {
-            CreateMap<ShelfDTO, ShelfViewModel>().ReverseMap();
+            CreateMap<ShelfDTO, ShelfViewModel>()
+                .ReverseMap();
 
             CreateMap<RegularShelfDTO, RegularShelfViewModel>().ReverseMap();   
 

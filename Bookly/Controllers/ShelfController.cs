@@ -4,6 +4,7 @@ using Bookly.ViewModels;
 using Business_logic.DTOs;
 using Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using EFDataLayer.DBContext;
 
 namespace Bookly.Bookly.Controllers
 {
@@ -67,7 +68,7 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult ShelfDetails(int id)
         {
-            RegularShelfDTO shelf = _shelfService.GetShelfById(id);
+            RegularShelfDTO? shelf = _shelfService.GetShelfById(id);
             RegularShelfViewModel shelfModel = _mapper.Map<RegularShelfViewModel>(shelf);
             return View(shelfModel);
         }

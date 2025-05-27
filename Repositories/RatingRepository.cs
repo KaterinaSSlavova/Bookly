@@ -71,14 +71,24 @@ namespace Repositories
             }
         }
 
-        public void RemoveRating(int userId, int bookId, int ratingId)
+        public void RemoveRating(int userId, int bookId)
         {
             UserRating? userRating = _context.UserRatings
-        .FirstOrDefault(ur => ur.UserId == userId && ur.RatingId == ratingId);
-            _context.UserRatings.Remove(userRating);
+                .FirstOrDefault(ur => ur.UserId == userId && ur.RatingId == (
+                _context.BookRatings.FirstOrDefault(br => br.BookId == bookId).RatingId));
+            if(userRating != null)
+            {
+                _context.UserRatings.Remove(userRating);
+            }
 
-            BookRating? bookRating = _context.BookRatings.FirstOrDefault(br => br.BookId == bookId && br.RatingId == ratingId);
-            _context.BookRatings.Remove(bookRating);
+            BookRating? bookRating = _context.BookRatings
+                .FirstOrDefault(br => br.BookId == bookId && br.RatingId == (
+                _context.UserRatings.FirstOrDefault(ur => ur.UserId == userId).RatingId));
+            if(bookRating != null)
+            {
+                _context.BookRatings.Remove(bookRating);
+            }
+
             _context.SaveChanges();
         }
     }

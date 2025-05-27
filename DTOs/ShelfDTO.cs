@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public UserDTO User { get; set; }
+        public UserDTO User { get; set; } = null;
 
         public ShelfDTO(string name, UserDTO user)
         {

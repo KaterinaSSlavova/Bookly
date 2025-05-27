@@ -138,9 +138,11 @@ public partial class BooklyDbContext : DbContext
 
             entity.ToTable("UserBookProgress");
 
-            entity.Property(e => e.Status)
-                    .HasConversion<int>() 
-                    .HasDefaultValue(Status.Not_started);
+            //entity.Property(e => e.StatusId)
+            //        .HasConversion<int>() 
+            //        .HasDefaultValue(Status.Not_started);
+            entity.Property(e => e.StatusId)
+        .HasDefaultValue((int)Status.Not_started);
 
             entity.HasOne(d => d.Book).WithMany(p => p.UserBookProgresses)
                 .HasForeignKey(d => d.BookId)
