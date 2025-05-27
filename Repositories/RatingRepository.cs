@@ -54,12 +54,21 @@ namespace Repositories
 
         public int CheckForRating(int userId, int bookId)
         {
-            return _context.UserRatings
-    .Join(_context.BookRatings,
-          ur => ur.RatingId,
-          br => br.RatingId,
-          (ur, br) => new { ur, br })
-    .Count(x => x.ur.UserId == userId && x.br.BookId == bookId);
+            try
+            {
+                int count = _context.UserRatings
+                    .Join(_context.BookRatings,
+                    ur => ur.RatingId,
+                    br => br.RatingId,
+                    (ur, br) => new {ur,br})
+                    .Count(x => x.ur.UserId == userId && x.br.BookId == bookId);
+                return count;
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
 
         public void RemoveRating(int userId, int bookId, int ratingId)
