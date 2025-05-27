@@ -1,4 +1,5 @@
-﻿using Interfaces;
+﻿using Bookly.Filters;
+using Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookly.Controllers
@@ -11,6 +12,7 @@ namespace Bookly.Controllers
             _reviewServices = reviewServices;
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult CreateReview(string description, int bookId)
 		{
@@ -20,6 +22,7 @@ namespace Bookly.Controllers
 			return RedirectToAction("BookDetails", "Book", new { bookId = bookId });
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult RemoveReview(int reviewId, int bookId)
         {

@@ -7,6 +7,7 @@ using Business_logic.DTOs;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Exceptions;
+using Bookly.Filters;
 
 namespace Bookly.Controllers
 {
@@ -22,6 +23,7 @@ namespace Bookly.Controllers
             _mapper = mapper;
         }
 
+        [FilterLoggedUsers]
         [HttpGet]
         public IActionResult SpinTheWheel()
         {
@@ -35,6 +37,7 @@ namespace Bookly.Controllers
             return View();
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult Spin()
         {
@@ -42,6 +45,7 @@ namespace Bookly.Controllers
             return RedirectToAction("SpinTheWheel", "Random");
         }
 
+        [FilterLoggedUsers]
         [HttpGet]
         public IActionResult DateWithABook()
         {
@@ -52,6 +56,7 @@ namespace Bookly.Controllers
             return View(model);
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult FilterBooks(Ratings ratings, Genre genre)
         {
@@ -64,6 +69,7 @@ namespace Bookly.Controllers
             return RedirectToAction("DateWithABook", "Random");
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult AddBookFromSpinTheWheel(BookViewModel bookModel)
         {
@@ -71,6 +77,7 @@ namespace Bookly.Controllers
             return RedirectToAction("SpinTheWheel", "Random");
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult AddBookFromRandomDate(BookViewModel bookModel)
         {

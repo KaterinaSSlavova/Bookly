@@ -4,6 +4,7 @@ using Bookly.ViewModels;
 using Business_logic.DTOs;
 using Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using Bookly.Filters;
 
 namespace Bookly.Bookly.Controllers
 {
@@ -17,6 +18,7 @@ namespace Bookly.Bookly.Controllers
             _mapper = mapper;
         }
 
+        [FilterLoggedUsers]
         [HttpGet]
         public IActionResult ShelfOverview()
         {
@@ -25,18 +27,21 @@ namespace Bookly.Bookly.Controllers
             return View(model);
         }
 
+        [FilterLoggedUsers]
         [HttpGet]
         public IActionResult CreateShelf()
         {
             return View();
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult GoToCreatePage()
         {
             return RedirectToAction("CreateShelf", "Shelf");
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult CreateNewShelf(ShelfViewModel shelfModel)
         {
@@ -63,7 +68,7 @@ namespace Bookly.Bookly.Controllers
             return RedirectToAction("CreateShelf", "Shelf");
         }
 
-
+        [FilterLoggedUsers]
         [HttpGet]
         public IActionResult ShelfDetails(int id)
         {
@@ -72,12 +77,14 @@ namespace Bookly.Bookly.Controllers
             return View(shelfModel);
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult ViewShelf(int id)
         {
             return RedirectToAction("ShelfDetails", "Shelf", new { id = id });
         }
 
+        [FilterLoggedUsers]
         [HttpGet]
         public IActionResult CurrentlyReadingOverview()
         {
@@ -86,18 +93,21 @@ namespace Bookly.Bookly.Controllers
             return View(shelfModel);
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult ViewCurrentlyReadingShelf()
         {
             return RedirectToAction("CurrentlyReadingOverview", "Shelf");
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult GoBack()
         {
             return RedirectToAction("ShelfOverview", "Shelf");
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult RemoveFromShelf(int bookId, int shelfId)
         {
@@ -105,6 +115,7 @@ namespace Bookly.Bookly.Controllers
             return RedirectToAction("ShelfDetails", "Shelf", new { id = shelfId });
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult RemoveFromCurrentBookShelf(int bookId, int shelfId)
         {
@@ -112,6 +123,7 @@ namespace Bookly.Bookly.Controllers
             return RedirectToAction("CurrentlyReadingOverview", "Shelf");
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult UpdateCurrentBookProgress(CurrentBookViewModel book, int progress)
         {
@@ -127,6 +139,8 @@ namespace Bookly.Bookly.Controllers
             return RedirectToAction("CurrentlyReadingOverview", "Shelf");
         }
 
+
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult MoveToShelf(int bookId, int shelfId)
         {
@@ -142,6 +156,7 @@ namespace Bookly.Bookly.Controllers
             return RedirectToAction("BookDetails", "Book", new { bookId = bookId });
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult RemoveShelf(int id)
         {

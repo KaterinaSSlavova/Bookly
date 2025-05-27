@@ -1,4 +1,5 @@
-﻿using Interfaces;
+﻿using Bookly.Filters;
+using Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookly.Controllers
@@ -12,6 +13,7 @@ namespace Bookly.Controllers
             _ratingService = ratingService;
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult RateABook(int bookId, int ratingId)
         {

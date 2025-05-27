@@ -52,7 +52,7 @@
             <form asp-controller="Shelf" asp-action="MoveToShelf" class="mb-4">
                 <input type="hidden" name="bookId" value="@Model.Book.Id" />
                 <div class="dropdown">
-                    <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
                         Select Shelf
                     </button>
                     <ul class="dropdown-menu w-100">
@@ -80,9 +80,10 @@
                             <div class="carousel-item @isActive">
                                 <div class="card mx-auto" style="max-width: 600px;">
                                     <div class="card-body position-relative">
-                                        <div class="dateReview" style="position: absolute; top: 0.5rem; right: 0.5rem;">
+                                        <div class="dateReview">
                                             <small class="text-muted">@review.Date</small>
                                         </div>
+                                        <img src="data:image/jpg;base64,@review.Picture" alt="@review.Username" class="user-picture rounded-circle me-2" />
                                         <h5 class="card-title">@review.Username</h5>
                                         <p class="card-text">@review.Description</p>
 

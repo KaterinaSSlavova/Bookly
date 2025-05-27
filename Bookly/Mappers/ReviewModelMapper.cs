@@ -10,7 +10,9 @@ namespace Bookly.Mappers
         {
             CreateMap<ReviewDTO, ReviewViewModel>()
               .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString("yyyy-MM-dd")))
+              .ForMember(dest => dest.Picture, opt => opt.MapFrom(src => src.User.Picture))
               .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User.Username))
+
               .ReverseMap()
               .ForMember(dest => dest.User, opt => opt.Ignore());
         }

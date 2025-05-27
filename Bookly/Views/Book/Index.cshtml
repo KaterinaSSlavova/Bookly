@@ -5,17 +5,19 @@
     ViewData["Title"] = "Home Page";
 }
 
-<h1>Books</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Books</h1>
+    @if (role == Role.Manager.ToString())
+    {
+        <form asp-controller="Book" asp-action="GoToAddBook" method="post" class="mb-0">
+            <input type="submit" value="Add new book" class="btn btn-dark" />
+        </form>
+    }
+</div>
 <hr />
 
 @Html.Partial("_Alert")
 
-@if(role == Role.Manager.ToString())
-{
-    <form asp-controller="Book" asp-action="GoToAddBook" method="post">
-        <input type="submit" value="Add new book" class="btn btn-primary" />
-    </form>
-}
 
 <table class="table">
     <thead>
