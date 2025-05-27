@@ -4,6 +4,7 @@ using Bookly.ViewModels;
 using Business_logic.DTOs;
 using Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using Bookly.Filters;
 
 namespace Bookly.Bookly.Controllers
 {
@@ -76,8 +77,9 @@ namespace Bookly.Bookly.Controllers
             UserDTO user = _mapper.Map<UserDTO>(model);
             if (_userService.LogIn(user))
             {
-                HttpContext.Session.SetString("Username", user.Username);
-                HttpContext.Session.SetString("Role", user.Role.ToString());
+                UserDTO? loggedUser = _userService.GetUserByUsername(user.Username);
+                HttpContext.Session.SetString("Username", loggedUser.Username);
+                HttpContext.Session.SetString("Role", loggedUser.Role.ToString());
                 return RedirectToAction("Index", "Book");
             }
             TempData["Error"] = "Invalid credentials! Please try again!";
@@ -91,6 +93,7 @@ namespace Bookly.Bookly.Controllers
             return RedirectToAction("LogIn", "User");
         }
 
+        [FilterLoggedUsers]
         [HttpGet]
         public IActionResult ViewProfile()
         {
@@ -99,6 +102,7 @@ namespace Bookly.Bookly.Controllers
             return View(viewModel);
         }
 
+        [FilterLoggedUsers]
         [HttpGet]
         public IActionResult EditProfile()
         {
@@ -107,12 +111,14 @@ namespace Bookly.Bookly.Controllers
             return View(viewModel);
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult GoToEdit()
         {
             return RedirectToAction("EditProfile", "User");
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult SaveChanges(EditProfileModel model, string image)
         {

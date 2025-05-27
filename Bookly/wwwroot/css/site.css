@@ -73,3 +73,23 @@ body {
     z-index: 1000;
 }
 
+.submitReview {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.dateReview {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.5); 
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+}
+
+

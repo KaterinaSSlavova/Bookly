@@ -33,11 +33,11 @@
                 <input type="hidden" name="bookId" value="@Model.Book.Id" />
                 <div class="d-flex justify-content-between flex-wrap gap-2">
                     @foreach (var rating in new[] {
-                    ("1", "Very_Sad", "😢"),
-                    ("2", "Sad", "☹️"),
-                    ("3", "Neutral", "😐"),
-                    ("4", "Happy", "🙂"),
-                    ("5", "Very_Happy", "😃")
+                    ("1", "Very_Sad", "\U0001F622"),     
+                    ("2", "Sad", "\u2639\uFE0F"),        
+                    ("3", "Neutral", "\U0001F610"),      
+                    ("4", "Happy", "\U0001F642"),        
+                    ("5", "Very_Happy", "\U0001F603")
                     })
                     {
                         <button type="submit" name="ratingId" value="@rating.Item1"
@@ -66,26 +66,45 @@
                 </div>
             </form>
 
+
             <h4>Reviews</h4>
+
             @if (Model.Reviews?.Count > 0)
             {
-                <ul class="list-group mb-3">
-                    @foreach (var review in Model.Reviews)
-                    {
-                        <li class="list-group-item">
-                            <strong>@review.Username:</strong> @review.Description
-                            <br /><small class="text-muted">@review.Date</small>
-                            @if (username == review.Username)
-                            {
-                                <form asp-controller="Review" asp-action="RemoveReview" class="mt-2">
-                                    <input type="hidden" name="reviewId" value="@review.Id" />
-                                    <input type="hidden" name="bookId" value="@Model.Book.Id" />
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
-                                </form>
-                            }
-                        </li>
-                    }
-                </ul>
+                <div id="reviewCarousel" class="carousel slide mb-3" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @for (int i = 0; i < Model.Reviews.Count; i++)
+                        {
+                            var review = Model.Reviews[i];
+                            var isActive = i == 0 ? "active" : "";
+                            <div class="carousel-item @isActive">
+                                <div class="card mx-auto" style="max-width: 600px;">
+                                    <div class="card-body position-relative">
+                                        <div class="dateReview" style="position: absolute; top: 0.5rem; right: 0.5rem;">
+                                            <small class="text-muted">@review.Date</small>
+                                        </div>
+                                        <h5 class="card-title">@review.Username</h5>
+                                        <p class="card-text">@review.Description</p>
+
+                                        @if (username == review.Username)
+                                        {
+                                            <form asp-controller="Review" asp-action="RemoveReview" class="mt-2">
+                                                <input type="hidden" name="reviewId" value="@review.Id" />
+                                                <input type="hidden" name="bookId" value="@Model.Book.Id" />
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                                            </form>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <button class="carousel-control-next" type="button" data-bs-target="#reviewCarousel" data-bs-slide="next">
+                        <span class="fs-2 text-dark" aria-hidden="true">&rsaquo;</span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
             }
             else
             {
@@ -98,26 +117,30 @@
                     <label for="reviewDescription" class="form-label">Write a review:</label>
                     <textarea class="form-control" id="reviewDescription" name="description" rows="3" required></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Submit Review</button>
+                <div class="submitReview">
+                    <button type="submit" class="btn btn-dark">Submit Review</button>
+                </div>
             </form>
 
-            <div class="d-grid gap-2 mb-4">
+            <div class="d-flex flex-column align-items-center gap-3 mb-4">
+
                 @if (role == Role.Manager.ToString())
                 {
-                    <form asp-controller="Book" asp-action="GoToUpdateBook">
+                    <form asp-controller="Book" asp-action="GoToUpdateBook" class="w-100" style="max-width: 500px;">
                         <input type="hidden" name="id" value="@Model.Book.Id" />
-                        <button class="btn btn-warning">Update</button>
+                        <button class="btn btn-warning w-100">Update</button>
                     </form>
 
-                    <form asp-controller="Book" asp-action="RemoveBook">
+                    <form asp-controller="Book" asp-action="RemoveBook" class="w-100" style="max-width: 500px;">
                         <input type="hidden" name="id" value="@Model.Book.Id" />
-                        <button class="btn btn-danger">Remove Book</button>
+                        <button class="btn btn-danger w-100">Remove Book</button>
                     </form>
                 }
 
-                <form asp-controller="Book" asp-action="GoBack">
-                    <button class="btn btn-primary">Go Back</button>
+                <form asp-controller="Book" asp-action="GoBack" class="w-100" style="max-width: 500px;">
+                    <button class="btn btn-primary w-100">Go Back</button>
                 </form>
+
             </div>
         </div>
     </div>
