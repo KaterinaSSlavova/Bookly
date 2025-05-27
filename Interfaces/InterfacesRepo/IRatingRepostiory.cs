@@ -9,6 +9,6 @@ namespace Interfaces
         List<Ratings> GetAllRatingsForBook(int bookId);
         Ratings? GetUserRatingForBook(int userId, int bookId);
         int CheckForRating(int userId, int bookId);
-        void RemoveRating(int userId, int bookId, int ratingId);
+        void RemoveRating(int userId, int bookId);
     }
 }

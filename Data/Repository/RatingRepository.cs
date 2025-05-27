@@ -175,7 +175,7 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public void RemoveRating(int userId, int bookId, int ratingId)
+        public void RemoveRating(int userId, int bookId)
         {
             try
             {

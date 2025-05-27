@@ -20,7 +20,7 @@ namespace Bookly.Business_logic.Services
             int previousRatingCount = _ratingRepository.CheckForRating(user.Id, bookId);
             if (previousRatingCount > 0)
             {
-                _ratingRepository.RemoveRating(user.Id, bookId, ratingId);
+                _ratingRepository.RemoveRating(user.Id, bookId);
             }
             _ratingRepository.RateBook(bookId, ratingId);
             _ratingRepository.ConnectUserWithRating(user.Id, ratingId);

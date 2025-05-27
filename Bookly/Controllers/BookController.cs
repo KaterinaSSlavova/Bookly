@@ -4,6 +4,7 @@ using Bookly.ViewModels;
 using Business_logic.DTOs;
 using Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using Bookly.Filters;
 
 namespace Bookly.Bookly.Controllers
 {
@@ -20,6 +21,7 @@ namespace Bookly.Bookly.Controllers
             _bookDetailsService = bookDetailsService;
         }
 
+        [FilterLoggedUsers]
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -28,12 +30,14 @@ namespace Bookly.Bookly.Controllers
             return View(booksModel);
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult ViewBook(int id)
         {
             return RedirectToAction("BookDetails", "Book", new { bookId = id });
         }
 
+        [FilterLoggedUsers]
         [HttpGet]
         public IActionResult BookDetails(int bookId)
         {
@@ -42,18 +46,21 @@ namespace Bookly.Bookly.Controllers
             return View(model);
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult GoBack()
         {
             return RedirectToAction("Index", "Book");
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult GetBookDetails(int id)
         {
             return RedirectToAction("BookDetails", "Book", new { bookid = id });
         }
 
+        [FilterLoggedUsers]
         [HttpGet]
         public IActionResult AddBookPage()
         {
@@ -61,12 +68,14 @@ namespace Bookly.Bookly.Controllers
                 return View(model);
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult GoToAddBook()
         {
             return RedirectToAction("AddBookPage", "Book");
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult AddBook(AddBookModel bookModel)
         {
@@ -99,6 +108,8 @@ namespace Bookly.Bookly.Controllers
             return RedirectToAction("AddBookPage", "Book");
         }
 
+
+        [FilterLoggedUsers]
         [HttpGet]
         public IActionResult UpdateBook(int bookId)
         {
@@ -107,12 +118,14 @@ namespace Bookly.Bookly.Controllers
             return View(model);
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult GoToUpdateBook(int Id)
         {
             return RedirectToAction("UpdateBook", "Book", new { bookId = Id });
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult SaveBookChanges(AddBookModel bookModel)
         {
@@ -138,6 +151,7 @@ namespace Bookly.Bookly.Controllers
             return RedirectToAction("UpdateBook", "Book", new { bookId = bookModel.Id });
         }
 
+        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult RemoveBook(int id)
         {
