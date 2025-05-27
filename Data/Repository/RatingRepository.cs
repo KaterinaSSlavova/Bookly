@@ -191,7 +191,6 @@ namespace Bookly.Data.Repository
                                  (SELECT RatingId FROM BookRating WHERE BookId = @BookId);";
 
                 using SqlCommand command = new SqlCommand(sql, connection);
-                command.Parameters.AddWithValue("@RatingId", ratingId);
                 command.Parameters.AddWithValue("@UserId", userId);
                 command.Parameters.AddWithValue("@BookId", bookId);
 
