@@ -94,7 +94,7 @@ namespace Bookly.Business_logic.Services
                 CurrentBook book = _mapper.Map<CurrentBook>(currentBook);
                 _shelfRepo.SetCurrentBookProgress(book);
             }
-            _shelfRepo.AddBookToShelf(bookId, shelf.Shelf.Id, shelf.Shelf.User.Id);
+            _shelfRepo.AddBookToShelf(bookId, shelf.Shelf.Id, shelf.Shelf.UserId);
         }
 
         public void UpdateBookProgress(CurrentBookDTO bookDTO, int progress)
@@ -132,9 +132,9 @@ namespace Bookly.Business_logic.Services
                 }
                 if (shelf?.Shelf.Name == currentBooksShelf)
                 {
-                    _shelfRepo.RemoveFromCurrentBookShelf(shelf.Shelf.User.Id, bookId);
+                    _shelfRepo.RemoveFromCurrentBookShelf(shelf.Shelf.UserId, bookId);
                 }
-                _shelfRepo.RemoveBookFromShelf(shelf.Shelf.User.Id,bookId);
+                _shelfRepo.RemoveBookFromShelf(shelf.Shelf.UserId,bookId);
             }
         }
 

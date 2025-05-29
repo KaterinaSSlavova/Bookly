@@ -1,6 +1,6 @@
 ﻿using EFDataLayer.DBContext;
 using Interfaces;
-using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repositories
 {
@@ -30,6 +30,14 @@ namespace Repositories
 
         public void UpdateBook(Book book)
         {
+            var tracked = _context.ChangeTracker.Entries<Book>()
+           .FirstOrDefault(e => e.Entity.Id == book.Id);
+
+            if (tracked != null)
+            {
+                tracked.State = EntityState.Detached;
+            }
+
             _context.Books.Update(book);
             _context.SaveChanges();
         }

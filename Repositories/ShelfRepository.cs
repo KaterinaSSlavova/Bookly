@@ -40,8 +40,31 @@ namespace Repositories
 
         public void SetCurrentBookProgress(CurrentBook book)
         {
-            _context.CurrentBooks.Add(book);
-            _context.SaveChanges();
+            try
+            {
+                var tracked = _context.ChangeTracker.Entries<Book>()
+         .FirstOrDefault(e => e.Entity.Id == book.BookId);
+
+                if (tracked != null)
+                {
+                    tracked.State = EntityState.Detached;
+                }
+
+                var trackedUser = _context.ChangeTracker.Entries<User>()
+           .FirstOrDefault(e => e.Entity.Id == book.UserId);
+
+                if (trackedUser != null)
+                {
+                    trackedUser.State = EntityState.Detached;
+                }
+                _context.CurrentBooks.Add(book);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
 
         public void SaveCurrentBookProgress(CurrentBook book)
@@ -52,8 +75,8 @@ namespace Repositories
 
         public void RemoveBookFromShelf(int userId, int bookId)
         {
-            Shelf? shelf = _context.Shelves.FirstOrDefault(s => s.UserId == userId && s.Books.Any(b => b.Id == bookId));
-            if (shelf == null)
+            Shelf? shelf = _context.Shelves.Include(s => s.Books).FirstOrDefault(s => s.UserId == userId && s.Books.Any(b => b.Id == bookId));
+            if (shelf != null)
             {
                 Book? book = shelf.Books.FirstOrDefault(b => b.Id == bookId);
                 shelf.Books.Remove(book);
@@ -77,13 +100,15 @@ namespace Repositories
 
         public List<RegularShelf> GetUserRegularShelves(User user)
         {
-            List<Shelf> shelves = _context.Shelves.Where(s => s.UserId == user.Id && s.IsArchived == false).ToList();
+            List<Shelf> shelves = _context.Shelves.Include(s => s.Books).Where(s => s.UserId == user.Id && s.IsArchived == false).ToList();
             return shelves.Select(s => ConvertToRegularShelf(s)).ToList();
         }
 
         public RegularShelf? GetShelfById(int id)
         {
-            Shelf? shelf = _context.Shelves.Where(s => s.Id == id).FirstOrDefault();
+            Shelf? shelf = _context.Shelves
+                             .Include(s => s.Books)
+                             .FirstOrDefault(s => s.Id == id);
             if (shelf != null)
             {
                 return ConvertToRegularShelf(shelf);
