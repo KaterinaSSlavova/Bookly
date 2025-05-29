@@ -4,14 +4,15 @@
     ViewData["Title"] = "Goal Overview";
 }
 
-<h1 class="mb-4">Goals</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-4">Goals</h1>
+    <form asp-controller="Goal" asp-action="GoToCreateGoal" method="post">
+        <input type="submit" value="Create Goal" class="btn btn-dark mb-0" />
+    </form>
+</div>
 <hr />
 
 @Html.Partial("_Alert")
-
-<form asp-controller="Goal" asp-action="GoToCreateGoal" method="post">
-    <input type="submit" value="Create Goal" class="btn btn-primary mb-3" />
-</form>
 
 @if (Model.Any())
 {

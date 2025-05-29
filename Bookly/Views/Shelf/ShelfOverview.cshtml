@@ -4,16 +4,18 @@
     ViewData["Title"] = "Shelf Overview";
 }
 
-<h1 class="mb-4">My Shelves</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-4">My Shelves</h1>
+    <div class="mb-0">
+        <form asp-controller="Shelf" asp-action="GoToCreatePage">
+            <button type="submit" class="btn btn-dark">Create New Shelf</button>
+        </form>
+    </div>
+</div>
+
 <hr />
 
 @Html.Partial("_Alert")
-
-<div class="mb-3">
-    <form asp-controller="Shelf" asp-action="GoToCreatePage">
-        <button type="submit" class="btn btn-primary">Create New Shelf</button>
-    </form>
-</div>
 
 <div class="row">
     @foreach (RegularShelfViewModel shelf in Model)
@@ -27,14 +29,14 @@
                         {
                             <form asp-controller="Shelf" asp-action="ViewShelf">
                                 <input type="hidden" name="id" value="@shelf.Shelf.Id" />
-                                <button type="submit" class="btn btn-primary">View</button>
+                                <button type="submit" class="btn btn-dark">View</button>
                             </form>
                         }
                         else
                         {
                             <form asp-controller="Shelf" asp-action="ViewCurrentlyReadingShelf">
                                 <input type="hidden" name="id" value="@shelf.Shelf.Id" />
-                                <button type="submit" class="btn btn-primary">View</button>
+                                <button type="submit" class="btn btn-dark">View</button>
                             </form>
                         }
                         @if(shelf.Shelf.Name!="Have Read" && shelf.Shelf.Name != "Want To Read" && shelf.Shelf.Name != "Currently Reading")

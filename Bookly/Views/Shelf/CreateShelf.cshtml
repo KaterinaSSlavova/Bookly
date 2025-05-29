@@ -21,12 +21,14 @@
                         <input asp-for="Name" class="form-control" placeholder="" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
+
                     <div class="d-flex justify-content-between">
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-dark">Save</button>
+
+                        <form asp-controller="Shelf" asp-action="GoBack" method="post" class="mb-0">
+                            <button type="submit" class="btn btn-dark">Go Back</button>
+                        </form>
                     </div>
-                </form>
-                <form asp-controller="Shelf" asp-action="GoBack" method="post">
-                    <button type="submit" class="btn btn-secondary">Go Back</button>
                 </form>
             </div>
         </div>

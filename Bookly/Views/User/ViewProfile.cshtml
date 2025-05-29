@@ -9,7 +9,7 @@
 
 @Html.Partial("_Alert")
 
-<div class="row">
+<div class="d-flex justify-content-center">
     <div class="col-md-5 col-lg-4">
         <div class="card shadow-sm">
             <div class="card-body text-center">
@@ -24,7 +24,7 @@
 
                 <form asp-controller="User" asp-action="GoToEdit" method="post">
                     <input type="hidden" name="UserId" value="@Model.Id" />
-                    <button type="submit" class="btn btn-primary w-100">Edit</button>
+                    <button type="submit" class="btn btn-dark w-100">Edit</button>
                 </form>
             </div>
         </div>
