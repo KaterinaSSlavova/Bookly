@@ -42,6 +42,27 @@ public partial class Goal
         this.User = user;
     }
 
+    public Goal(int id, DateTime start, DateTime end, int readingGoal, int currentProgress, Status status, int userId)
+    {
+        this.Id = id;
+        this.Start = start;
+        this.End = end;
+        this.ReadingGoal = readingGoal;
+        this.CurrentProgress = currentProgress;
+        this.Status = status;
+        this.UserId = userId;   
+    }
+
+    public Goal(DateTime start, DateTime end, int readingGoal, int userId)
+    {
+        this.Start = start;
+        this.End = end;
+        this.ReadingGoal = readingGoal;
+        this.CurrentProgress = 0;
+        this.StatusId = 1;
+        this.UserId = userId;
+    }
+
     public Goal ()
     {
 

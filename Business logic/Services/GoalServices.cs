@@ -24,8 +24,7 @@ namespace Bookly.Business_logic.Services
         public void CreateGoal(GoalDTO goalDTO)
         {
             ValidateGoal(goalDTO);
-            goalDTO.User = GetUser();
-            Goal goal = ConvertToEntity(goalDTO, goalDTO.User);
+            Goal goal = new Goal(goalDTO.Start, goalDTO.End, goalDTO.ReadingGoal, GetUser().Id);
            _goalRepo.CreateGoal(goal);
         }
 
@@ -122,7 +121,7 @@ namespace Bookly.Business_logic.Services
 
         private Goal ConvertToEntity(GoalDTO goal, UserDTO user)
         {
-            return new Goal(goal.Id, goal.Start, goal.End, goal.ReadingGoal, goal.CurrentProgress, goal.Status, _userServices.ConvertToEntity(user));
+            return new Goal(goal.Id, goal.Start, goal.End, goal.ReadingGoal, goal.CurrentProgress, goal.Status, user.Id);
         }
 
         private GoalDTO ConvertToDTO(Goal goal, User user)
