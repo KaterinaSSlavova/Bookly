@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bookly.Controllers
 {
+    [FilterLoggedUsers]
     public class RatingController : Controller
     {
         private readonly IRatingServices _ratingService;
@@ -13,7 +14,6 @@ namespace Bookly.Controllers
             _ratingService = ratingService;
         }
 
-        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult RateABook(int bookId, int ratingId)
         {

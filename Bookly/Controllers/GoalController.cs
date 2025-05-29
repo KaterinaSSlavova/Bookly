@@ -8,6 +8,7 @@ using Bookly.Filters;
 
 namespace Bookly.WebApp.Controllers
 {
+    [FilterLoggedUsers]
     public class GoalController : Controller
     {
         private readonly IGoalServices _goalService;
@@ -18,7 +19,6 @@ namespace Bookly.WebApp.Controllers
             this._mapper = mapper;
         }
 
-        [FilterLoggedUsers]
         [HttpGet]
         public IActionResult GoalOverview()
         {
@@ -27,21 +27,18 @@ namespace Bookly.WebApp.Controllers
             return View(personalGoals);
         }
 
-        [FilterLoggedUsers]
         [HttpGet]
         public IActionResult CreateGoal()
         {
             return View();
         }
 
-        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult GoToCreateGoal()
         {
             return RedirectToAction("CreateGoal", "Goal");
         }
 
-        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult SaveGoal(GoalViewModel goalModel)
         {
@@ -70,7 +67,6 @@ namespace Bookly.WebApp.Controllers
             return RedirectToAction("CreateGoal", "Goal");
         }
 
-        [FilterLoggedUsers]
         [HttpPost]
         public IActionResult RemoveGoal(int id)
         {
