@@ -30,14 +30,7 @@ namespace Repositories
 
         public void UpdateBook(Book book)
         {
-            var tracked = _context.ChangeTracker.Entries<Book>()
-           .FirstOrDefault(e => e.Entity.Id == book.Id);
-
-            if (tracked != null)
-            {
-                tracked.State = EntityState.Detached;
-            }
-
+            _context.DetachIfTracked(book, b => b.Id);
             _context.Books.Update(book);
             _context.SaveChanges();
         }

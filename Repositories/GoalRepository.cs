@@ -14,8 +14,6 @@ namespace Repositories
 
         public void CreateGoal(Goal goal)
         {
-            goal.StatusId = 1;
-            goal.CurrentProgress = 0;
             _context.Goals.Add(goal);
             _context.SaveChanges();
         }
@@ -45,13 +43,7 @@ namespace Repositories
 
         public void UpdateProgress(int userId, Goal goal)
         {
-            var tracked = _context.ChangeTracker.Entries<Goal>()
-          .FirstOrDefault(e => e.Entity.Id == goal.Id);
-
-            if (tracked != null)
-            {
-                tracked.State = EntityState.Detached;
-            }
+            _context.DetachIfTracked(goal, g => g.Id);
              _context.Goals.Update(goal);
             _context.SaveChanges();
         }

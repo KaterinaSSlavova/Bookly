@@ -5,10 +5,10 @@ using Microsoft.Extensions.Logging;
 
 namespace Repositories
 {
-    public class ShelfRepository: IShelfRepository
+    public class ShelfRepository : IShelfRepository
     {
         private readonly BooklyDbContext _context;
-        private readonly ILogger<ShelfRepository> _logger; 
+        private readonly ILogger<ShelfRepository> _logger;
 
         public ShelfRepository(BooklyDbContext context, ILogger<ShelfRepository> logger)
         {
@@ -18,9 +18,9 @@ namespace Repositories
 
         public void CreateShelf(Shelf shelf, int id)
         {
-                shelf.UserId = id;
-                _context.Shelves.Add(shelf);
-                _context.SaveChanges();
+            shelf.UserId = id;
+            _context.Shelves.Add(shelf);
+            _context.SaveChanges();
         }
 
         public List<Book> GetBooksFromShelf(int id)
@@ -32,9 +32,9 @@ namespace Repositories
         public void AddBookToShelf(int bookId, int shelfId, int userId)
         {
             Shelf? shelf = _context.Shelves.Find(shelfId);
-            Book? book =  _context.Books.Find(bookId);
-            shelf.UserId=userId;    
-            shelf.Books.Add(book);  
+            Book? book = _context.Books.Find(bookId);
+            shelf.UserId = userId;
+            shelf.Books.Add(book);
             _context.SaveChanges();
         }
 
@@ -42,21 +42,12 @@ namespace Repositories
         {
             try
             {
-                var tracked = _context.ChangeTracker.Entries<Book>()
-         .FirstOrDefault(e => e.Entity.Id == book.BookId);
+                Book bookEntity = _context.Books.Find(book.BookId);
+                User userEntity = _context.Users.Find(book.UserId);
 
-                if (tracked != null)
-                {
-                    tracked.State = EntityState.Detached;
-                }
+                _context.DetachIfTracked<Book, int>(bookEntity, b => b.Id);
+                _context.DetachIfTracked<User, int>(userEntity, u => u.Id);
 
-                var trackedUser = _context.ChangeTracker.Entries<User>()
-           .FirstOrDefault(e => e.Entity.Id == book.UserId);
-
-                if (trackedUser != null)
-                {
-                    trackedUser.State = EntityState.Detached;
-                }
                 _context.CurrentBooks.Add(book);
                 _context.SaveChanges();
             }
@@ -132,10 +123,10 @@ namespace Repositories
         {
             RegularShelf regularShelf = new RegularShelf()
             {
-                Shelf = shelf,  
+                Shelf = shelf,
                 Books = shelf.Books
             };
-            return regularShelf;    
+            return regularShelf;
         }
 
         public CurrentBookShelf ConvertToCurrentBookShelf(Shelf shelf, List<CurrentBook> books)
@@ -143,7 +134,7 @@ namespace Repositories
             CurrentBookShelf currentShelf = new CurrentBookShelf()
             {
                 Shelf = shelf,
-                Books = books 
+                Books = books
             };
             return currentShelf;
         }
