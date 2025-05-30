@@ -110,81 +110,43 @@ namespace Tests
             Assert.ThrowsException<NullReferenceException>(() => _shelfServices.RemoveShelf(shelfId));
         }
 
-        //[TestMethod]
-        //public void AddBookToShelf_ShouldReturnTrue_WhenBookIsNotOnTheShelf()
-        //{
-        //    //Arrange
-        //    User user = new User(1, null, "Username", new DateTime(2000, 1, 1), "email", "Pass", Role.Reader);
-        //    UserDTO userDTO = new UserDTO(1, null, "Username", new DateTime(2000, 1, 1), 25, "email", "Pass", Role.Reader);
-        //    List<Book> books = new List<Book>();
-        //    RegularShelf shelf = new RegularShelf(1, "Have Read", user, new List<Book>());
-        //    ShelfDTO shelfDTO = new ShelfDTO(1, "Have Read", new List<BookDTO>());
-        //    BookDTO book = new BookDTO(3, null, "New Title", "Author", "Description", "123", Genre.Mystery, 250);
-        //    GoalDTO goal = new GoalDTO(1, new DateTime(2025, 1, 1), new DateTime(2025, 5, 6), 3, 0, Status.Not_started, userDTO);
-        //    _userServices.Setup(r => r.LoadUser()).Returns(userDTO);
-        //    _shelfRepo.Setup(r => r.GetShelfById(shelfDTO.Id)).Returns(shelf);
-        //    _shelfRepo.Setup(r => r.GetUserRegularShelves(user)).Returns(It.IsAny<List<RegularShelf>>());
-        //    _goalServices.Setup(s => s.GetNewestGoal(true)).Returns(goal);
-        //    _goalServices.Setup(s => s.UpdateGoal(It.IsAny<GoalDTO>())).Verifiable();
-        //    _shelfRepo.Setup(r => r.AddBookToShelf(book.Id, shelfDTO.Id, user.Id)).Returns(true);
+        [TestMethod]
+        public void AddBookToShelf_ShouldExecuteMethods_WhenBookIsNotOnTheShelf()
+        {
+            //Arrange
+            User user = new User(1, null, "Username", new DateTime(2000, 1, 1), "email", "Pass", Role.Reader);
+            UserDTO userDTO = new UserDTO(1, null, "Username", new DateTime(2000, 1, 1), 25, "email", "Pass", Role.Reader);
+            RegularShelfDTO shelfDTO = new RegularShelfDTO(new ShelfDTO(1, "Have Read", userDTO));
+            BookDTO book = new BookDTO(3, null, "New Title", "Author", "Description", "123", Genre.Mystery, 250);
 
-        //    //Act 
-        //    bool isBookAdded = _shelfServices.AddBookToShelf(book.Id, shelfDTO.Id);
+            _shelfRepo.Setup(r => r.GetUserRegularShelves(user)).Returns(It.IsAny<List<RegularShelf>>());
+            _goalServices.Setup(s => s.IncreaseProgress()).Verifiable();
+            _shelfRepo.Setup(r => r.AddBookToShelf(book.Id, shelfDTO.Shelf.Id, user.Id)).Verifiable();
 
-        //    //Assert
-        //    Assert.IsTrue(isBookAdded);
-        //    _goalServices.Verify(s => s.UpdateGoal(It.IsAny<GoalDTO>()), Times.Once);
-        //}
+            //Act 
+            _shelfServices.AddBookToShelf(book, shelfDTO);
 
-        //[TestMethod]
-        //public void AddBookToShelf_ShouldReturnFalse_WhenBookIsOnShelf()
-        //{
-        //    //Arrange
-        //    RegularShelf shelf = new RegularShelf(1, "Have Read", new List<Book>() 
-        //    { new Book(3, null, "New Title", "Author", "Updated", "123", Genre.Mystery, 250) });
-        //    BookDTO book = new BookDTO(3, null, "New Title", "Author", "Description", "123", Genre.Mystery, 250);
-        //    _shelfRepo.Setup(r => r.GetShelfById(shelf.Id)).Returns(shelf);
+            //Assert
+            _shelfRepo.Verify(r => r.AddBookToShelf(book.Id, shelfDTO.Shelf.Id, user.Id), Times.Once);
+            _goalServices.Verify(s => s.IncreaseProgress(), Times.Once);
+        }
 
-        //    //Act 
-        //    bool isBookAdded = _shelfServices.AddBookToShelf(book.Id, shelf.Id);
+        [TestMethod]
+        public void AddBookToShelf_ShouldThrowException_WhenBookIsOnShelf()
+        {
+            //Arrange
+            RegularShelf shelf = new RegularShelf(new Shelf(1, "Have Read"), new List<Book>()
+            { new Book(3, null, "New Title", "Author", "Description", "123", Genre.Mystery, 250) });
+            RegularShelfDTO shelfDTO = new RegularShelfDTO(new ShelfDTO(1, "Have Read"), new List<BookDTO>()
+            { new BookDTO(3, null, "New Title", "Author", "Description", "123", Genre.Mystery, 250) });
+            BookDTO book = new BookDTO(3, null, "New Title", "Author", "Description", "123", Genre.Mystery, 250);
 
-        //    //Assert
-        //    Assert.IsFalse(isBookAdded);
-        //}
+            _shelfRepo.Setup(r => r.GetShelfById(shelf.Shelf.Id)).Returns(shelf);
+            _bookServices.Setup(s => s.GetBookById(book.Id)).Returns(book);
 
-        //[TestMethod]
-        //public void AddBookToShelf_ShouldReturnTrue_WhenBookIsMovedToCurrentlyReadingShelfFromHaveReadShelf()
-        //{
-        //    //Arrange
-        //    User user = new User(1, null, "Username", new DateTime(2000, 1, 1), "email", "Pass", Role.Reader);
-        //    UserDTO userDTO = new UserDTO(1, null, "Username", new DateTime(2000, 1, 1), 25, "email", "Pass", Role.Reader);
-        //    Book book = new Book(2, null, "New Title", "Author", "Updated", "123", Genre.Mystery, 250);
-        //    BookDTO bookDTO = new BookDTO(2, null, "New Title", "Author", "Updated", "123", Genre.Mystery, 250);
-        //    GoalDTO goal = new GoalDTO(1, new DateTime(2025, 1, 1), new DateTime(2025, 5, 6), 3, 2, Status.Not_started, userDTO);
-        //    RegularShelf completedShelf = new RegularShelf(2, "Have Read", user, new List<Book>() { book });
-        //    RegularShelf currentShelf = new RegularShelf(1, "Currently Reading", user, new List<Book>());
-        //    List<RegularShelf> shelves = new List<RegularShelf>() { currentShelf, completedShelf };
-
-        //    _shelfRepo.Setup(r => r.GetShelfById(currentShelf.Id)).Returns(currentShelf);
-        //    _userServices.Setup(s => s.LoadUser()).Returns(userDTO);
-        //    _userServices.Setup(s => s.ConvertToEntity(userDTO)).Returns(user);
-        //    _shelfRepo.Setup(r => r.GetUserRegularShelves(user)).Returns(shelves);
-        //    _shelfRepo.Setup(r => r.GetShelfById(completedShelf.Id)).Returns(completedShelf);
-        //    _goalServices.Setup(s => s.GetNewestGoal(false)).Returns(goal);
-        //    _goalServices.Setup(s => s.UpdateGoal(It.IsAny<GoalDTO>())).Verifiable();
-        //    _shelfRepo.Setup(r => r.RemoveBookFromShelf(user.Id, book.Id)).Returns(true);
-        //    _bookServices.Setup(s => s.GetBookById(book.Id)).Returns(bookDTO);
-        //    _shelfRepo.Setup(s => s.SetCurrentBookProgress(It.IsAny<CurrentBook>())).Verifiable();
-        //    _shelfRepo.Setup(r => r.AddBookToShelf(book.Id, currentShelf.Id, user.Id)).Returns(true);
-
-        //    //Act
-        //    bool isBookAdded = _shelfServices.AddBookToShelf(book.Id, currentShelf.Id);
-
-        //    //Assert
-        //    Assert.IsTrue(isBookAdded);
-        //    _goalServices.Verify(r => r.UpdateGoal(It.IsAny<GoalDTO>()), Times.Once);
-        //    _shelfRepo.Verify(r => r.SetCurrentBookProgress(It.IsAny<CurrentBook>()), Times.Once);
-        //}
+            //Act and Assert
+            Assert.ThrowsException<BookIsAlreadyOnShelfException>(() => _shelfServices.AddBookToShelf(book, shelfDTO));
+        }
 
         [TestMethod]
         public void UpdateBookProgress_ShouldExecuteMethod_WhenProgressIsBetweenZeroAndMaxPages()
@@ -255,17 +217,15 @@ namespace Tests
             UserDTO user = new UserDTO(1, null, "Username", new DateTime(2000, 1, 1), 25, "email", "Pass", Role.Reader);
             BookDTO bookDTO = new BookDTO(1, null, "New Title", "Author", "Updated", "123", Genre.Mystery, 50);
             RegularShelfDTO completedShelf = new RegularShelfDTO(new ShelfDTO(1, "Have Read", user), new List<BookDTO>() { bookDTO });
-            GoalDTO goal = new GoalDTO(1, new DateTime(2025, 1, 1), new DateTime(2025, 5, 6), 3, 2, Status.In_progress, user);
 
-            _goalServices.Setup(r => r.GetNewestGoal(false)).Returns(goal);
-            _goalServices.Setup(r => r.UpdateGoal(It.IsAny<GoalDTO>())).Verifiable();
+            _goalServices.Setup(s => s.DecreaseProgress()).Verifiable();
             _shelfRepo.Setup(r => r.RemoveBookFromShelf(user.Id, bookDTO.Id)).Verifiable();
 
             //Act
             _shelfServices.RemoveBookFromShelf(bookDTO.Id, completedShelf);
 
             //Assert
-            _goalServices.Verify(r => r.UpdateGoal(goal), Times.Once);
+            _goalServices.Verify(r => r.DecreaseProgress(), Times.Once);
             _shelfRepo.Verify(r => r.RemoveBookFromShelf(user.Id, bookDTO.Id), Times.Once);
         }
 

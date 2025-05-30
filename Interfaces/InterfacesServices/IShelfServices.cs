@@ -10,7 +10,7 @@ namespace Interfaces
         RegularShelfDTO GetUserWishList();
        RegularShelfDTO? GetShelfById(int id);
         bool CheckForBook(RegularShelfDTO shelf, int bookId);
-        void AddBookToShelf(int bookId, int shelfId);
+        void AddBookToShelf(BookDTO book, RegularShelfDTO shelf);
         void UpdateBookProgress(CurrentBookDTO book, int progress);
         void RemoveBookFromShelf(int bookId, RegularShelfDTO shelf);
         void RemoveShelf(int id);

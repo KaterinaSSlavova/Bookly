@@ -10,5 +10,7 @@ namespace Interfaces
         void RemoveGoal(int id);
         GoalDTO? GetNewestGoal(bool isIncreasing);
         Task SendRemindersAsync();
+        void IncreaseProgress();
+        void DecreaseProgress();
     }
 }

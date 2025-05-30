@@ -4,6 +4,7 @@ using Business_logic.DTOs;
 using AutoMapper;
 using Models.Enums;
 using Exceptions;
+using System;
 
 namespace Bookly.Business_logic.Services
 {
@@ -44,10 +45,7 @@ namespace Bookly.Business_logic.Services
                 new ShelfDTO(wishBooksShelf, user),
                 new ShelfDTO(currentBooksShelf, user)
             };
-            foreach (ShelfDTO shelf in defaultShelves)
-            {
-                _shelfRepo.CreateShelf(_mapper.Map<Shelf>(shelf), user.Id);
-            }
+            defaultShelves.ForEach(s => _shelfRepo.CreateShelf(_mapper.Map<Shelf>(s), user.Id));
         }
 
         public List<RegularShelfDTO> GetUserShelves()
@@ -77,35 +75,34 @@ namespace Bookly.Business_logic.Services
             return _mapper.Map<CurrentBookShelfDTO>(shelf);
         }
 
-        public void AddBookToShelf(int bookId, int shelfId)
+        public void AddBookToShelf(BookDTO book, RegularShelfDTO shelf)
         {
-            RegularShelfDTO shelf = GetShelfById(shelfId);
-            BookDTO bookDTO = _bookServices.GetBookById(bookId);   
-            if (CheckForBook(shelf, bookId)) throw new BookIsAlreadyOnShelfException(shelf.Shelf.Name, bookDTO.Title);
-            CheckForPreviousShelf(bookId);
+            if (CheckForBook(shelf, book.Id)) throw new BookIsAlreadyOnShelfException(shelf.Shelf.Name, book.Title);
+            CheckForPreviousShelf(book.Id);
+
             if (shelf?.Shelf.Name == completedBooksShelf)
             {
-                GoalDTO? goal = _goalService.GetNewestGoal(true);
-                IncreaseProgress(goal);
+                _goalService.IncreaseProgress();
             }
             if (shelf?.Shelf.Name == currentBooksShelf)
             { 
-                CurrentBookDTO currentBook = new CurrentBookDTO(bookDTO);
-                currentBook.User = GetUser();
-                CurrentBook book = _mapper.Map<CurrentBook>(currentBook);
-                _shelfRepo.SetCurrentBookProgress(book);
+                CurrentBookDTO currentBook = new CurrentBookDTO(book, GetUser());
+                _shelfRepo.SetCurrentBookProgress(_mapper.Map<CurrentBook>(currentBook));
             }
-            _shelfRepo.AddBookToShelf(bookId, shelf.Shelf.Id, shelf.Shelf.User.Id);
+
+            _shelfRepo.AddBookToShelf(book.Id, shelf.Shelf.Id, shelf.Shelf.User.Id);
         }
 
         public void UpdateBookProgress(CurrentBookDTO bookDTO, int progress)
         {
             bookDTO.User = GetUser();
+
             if (bookDTO.Book.Pages < progress || progress < 0) throw new InvalidProgressException(progress, bookDTO.Book.Pages);
             bookDTO.CurrentProgress = progress;
             bookDTO.Status = Status.Not_started;
             if (progress > 0) bookDTO.Status = Status.In_progress;
             if (progress == bookDTO.Book.Pages) bookDTO.Status = Status.Completed;
+
             CurrentBook book = _mapper.Map<CurrentBook>(bookDTO);
             _shelfRepo.SaveCurrentBookProgress(book);
         }
@@ -127,32 +124,13 @@ namespace Bookly.Business_logic.Services
             {
                 if (shelf?.Shelf.Name == completedBooksShelf)
                 {
-                    GoalDTO? goal = _goalService.GetNewestGoal(false);
-                    DecreaseProgress(goal);
+                    _goalService.DecreaseProgress();
                 }
                 if (shelf?.Shelf.Name == currentBooksShelf)
                 {
                     _shelfRepo.RemoveFromCurrentBookShelf(shelf.Shelf.User.Id, bookId);
                 }
                 _shelfRepo.RemoveBookFromShelf(shelf.Shelf.User.Id,bookId);
-            }
-        }
-
-        private void DecreaseProgress(GoalDTO goal)
-        {
-            if (goal != null && goal.CurrentProgress > 0)
-            {
-                goal.CurrentProgress--;
-                _goalService.UpdateGoal(goal);
-            }
-        }
-
-        private void IncreaseProgress(GoalDTO goal)
-        {
-            if (goal != null)
-            {
-                 goal.CurrentProgress ++;
-                _goalService.UpdateGoal(goal);
             }
         }
 

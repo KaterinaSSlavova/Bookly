@@ -32,8 +32,9 @@ namespace Tests
         public void AddBook_ShouldExecuteMethodOnce_WhenBookIsAddedSuccessfully()
         {
             //Arrange
+            Book book = new Book(1, "/images/book1.png", "Book1", "Author1", "Description1", "999-9-99999-999-9", Genre.Thriller, 100);
             BookDTO bookDTO = new BookDTO(1, "/images/book1.png", "Book1", "Author1", "Description1", "999-9-99999-999-9", Genre.Thriller, 100);
-            _bookRepo.Setup(r => r.AddBook(It.IsAny<Book>())).Verifiable();
+            _bookRepo.Setup(r => r.AddBook(book)).Verifiable();
 
             //Act
             _bookService.AddBook(bookDTO);
@@ -90,7 +91,6 @@ namespace Tests
             List<BookDTO> allBooksDTO = _bookService.LoadBooks();
 
             //Assert
-            Assert.IsNotNull(allBooksDTO);
             Assert.AreEqual(allBooks.Count, allBooksDTO.Count);
             for (int i=0; i<allBooks.Count; i++)
             {
@@ -184,8 +184,7 @@ namespace Tests
             Book oldBookVersion = new Book(3, "/images/book3.jpg", "Just Words", "Ghost Writer", "Another mystery book", "111-1-11111-111-1", Genre.Fantasy, 150);
             List<Book> allBooks = new List<Book>()
             {
-                 new Book(1, "/images/book.jpg", "The Mockingbird Code", "Jane Devlin", "A thrilling journey into the world of AI and espionage.", "978-1-23456-789-7", Genre.Thriller, 384),
-                 new Book(2, "/images/book2.jpg", "Empty Shell", "No One", "Empty book", "000-0-00000-000-0", Genre.Mystery, 1),
+                 new Book(1, "image", "The Mockingbird Code", "Jane Devlin", "description", "978-1-23456-789-7", Genre.Thriller, 384),
                 oldBookVersion
             };
             BookDTO newBookVersion = new BookDTO(3, null, "New Title", "Author", "Updated", "978-1-23456-789-7", Genre.Mystery, 250);

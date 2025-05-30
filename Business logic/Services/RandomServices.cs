@@ -74,7 +74,7 @@ namespace Business_logic.Services
             {
                 throw new BookIsAlreadyOnShelfException(shelf.Shelf.Name, book.Title);
             }
-            _shelfService.AddBookToShelf(book.Id, shelf.Shelf.Id);
+            _shelfService.AddBookToShelf(book, shelf);
         }
 
         public DateWithABookDTO CreateDateDTO(string filteredJson)

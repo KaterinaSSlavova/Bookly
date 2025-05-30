@@ -12,11 +12,13 @@ namespace Bookly.Bookly.Controllers
     public class ShelfController : Controller
     {
         private readonly IShelfServices _shelfService;
+        private readonly IBookServices _bookService;
         private readonly IMapper _mapper;
-        public ShelfController(IShelfServices shelfService, IMapper mapper)
+        public ShelfController(IShelfServices shelfService, IMapper mapper, IBookServices bookService)
         {
             _shelfService = shelfService;
             _mapper = mapper;
+            _bookService = bookService;
         }
 
         [HttpGet]
@@ -133,7 +135,9 @@ namespace Bookly.Bookly.Controllers
         {
             try
             {
-                _shelfService.AddBookToShelf(bookId, shelfId);
+                BookDTO? book = _bookService.GetBookById(bookId);
+                RegularShelfDTO? shelf = _shelfService.GetShelfById(shelfId);    
+                _shelfService.AddBookToShelf(book, shelf);
                 TempData["Success"] = "Book successfully added to shelf!";
             }
             catch(BookIsAlreadyOnShelfException ex)

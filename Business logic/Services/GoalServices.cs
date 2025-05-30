@@ -83,6 +83,26 @@ namespace Bookly.Business_logic.Services
             UpdateStatus(newStatus, goal.Id);
         }
 
+        public void DecreaseProgress()
+        {
+            GoalDTO? goal = GetNewestGoal(false);
+            if (goal != null && goal.CurrentProgress > 0)
+            {
+                goal.CurrentProgress--;
+                UpdateGoal(goal);
+            }
+        }
+
+        public void IncreaseProgress()
+        {
+            GoalDTO? goal = GetNewestGoal(true);
+            if (goal != null)
+            {
+                goal.CurrentProgress++;
+                UpdateGoal(goal);
+            }
+        }
+
         private void ValidateGoal(GoalDTO goal)
         {
             if (goal == null) throw new NullReferenceException("Enter valid data!");
