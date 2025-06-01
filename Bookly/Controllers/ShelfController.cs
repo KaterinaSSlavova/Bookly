@@ -144,6 +144,22 @@ namespace Bookly.Bookly.Controllers
             {
                 TempData["Warning"] = ex.Message;
             }
+            catch (NullReferenceException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            catch (InvalidReadingGoalException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            catch (InvalidGoalStartDateException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            catch (InvalidGoalEndDateException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
             return RedirectToAction("BookDetails", "Book", new { bookId = bookId });
         }
 
@@ -172,7 +188,19 @@ namespace Bookly.Bookly.Controllers
             }
             catch(NullReferenceException ex)
             {
-                TempData["ShelfBookError"] = ex.Message;
+                TempData["Error"] = ex.Message;
+            }
+            catch (InvalidReadingGoalException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            catch (InvalidGoalStartDateException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            catch (InvalidGoalEndDateException ex)
+            {
+                TempData["Error"] = ex.Message;
             }
         }
     }

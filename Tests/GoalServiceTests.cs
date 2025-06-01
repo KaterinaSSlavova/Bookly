@@ -88,5 +88,66 @@ namespace Tests
             //Act and Assert
             Assert.ThrowsException<InvalidGoalStartDateException>(() => _goalServices.CreateGoal(goalDTO));
         }
+
+        [TestMethod]
+        public void UpdateGoal_ShouldExecuteMethod_WhenGoalIsValid()
+        {
+            //Arrange
+            UserDTO userDTO = new UserDTO(1, null, "Username", new DateTime(2001, 2, 2), 25, "email", "Pass", Role.Reader);
+            User user = new User(1, null, "Username", new DateTime(2001, 1, 1), "email", "Pass", Role.Reader);
+            GoalDTO goalDTO = new GoalDTO(1, new DateTime(2025, 8, 1), new DateTime(2025, 9, 1), 3, 0, Status.Not_started, userDTO);
+
+            _userService.Setup(s => s.LoadUser()).Returns(userDTO);
+            _userService.Setup(s => s.ConvertToEntity(userDTO)).Returns(user);
+            _goalRepo.Setup(r => r.UpdateGoal(It.IsAny<Goal>())).Verifiable();
+
+            //Act
+            _goalServices.UpdateGoal(goalDTO);
+
+            //Assert
+            _goalRepo.Verify(r => r.UpdateGoal(It.IsAny<Goal>()), Times.Once);
+        }
+
+        [TestMethod]
+        public void CheckForExpired_ShouldExecuteMethod_WhenAGoalHasExpired()
+        {
+            //Arrange
+            User user = new User(1, null, "Username", new DateTime(2001, 1, 1), "email", "Pass", Role.Reader);
+            List<Goal> goals = new List<Goal>()
+            {
+                new Goal(1, new DateTime(2025, 5, 1), new DateTime(2025, 5, 8), 3, 0, Status.Not_started, user),
+                new Goal(2, new DateTime(2025, 8, 1), new DateTime(2025, 9, 1), 5, 0, Status.Not_started, user),
+                new Goal(3, new DateTime(2025, 9, 1), new DateTime(2025, 10, 1), 8, 0, Status.Not_started, user)
+            };
+
+            _goalRepo.Setup(r => r.UpdateGoal(goals[0])).Verifiable();
+
+            //Act
+            _goalServices.CheckForExpired(goals);
+
+            //Assert
+            _goalRepo.Verify(r => r.UpdateGoal(goals[0]), Times.Once);
+        }
+
+        [TestMethod]
+        public void CheckForExpired_ShouldNotExecuteMethod_WhenAGoalHasNotExpired()
+        {
+            //Arrange
+            User user = new User(1, null, "Username", new DateTime(2001, 1, 1), "email", "Pass", Role.Reader);
+            List<Goal> goals = new List<Goal>()
+            {
+                new Goal(1, new DateTime(2026, 5, 1), new DateTime(2026, 5, 8), 3, 0, Status.Not_started, user),
+                new Goal(2, new DateTime(2025, 8, 1), new DateTime(2025, 9, 1), 5, 0, Status.Not_started, user),
+                new Goal(3, new DateTime(2025, 9, 1), new DateTime(2025, 10, 1), 8, 0, Status.Not_started, user)
+            };
+
+            _goalRepo.Setup(r => r.UpdateGoal(It.IsAny<Goal>())).Verifiable();
+
+            //Act
+            _goalServices.CheckForExpired(goals);
+
+            //Assert
+            _goalRepo.Verify(r => r.UpdateGoal(It.IsAny<Goal>()), Times.Never);
+        }
     }
 }

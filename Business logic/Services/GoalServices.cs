@@ -54,6 +54,7 @@ namespace Bookly.Business_logic.Services
 
         public void UpdateGoal(GoalDTO goalDTO)
         {
+            ValidateGoal(goalDTO);
             UserDTO user = GetUser();
             Goal goal = ConvertToEntity(goalDTO, user);
             Status newStatus = Status.Not_started;
@@ -97,14 +98,17 @@ namespace Bookly.Business_logic.Services
             if (goal.End < DateTime.Now) throw new InvalidGoalEndDateException();
         }
 
-        private void CheckForExpired(List<Goal> goals)
+        public void CheckForExpired(List<Goal> goals)
         {
-            foreach (Goal goal in goals)
+            if(goals.Count > 0)
             {
-                if(goal.End < DateTime.Now)
+                foreach (Goal goal in goals)
                 {
-                    goal.SetStatus(Status.Expired); 
-                    _goalRepo.UpdateGoal(goal);
+                    if (goal.End < DateTime.Now)
+                    {
+                        goal.SetStatus(Status.Expired);
+                        _goalRepo.UpdateGoal(goal);
+                    }
                 }
             }
         }
