@@ -27,21 +27,16 @@ namespace Bookly.Controllers
         [HttpGet]
         public IActionResult SpinTheWheel()
         {
-            int? bookId = HttpContext.Session.GetInt32("Id");
-            if (bookId.HasValue)
-            {
-                BookDTO bookDTO = _bookServices.GetBookById(bookId.Value);
-                BookViewModel bookModel = _mapper.Map<BookViewModel>(bookDTO);
-                return View(bookModel);
-            }
             return View();
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Spin()
         {
-            HttpContext.Session.SetInt32("Id", _randomServices.RandomResult().Id);
-            return RedirectToAction("SpinTheWheel", "Random");
+            BookDTO book = _randomServices.RandomResult();
+            BookViewModel bookModel = _mapper.Map<BookViewModel>(book);
+            return Json(bookModel);
         }
 
         [HttpGet]

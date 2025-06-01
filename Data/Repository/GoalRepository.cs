@@ -47,49 +47,6 @@ namespace Bookly.Data.Repository
             }
         }
 
-        //public Goal GetGoalById(User user, int goalId)
-        //{
-        //    try
-        //    {
-        //        using SqlConnection connection = GetSqlConnection();
-        //        connection.Open();
-
-        //        string sql = @"SELECT Id, [Start], [End], ReadingGoal, CurrentProgress, StatusId, UserId
-        //                        FROM Goals
-        //                        WHERE isArchived = @isArchived and UserId = @UserId and Id = @Id";
-        //        using SqlCommand command = new SqlCommand(sql, connection);
-        //        command.Parameters.AddWithValue("@isArchived", 0);
-        //        command.Parameters.AddWithValue("@UserId", user.Id);
-        //        command.Parameters.AddWithValue("@Id", goalId);
-
-        //        using SqlDataReader reader = command.ExecuteReader();
-        //        if(reader.Read())
-        //        {
-        //            return new Goal
-        //                (
-        //                        reader.GetInt32(0),
-        //                        reader.GetDateTime(1),
-        //                        reader.GetDateTime(2),
-        //                        reader.GetInt32(3),
-        //                        reader.GetInt32(4),
-        //                        (Status)reader.GetInt32(5),
-        //                        user
-        //                );
-        //        }
-        //        return null;
-        //    }
-        //    catch (SqlException ex)
-        //    {
-        //        _logger.LogError(ex, "Sql error occurred while loading a goal by its id.");
-        //        throw new RepositoryException("Could not load that goal. Please try again later.");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "Unexpected error occurred while loading a goal by its id.");
-        //        throw new RepositoryException("An unexpected error occurred. Please try again later.");
-        //    }
-        //}
-
         public List<Goal> GetPersonalGoals(User user)
         {
             try
@@ -201,7 +158,7 @@ namespace Bookly.Data.Repository
                 connection.Open();
                 string sql = @"SELECT TOP 1 Id, [Start], [End], ReadingGoal, CurrentProgress, StatusId
                                     FROM Goals
-                                    WHERE isArchived = @isArchived AND [Status] = @CompletedStatus AND UserId = @Id
+                                    WHERE isArchived = @isArchived AND [StatusId] = @CompletedStatus AND UserId = @Id
                                     ORDER BY [End] ASC";
                 using SqlCommand command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@isArchived", 0);
@@ -236,7 +193,7 @@ namespace Bookly.Data.Repository
             }
         }
 
-        public void UpdateProgress(int userId, Goal goal)
+        public void UpdateGoal(Goal goal)
         {
             try
             {
@@ -244,12 +201,14 @@ namespace Bookly.Data.Repository
                 connection.Open();
 
                 string sql = @"UPDATE Goals
-                                SET CurrentProgress=@Progress
+                                SET CurrentProgress=@Progress,
+                                StatusId = @Status
                                 WHERE Id=@goalId and UserId=@UserId";
                 using SqlCommand command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@Progress", goal.CurrentProgress);
+                command.Parameters.AddWithValue("@Status", (int)goal.Status);
                 command.Parameters.AddWithValue("@goalId", goal.Id);
-                command.Parameters.AddWithValue("@UserId", userId);
+                command.Parameters.AddWithValue("@UserId", goal.User.Id);
 
                 command.ExecuteNonQuery();
             }
@@ -261,35 +220,6 @@ namespace Bookly.Data.Repository
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error occurred while updating the progress of a goal.");
-                throw new RepositoryException("An unexpected error occurred. Please try again later.");
-            }
-        }
-
-        public void UpdateStatus(Status status, int goalId, int userId)
-        {
-            try
-            {
-                using SqlConnection connection= GetSqlConnection();
-                connection.Open();
-
-                string sql = @"UPDATE Goals
-                                SET StatusId=@StatusId
-                                WHERE Id=@goalId and UserId=@UserId";
-                using SqlCommand command = new SqlCommand(sql,connection);
-                command.Parameters.AddWithValue("@StatusId", (int)status);
-                command.Parameters.AddWithValue("@goalId", goalId);
-                command.Parameters.AddWithValue("@UserId", userId);
-
-                command.ExecuteNonQuery();  
-            }
-            catch (SqlException ex)
-            {
-                _logger.LogError(ex, "Sql error occurred while updating the status of a goal.");
-                throw new RepositoryException("Could not update your goal. Please try again later.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error occurred while updating the status of a goal.");
                 throw new RepositoryException("An unexpected error occurred. Please try again later.");
             }
         }

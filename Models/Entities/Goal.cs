@@ -32,5 +32,10 @@ namespace Models.Entities
             this.Status = Status.Not_started;
             this.User = user;
         }
+
+        public void SetStatus(Status status)
+        {
+            this.Status = status;
+        }
     }
 }

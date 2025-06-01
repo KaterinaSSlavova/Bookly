@@ -9,8 +9,7 @@ namespace Interfaces
         List<Goal> GetPersonalGoals(User user);
         Goal? GetNewestGoal(bool isIncreasing, User user);
         Goal? GetLatestCompletedGoal(User user);
-        void UpdateProgress(int userId, Goal goal);
-        void UpdateStatus(Status status, int goalId, int userId);
+        void UpdateGoal(Goal goal);
         void RemoveGoal(int id);
         Task<List<Goal>> GetAllGoals();
     }

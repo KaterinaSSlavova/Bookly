@@ -1,6 +1,5 @@
 ﻿@model BookViewModel
 
-
 @{
     ViewData["Title"] = "Spin the Wheel";
 }
@@ -13,68 +12,59 @@
 <div id="wrapper">
     <div id="wheel">
         <div id="inner-wheel">
-            <div class="sec"><span class="fas fa-couch"></span></div>
-            <div class="sec"><span class="fas fa-apple-alt"></span></div>
-            <div class="sec"><span class="fas fa-laptop"></span></div>
-            <div class="sec"><span class="fas fa-utensils"></span></div>
-            <div class="sec"><span class="fas fa-box-open"></span></div>
-            <div class="sec"><span class="fas fa-bed"></span></div>
-            <div class="sec"><span class="fas fa-bed"></span></div>
-            <div class="sec"><span class="fas fa-bed"></span></div>
+            <div class="sec"><</div>
+            <div class="sec"></div>
+            <div class="sec"></div>
+            <div class="sec"></div>
+            <div class="sec"></div>
+            <div class="sec"></div>
+            <div class="sec"></div>
+            <div class="sec"></div>
         </div>
-
+        <div id="spin">
+            <div id="inner-spin"></div>
+        </div>
         <div id="shine"></div>
     </div>
-
-    <div id="txt"></div>
-
 </div>
 
-
-<form asp-controller="Random" asp-action="Spin" method="post" class="mb-3">
-    <button type="submit" class="btn btn-secondary">Spin</button>
+<form id="spinForm">
+    @Html.AntiForgeryToken()
 </form>
-<button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#bookModal">
-    Show Book
-</button>
 
+<div class="modal fade" id="bookModal" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
+    <form asp-controller="Random" asp-action="AddBookFromSpinTheWheel" method="post">
+        <div class="modal-dialog">
+            <div class="modal-content">
 
-@if (Model != null)
-{
-    <div class="modal fade" id="bookModal" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
-        <form asp-controller="Random" asp-action="AddBookFromSpinTheWheel" method="post">
-            <div class="modal-dialog">
-                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookModalLabel"></h5>
+                    <input type="hidden" name="Id" />
+                    <input type="hidden" name="Title" />
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
 
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="bookModalLabel">@Model.Title</h5>
-                        <input type="hidden" name="Id" value="@Model.Id" />
-                        <input type="hidden" name="Title" value="@Model.Title" />
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
+                <div class="modal-body">
+                    <input type="hidden" name="Picture" />
+                    <img src="" alt="Book Picture" class="img-fluid mb-3 fixed-book-img" id="bookImage" />
 
-                    <div class="modal-body">
-                        <input type="hidden" name="Picture" value="@Model.Picture" />
-                        <img src="@Model.Picture" alt="Book Picture" class="img-fluid mb-3" />
+                    <input type="hidden" name="Author" />
+                    <p><strong>Author:</strong> <span id="bookAuthor"></span></p>
 
-                        <input type="hidden" name="Author" value="@Model.Author" />
-                        <p><strong>Author:</strong> @Model.Author</p>
+                    <input type="hidden" name="Description" />
+                    <p><strong>Description:</strong> <span id="bookDescription"></span></p>
 
-                        <input type="hidden" name="Description" value="@Model.Description" />
-                        <p><strong>Description:</strong> @Model.Description</p>
+                    <input type="hidden" name="Genre" />
+                    <p><strong>Genre:</strong> <span id="bookGenre"></span></p>
 
-                        <input type="hidden" name="Genre" value="@Model.Genre" />
-                        <p><strong>Genre:</strong> @Model.Genre</p>
+                    <input type="hidden" name="ISBN" />
+                    <p><strong>ISBN:</strong> <span id="bookISBN"></span></p>
+                </div>
 
-                        <input type="hidden" name="ISBN" value="@Model.ISBN" />
-                        <p><strong>ISBN:</strong> @Model.ISBN</p>
-                    </div>
-
-                        <button type="submit" class="btn btn-success">Add to Want To Read</button>
-
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Add to Want To Read</button>
                 </div>
             </div>
-        </form>
-    </div>
-}
-
+        </div>
+    </form>
+</div>

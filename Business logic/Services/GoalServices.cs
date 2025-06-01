@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Interfaces;
+﻿using Interfaces;
 using Models.Entities;
 using Models.Enums;
 using Business_logic.DTOs;
@@ -11,13 +10,11 @@ namespace Bookly.Business_logic.Services
     {
         private readonly IGoalRepository _goalRepo;
         private readonly IUserServices _userServices;
-        private readonly IMapper _mapper;
         private readonly IEmailService _emailService;   
 
-        public GoalServices(IGoalRepository goalRepo, IMapper mapper, IUserServices userServices, IEmailService emailService)
+        public GoalServices(IGoalRepository goalRepo, IUserServices userServices, IEmailService emailService)
         {
             _goalRepo = goalRepo;
-            _mapper = mapper;
             _userServices = userServices;
             _emailService = emailService;   
         }
@@ -55,23 +52,11 @@ namespace Bookly.Business_logic.Services
             return goalDTO;
         }
 
-        private void UpdateProgress(GoalDTO goalDTO)
+        public void UpdateGoal(GoalDTO goalDTO)
         {
             UserDTO user = GetUser();
             Goal goal = ConvertToEntity(goalDTO, user);
-            _goalRepo.UpdateProgress(user.Id, goal);
-        }
-        private void UpdateStatus(Status status, int goalId)
-        {
-            UserDTO user = GetUser();
-            _goalRepo.UpdateStatus(status, goalId, user.Id);
-        }
-
-        public void UpdateGoal(GoalDTO goal)
-        {
             Status newStatus = Status.Not_started;
-            UpdateProgress(goal);
-
             if (goal.CurrentProgress > 0 && goal.CurrentProgress < goal.ReadingGoal)
             {
                 newStatus = Status.In_progress;
@@ -80,7 +65,8 @@ namespace Bookly.Business_logic.Services
             {
                 newStatus = Status.Completed;
             }
-            UpdateStatus(newStatus, goal.Id);
+            goal.SetStatus(newStatus);
+            _goalRepo.UpdateGoal(goal);
         }
 
         public void DecreaseProgress()
@@ -117,7 +103,8 @@ namespace Bookly.Business_logic.Services
             {
                 if(goal.End < DateTime.Now)
                 {
-                    UpdateStatus(Status.Expired, goal.Id);
+                    goal.SetStatus(Status.Expired); 
+                    _goalRepo.UpdateGoal(goal);
                 }
             }
         }
