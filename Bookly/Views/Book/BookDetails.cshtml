@@ -32,40 +32,15 @@
             <form asp-controller="Rating" asp-action="RateABook" method="post" class="mb-4">
                 <input type="hidden" name="bookId" value="@Model.Book.Id" />
                 <div class="d-flex justify-content-between flex-wrap gap-2">
-                    @foreach (var rating in new[] {
-                    ("1", "Very_Sad", "\U0001F622"),     
-                    ("2", "Sad", "\u2639\uFE0F"),        
-                    ("3", "Neutral", "\U0001F610"),      
-                    ("4", "Happy", "\U0001F642"),        
-                    ("5", "Very_Happy", "\U0001F603")
-                    })
+                    @foreach (var rating in Model.Ratings)
                     {
-                        <button type="submit" name="ratingId" value="@rating.Item1"
-                                class="btn btn-outline-secondary @(Model.RatingFromUser == rating.Item2 ? "border-primary" : "")">
-                            @rating.Item3
+                        <button type="submit" name="ratingId" value="@rating.Value"
+                                class="btn btn-outline-secondary @(Model.RatingFromUser == rating.Value ? "border-primary" : "")">
+                            @rating.Text
                         </button>
                     }
                 </div>
             </form>
-
-            <h4 class="mb-2">Move to Shelf</h4> 
-            <form asp-controller="Shelf" asp-action="MoveToShelf" class="mb-4">
-                <input type="hidden" name="bookId" value="@Model.Book.Id" />
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
-                        Select Shelf
-                    </button>
-                    <ul class="dropdown-menu w-100">
-                        @foreach (var shelf in Model.Shelves)
-                        {
-                            <li>
-                                <button type="submit" class="dropdown-item" name="shelfId" value="@shelf.Shelf.Id">@shelf.Shelf.Name</button>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            </form>
-
 
             <h4>Reviews</h4>
 
@@ -139,7 +114,7 @@
                 }
 
                 <form asp-controller="Book" asp-action="GoBack" class="w-100" style="max-width: 500px;">
-                    <button class="btn btn-primary w-100">Go Back</button>
+                    <button class="btn btn-dark w-100">Go Back</button>
                 </form>
 
             </div>

@@ -1,6 +1,8 @@
 ﻿using Interfaces;
 using Models.Enums;
 using Business_logic.DTOs;
+using System.ComponentModel;
+using System.Reflection;
 
 namespace Bookly.Business_logic.Services
 {
@@ -43,6 +45,13 @@ namespace Bookly.Business_logic.Services
             Ratings rating = bookRatings.GroupBy(r => r).
                 OrderByDescending(gr => gr.Count()).Select(gr => gr.Key).FirstOrDefault();
             return rating;
+        }
+
+        public string GetEnumDescription(Enum value)
+        {
+            var field = value.GetType().GetField(value.ToString());
+            var attribute = field?.GetCustomAttribute<DescriptionAttribute>();
+            return attribute?.Description ?? value.ToString();
         }
 
         private UserDTO GetUser()

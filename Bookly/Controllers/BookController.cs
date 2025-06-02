@@ -5,6 +5,8 @@ using Business_logic.DTOs;
 using Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Bookly.Filters;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Models.Enums;
 
 namespace Bookly.Bookly.Controllers
 {
@@ -13,13 +15,15 @@ namespace Bookly.Bookly.Controllers
     {
         private readonly IBookServices _bookService;
         private readonly IBookDetailsService _bookDetailsService;
+        private readonly IRatingServices _ratingServices;
         private readonly IMapper _mapper;
 
-        public BookController(IBookServices bookService, IMapper mapper, IBookDetailsService bookDetailsService)
+        public BookController(IBookServices bookService, IMapper mapper, IBookDetailsService bookDetailsService, IRatingServices ratingServices)
         {
             _bookService = bookService;
             _mapper = mapper;
             _bookDetailsService = bookDetailsService;
+            _ratingServices = ratingServices;
         }
 
         [HttpGet]
@@ -41,6 +45,7 @@ namespace Bookly.Bookly.Controllers
         {
             BookDetailsDTO bookDTO = _bookDetailsService.CreateDetailsDTO(bookId);
             BookDetailsViewModel model = _mapper.Map<BookDetailsViewModel>(bookDTO);
+            model.Ratings = MapRatings(bookDTO.Ratings);
             return View(model);
         }
 
@@ -153,6 +158,15 @@ namespace Bookly.Bookly.Controllers
                 TempData["Error"] = ex.Message;
             }
             return RedirectToAction("Index", "Book");
+        }
+
+        private List<SelectListItem> MapRatings(List<Ratings> ratings)
+        {
+            return ratings.Select(r => new SelectListItem
+            {
+                Value = ((int)r).ToString(),
+                Text = _ratingServices.GetEnumDescription(r)
+            }).ToList();
         }
     }
 }

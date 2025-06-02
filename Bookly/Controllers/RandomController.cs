@@ -17,11 +17,13 @@ namespace Bookly.Controllers
         private readonly IRandomServices _randomServices;
         private readonly IBookServices _bookServices;
         private readonly IMapper _mapper;
-        public RandomController(IRandomServices randomServices, IBookServices bookServices, IMapper mapper)
+        private readonly IRatingServices _ratingService;
+        public RandomController(IRandomServices randomServices, IBookServices bookServices, IMapper mapper, IRatingServices ratingService)
         {
             _randomServices = randomServices;
             _bookServices = bookServices;
             _mapper = mapper;
+            _ratingService = ratingService;
         }
 
         [HttpGet]
@@ -103,7 +105,7 @@ namespace Bookly.Controllers
             return ratings.Select(r => new SelectListItem
             {
                 Value = r.ToString(),
-                Text = r.ToString()
+                Text = _ratingService.GetEnumDescription(r)
             }).ToList();
         }
     }

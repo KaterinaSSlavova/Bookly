@@ -24,7 +24,8 @@ namespace Business_logic.Services
             Ratings? rating = _ratingServices.GetUserRatingForBook(bookId);
             List<RegularShelfDTO> userShelves = _shelfServices.GetUserShelves();
             List<ReviewDTO> bookReviews = _reviewServices.GetBookReviews(book);
-            return new BookDetailsDTO(book, userShelves, bookReviews, rating);
+            List<Ratings> allRatings = Enum.GetValues(typeof(Ratings)).Cast<Ratings>().ToList();
+            return new BookDetailsDTO(book, userShelves, bookReviews, rating, allRatings);
         }
     }
 }

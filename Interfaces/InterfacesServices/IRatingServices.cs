@@ -8,5 +8,6 @@ namespace Interfaces
         List<Ratings> GetBookRatings(int bookId);
         Ratings? GetUserRatingForBook(int bookId);
         Ratings GetMostPopularRating(int bookId);
+        string GetEnumDescription(Enum value);
     }
 }
