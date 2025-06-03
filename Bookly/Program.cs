@@ -33,8 +33,7 @@ namespace WebApp
 
             builder.Services.AddDbContext<BooklyDbContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("Server=DESKTOP-GPBCRNQ;Database=BooklyDB;Trusted_Connection=True; TrustServerCertificate=True;"));
-               // options.EnableSensitiveDataLogging(); 
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
             builder.Services.RegisterRepositories();
