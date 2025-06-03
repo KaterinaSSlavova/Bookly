@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Business_logic.DTOs;
-using EFDataLayer.DBContext;
+using EFDataLayer.Entities;
 
 namespace Business_logic.Mappers
 {

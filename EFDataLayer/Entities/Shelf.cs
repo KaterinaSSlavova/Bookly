@@ -1,4 +1,6 @@
-﻿namespace EFDataLayer.DBContext;
+﻿using EFDataLayer.Entities;
+
+namespace EFDataLayer.DBContext;
 
 public partial class Shelf
 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using EFDataLayer.Entities;
 
 namespace EFDataLayer.DBContext;
 

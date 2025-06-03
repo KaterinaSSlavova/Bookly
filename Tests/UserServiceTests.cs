@@ -4,6 +4,7 @@ using Business_logic.DTOs;
 using Exceptions;
 using EFDataLayer.DBContext;
 using Moq;
+using EFDataLayer.Entities;
 
 namespace Tests
 {

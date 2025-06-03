@@ -1,4 +1,5 @@
 ﻿using EFDataLayer.DBContext;
+using EFDataLayer.Entities;
 
 namespace Interfaces
 {

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EFDataLayer.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace EFDataLayer.DBContext;
 
@@ -134,9 +135,6 @@ public partial class BooklyDbContext : DbContext
 
             entity.ToTable("UserBookProgress");
 
-            //entity.Property(e => e.StatusId)
-            //        .HasConversion<int>() 
-            //        .HasDefaultValue(Status.Not_started);
             entity.Property(e => e.StatusId)
         .HasDefaultValue((int)Status.Not_started);
 

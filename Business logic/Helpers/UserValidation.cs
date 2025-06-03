@@ -1,6 +1,6 @@
 ﻿using Interfaces;
 using Exceptions;
-using EFDataLayer.DBContext;
+using EFDataLayer.Entities;
 
 namespace Business_logic.Helpers
 {

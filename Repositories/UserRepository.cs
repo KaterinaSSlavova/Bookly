@@ -1,4 +1,5 @@
 ﻿using EFDataLayer.DBContext;
+using EFDataLayer.Entities;
 using Interfaces;
 
 namespace Repositories

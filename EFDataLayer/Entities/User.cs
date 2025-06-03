@@ -1,7 +1,8 @@
 ﻿using System.CodeDom;
 using System.ComponentModel.DataAnnotations.Schema;
+using EFDataLayer.DBContext;
 
-namespace EFDataLayer.DBContext;
+namespace EFDataLayer.Entities;
 
 public partial class User
 {
@@ -38,47 +39,47 @@ public partial class User
 
     public User(int id, byte[] picture, string username, DateTime? birthDate, string email, string password, Role role)
     {
-        this.Id = id;
-        this.Picture = picture;
-        this.Username = username;
-        this.BirthDate = birthDate;
-        this.Email = email;
-        this.Password = password;
-        this.Role = role;
+        Id = id;
+        Picture = picture;
+        Username = username;
+        BirthDate = birthDate;
+        Email = email;
+        Password = password;
+        Role = role;
     }
 
     public User(byte[] picture, string username, DateTime? birthDate, string email, Role role)
     {
-        this.Picture = picture;
-        this.Username = username;
-        this.BirthDate = birthDate;
-        this.Email = email;
-        this.Role = role;
+        Picture = picture;
+        Username = username;
+        BirthDate = birthDate;
+        Email = email;
+        Role = role;
     }
 
     public User(string username, string password)  //Log in
     {
-        this.Username = username;
-        this.Password = password;
+        Username = username;
+        Password = password;
     }
 
     public User(string username, string email, string password) //Register
     {
-        this.Username = username;
-        this.Email = email;
-        this.Password = password;
+        Username = username;
+        Email = email;
+        Password = password;
     }
 
     public User(string username, DateTime? birthDate, string email, Role role) //dto
     {
-        this.Username = username;
-        this.BirthDate = birthDate;
-        this.Email = email;
-        this.Role = role;
+        Username = username;
+        BirthDate = birthDate;
+        Email = email;
+        Role = role;
     }
 
     public User()
     {
-        
+
     }
 }

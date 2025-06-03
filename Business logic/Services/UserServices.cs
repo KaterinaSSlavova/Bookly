@@ -1,7 +1,7 @@
-﻿using EFDataLayer.DBContext;
-using Interfaces;
+﻿using Interfaces;
 using Microsoft.AspNetCore.Http;
 using Business_logic.DTOs;
+using EFDataLayer.Entities;
 
 namespace Bookly.Business_logic.Services
 {

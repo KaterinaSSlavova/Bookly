@@ -1,4 +1,5 @@
 ﻿using EFDataLayer.DBContext;
+using EFDataLayer.Entities;
 using Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

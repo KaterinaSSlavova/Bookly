@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using EFDataLayer.Entities;
 
 namespace EFDataLayer.DBContext;
 

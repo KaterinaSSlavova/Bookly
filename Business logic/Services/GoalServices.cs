@@ -3,6 +3,7 @@ using Interfaces;
 using EFDataLayer.DBContext;
 using Business_logic.DTOs;
 using Exceptions;
+using EFDataLayer.Entities;
 
 namespace Bookly.Business_logic.Services
 {
