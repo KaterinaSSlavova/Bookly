@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace EFDataLayer.DBContext;
+﻿namespace EFDataLayer.DBContext;
 
 public partial class Book
 {
