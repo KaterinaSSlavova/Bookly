@@ -3,7 +3,6 @@ using Bookly.Filters;
 using Bookly.Mappers;
 using Business_logic.Mappers;
 using Serilog;
-using Serilog.Exceptions;
 
 namespace WebApp
 {
@@ -12,11 +11,12 @@ namespace WebApp
         public static void Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .Enrich.FromLogContext()
-                .Enrich.WithExceptionDetails()
-                .WriteTo.Seq("http://localhost:5341")
-                .CreateLogger();
+                           .MinimumLevel.Debug()
+                           .Enrich.FromLogContext()
+                           .Enrich.WithProperty("Application", "Bookly")
+                           .WriteTo.Console()
+                           .WriteTo.Seq("http://localhost:5341")
+                           .CreateLogger();
 
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddControllersWithViews(options =>

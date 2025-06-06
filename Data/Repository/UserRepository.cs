@@ -23,7 +23,7 @@ namespace Bookly.Data.Repository
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
-                string insertSql = @"INSERT INTO Users([Username], Email, [Password]) 
+                string insertSql = @"INSERT INTO Users([Username], , [Password]) 
                                VALUES (@Username, @Email, @Password)";
                 using SqlCommand commandInsert = new SqlCommand(insertSql, connection);
                 commandInsert.Parameters.AddWithValue("@Username", user.Username);
@@ -34,8 +34,15 @@ namespace Bookly.Data.Repository
             }
 			catch (SqlException ex)
 			{
-				_logger.LogError(ex, "Sql error occurred while registering a user.");
-				throw new RepositoryException("Could not create an account. Please try again later.");
+                //_logger.LogError(ex, "Sql error occurred while registering a user.");
+
+                _logger.LogError(
+                    ex,
+                    "SQL error occurred while registering user {Username}, {Email}",
+                    user.Username,
+                    user.Email
+                );
+                throw new RepositoryException("Could not create an account. Please try again later.");
 			}
 			catch (Exception ex)
 			{
