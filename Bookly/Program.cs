@@ -14,7 +14,6 @@ namespace WebApp
                            .MinimumLevel.Debug()
                            .Enrich.FromLogContext()
                            .Enrich.WithProperty("Application", "Bookly")
-                           .WriteTo.Console()
                            .WriteTo.Seq("http://localhost:5341")
                            .CreateLogger();
 
