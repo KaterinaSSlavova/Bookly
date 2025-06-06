@@ -2,7 +2,7 @@
 
 namespace EFDataLayer.DBContext
 {
-    public  class BookRating
+    public class BookRating
     {
         public int RatingId { get; set; }
         public int BookId { get; set; }

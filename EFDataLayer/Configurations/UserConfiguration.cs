@@ -1,9 +1,8 @@
-﻿using EFDataLayer.DBContext;
-using EFDataLayer.Entities;
+﻿using EFDataLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace EFDataLayer.Configurations
+namespace EFDataLayer.DBContext
 {
     public class UserConfiguration : IEntityTypeConfiguration<User>
     {

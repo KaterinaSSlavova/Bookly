@@ -20,7 +20,7 @@ namespace Repositories
 
         public User? LoadUser(string username)
         {
-            return _context.Users.FirstOrDefault(u => u.Username == username);
+             return _context.Users.FirstOrDefault(u => u.Username == username);
         }
 
         public void UpdateProfile(User newUser)

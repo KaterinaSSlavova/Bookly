@@ -1,4 +1,4 @@
-﻿using EFDataLayer.Configurations;
+﻿using System.Reflection;
 using EFDataLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,16 +32,8 @@ public partial class BooklyDbContext : DbContext
     public virtual DbSet<BookRating> BookRatings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.ApplyConfiguration(new BookConfiguration());
-        modelBuilder.ApplyConfiguration(new GoalConfiguration());
-        modelBuilder.ApplyConfiguration(new ReviewConfiguration());
-        modelBuilder.ApplyConfiguration(new UserConfiguration());
-        modelBuilder.ApplyConfiguration(new CurrentBookConfiguration());
-        modelBuilder.ApplyConfiguration(new UserRatingConfiguration());
-        modelBuilder.ApplyConfiguration(new BookRatingConfiguration());
-        modelBuilder.ApplyConfiguration(new ShelfConfiguration());
-
+    { 
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(BooklyDbContext).Assembly);
         OnModelCreatingPartial(modelBuilder);
     }
 

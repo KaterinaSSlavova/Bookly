@@ -1,8 +1,7 @@
-﻿using EFDataLayer.DBContext;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace EFDataLayer.Configurations
+namespace EFDataLayer.DBContext
 {
     public class BookRatingConfiguration: IEntityTypeConfiguration<BookRating>
     {
