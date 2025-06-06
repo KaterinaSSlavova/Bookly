@@ -9,15 +9,17 @@ namespace WebApp
     public class Program
     {
         public static void Main(string[] args)
-        {
-            Log.Logger = new LoggerConfiguration()
-                           .MinimumLevel.Debug()
-                           .Enrich.FromLogContext()
-                           .Enrich.WithProperty("Application", "Bookly")
-                           .WriteTo.Seq("http://localhost:5341")
-                           .CreateLogger();
-
+        { 
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Host.UseSerilog((context, services, configuration) =>
+            {
+                configuration
+                    .ReadFrom.Configuration(context.Configuration)
+                    .ReadFrom.Services(services)
+                    .Enrich.FromLogContext();
+            });
+
             builder.Services.AddControllersWithViews(options =>
             {
                 options.Filters.Add<GlobalExceptionFilter>();
@@ -30,7 +32,6 @@ namespace WebApp
 
             builder.Services.RegisterRepositories();
             builder.Services.RegisterServices();
-            builder.Host.UseSerilog();
 
             var app = builder.Build();
 
