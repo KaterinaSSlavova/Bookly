@@ -1,6 +1,5 @@
-﻿using System.Reflection;
+﻿using Microsoft.EntityFrameworkCore;
 using EFDataLayer.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace EFDataLayer.DBContext;
 
@@ -38,4 +37,17 @@ public partial class BooklyDbContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+    public void DetachIfTracked<TEntity, TKey>(TEntity entity, Func<TEntity, TKey> keySelector) where TEntity : class
+    {
+        var entityKey = keySelector(entity);
+
+        var trackedEntity = ChangeTracker.Entries<TEntity>()
+            .FirstOrDefault(e => keySelector(e.Entity).Equals(entityKey));
+
+        if (trackedEntity != null)
+        {
+            trackedEntity.State = EntityState.Detached;
+        }
+    }
 }
