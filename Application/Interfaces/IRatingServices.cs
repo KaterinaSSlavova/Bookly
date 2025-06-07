@@ -1,0 +1,13 @@
+﻿using Models.Enums;
+
+namespace Interfaces
+{
+    public interface IRatingServices
+    {
+        void RateBook(int bookId, int ratingId);
+        List<Ratings> GetBookRatings(int bookId);
+        Ratings? GetUserRatingForBook(int bookId);
+        Ratings GetMostPopularRating(int bookId);
+        string GetEnumDescription(Enum value);
+    }
+}
