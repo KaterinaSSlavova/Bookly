@@ -9,5 +9,6 @@ namespace Interfaces
         Book? GetBookById(int id);
         void UpdateBook(Book book);
         void RemoveBook(int id);
+        Book? GetBookFromPlanner(Book book);
     }
 }

@@ -72,5 +72,12 @@ namespace Bookly.Business_logic.Services
             _bookRepo.RemoveBook(id);
         }
 
+        public BookDTO? GetBookFromPlanner(string title, string author, int pages)
+        {
+            Book bookFromTask = new Book(title, author, pages);
+            Book book = _bookRepo.GetBookFromPlanner(bookFromTask);
+            if(book != null) return _mapper.Map<BookDTO>(book);
+            return null;
+        }
     }
 }

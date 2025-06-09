@@ -9,5 +9,6 @@ namespace Interfaces
         BookDTO GetBookById(int bookId);
         void UpdateBook(BookDTO book);
         void RemoveBook(int id);
+        BookDTO? GetBookFromPlanner(string title, string author, int pages);
     }
 }

@@ -199,6 +199,50 @@ namespace Bookly.Data.Repository
             }
         }
 
+        public Book? GetBookFromPlanner(Book book)
+        {
+            try
+            {
+                using SqlConnection connection = GetSqlConnection();
+                connection.Open();
+
+                string sql = @"SELECT Id, Picture, Title, Author, [Description], ISBN, Genre, Pages
+                               FROM Books 
+                               WHERE Title = @Title and Author = @Author and Pages = @Pages";
+                using SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@Title", book.Title);
+                command.Parameters.AddWithValue("@Author", book.Author);
+                command.Parameters.AddWithValue("@Pages", book.Pages);
+
+                using SqlDataReader reader = command.ExecuteReader();   
+                if (reader.Read())
+                {
+                    return new Book(
+                    reader.GetInt32(0),
+                    reader.GetString(1),
+                    reader.GetString(2),
+                    reader.GetString(3),
+                    reader.GetString(4),
+                    reader.GetString(5),
+                        (Genre)Enum.Parse(typeof(Genre), reader.GetString(6)),
+                        reader.GetInt32(7)
+                        );
+                }
+                return null;
+
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Sql error occurred while getting book from planner");
+                throw new RepositoryException("Could not load this book. Please try again later.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error occurred while getting book from planner.");
+                throw new RepositoryException("An unexpected error occurred while getting book from planner. Please try again later.");
+            }
+        }
+
         private string GetPicturePath(string picture)
         {
             string path="/images/" + picture;

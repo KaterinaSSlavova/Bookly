@@ -419,5 +419,52 @@ namespace Bookly.Data.Repository
 				throw new RepositoryException("An unexpected error occurred. Please try again later.");
 			}
 		}
+
+        public RegularShelf? GetUsersHaveReadShelf(string shelfName, User user)
+        {
+            try
+            {
+                using SqlConnection connection = GetSqlConnection();
+                connection.Open();
+
+                string sql = @"SELECT s.Id, s.[Name], u.Id, u.Picture, u.Username, u.BirthDate, u.Email, u.[Password], u.RoleId
+                               FROM Shelves as s
+							   Inner Join Users as u
+							   On u.Id = s.UserId
+                               WHERE s.Name = @Name and and s.UserId = @UserId";
+                using SqlCommand command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@Name", shelfName);
+                command.Parameters.AddWithValue("@UserId", user.Id);
+                using SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    int shelfId = reader.GetInt32(0);
+                    return new RegularShelf(
+                        new Shelf(shelfId,
+                        reader.GetString(1),
+                         new User(
+                            reader.GetInt32(2),
+                            reader.IsDBNull(3) ? null : reader.GetSqlBinary(3).Value,
+                            reader.GetString(4),
+                            reader.IsDBNull(5) ? (DateTime?)null : reader.GetDateTime(5),
+                            reader.GetString(6),
+                            reader.GetString(7),
+                            (Role)reader.GetInt32(8))),
+                         GetBooksFromShelf(shelfId)
+                         );
+                }
+                return null;
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Sql error occurred while loading user's Have Read shelf.");
+                throw new RepositoryException("Could not load this shelf. Please try again later.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error occurred while loading user's Have Read shelf.");
+                throw new RepositoryException("An unexpected error occurred. Please try again later.");
+            }
+        }
     }
 }

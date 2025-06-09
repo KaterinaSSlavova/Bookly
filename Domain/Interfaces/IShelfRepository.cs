@@ -16,5 +16,6 @@ namespace Interfaces
         void RemoveFromCurrentBookShelf(int userId, int bookId);
         void RemoveShelf(int id);
         List<CurrentBook> GetBooksFromCurrentlyReadingShelf(User user);
+        RegularShelf? GetUsersHaveReadShelf(string shelfName, User user);
     }
 }

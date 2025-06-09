@@ -15,5 +15,6 @@ namespace Interfaces
         void RemoveBookFromShelf(int bookId, RegularShelfDTO shelf);
         void RemoveShelf(int id);
         CurrentBookShelfDTO GetCurrentlyReadingShelf();
+        void MoveBookToHaveRead(PlannerBook plannerBook);
     }
 }

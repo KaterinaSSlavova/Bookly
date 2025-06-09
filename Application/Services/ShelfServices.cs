@@ -4,7 +4,6 @@ using Business_logic.DTOs;
 using AutoMapper;
 using Models.Enums;
 using Exceptions;
-using System;
 
 namespace Bookly.Business_logic.Services
 {
@@ -165,6 +164,22 @@ namespace Bookly.Business_logic.Services
         private UserDTO GetUser()
         {
             return _userServices.LoadUser();
+        }
+
+        public void MoveBookToHaveRead(PlannerBook plannerBook)
+        {
+            UserDTO? user =_userServices.GetUserByUsername(plannerBook.Username);
+            if (user != null)
+            {
+                BookDTO? book = _bookServices.GetBookFromPlanner(plannerBook.Title, plannerBook.Author, plannerBook.Pages);
+                if (book != null)
+                {
+                    CheckForPreviousShelf(book.Id);
+                    RegularShelf? completedShelf = _shelfRepo.GetUsersHaveReadShelf(completedBooksShelf, _userServices.ConvertToEntity(user));
+                    _goalService.IncreaseProgress();
+                    _shelfRepo.AddBookToShelf(book.Id, completedShelf.Shelf.Id, user.Id);
+                }
+            }
         }
     }
 }

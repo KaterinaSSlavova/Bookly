@@ -32,6 +32,8 @@ namespace Bookly.Mappers
                 .ReverseMap()
                 .ForMember(dest => dest.User, opt => opt.Ignore())
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => Enum.Parse(typeof(Status), src.Status)));
+
+            CreateMap<PlannerBook, PlannerBookDTO>().ReverseMap();
         }
     }
 }

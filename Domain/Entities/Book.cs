@@ -35,6 +35,13 @@ namespace Models.Entities
             this.Pages = pages;
         }
 
+        public Book(string title, string author, int pages)
+        {
+            this.Title = title;
+            this.Author = author;
+            this.Pages = pages;
+        }
+
         public Book(int id)
         {
             this.Id= id;
