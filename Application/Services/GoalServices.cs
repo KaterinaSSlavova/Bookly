@@ -48,8 +48,12 @@ namespace Bookly.Business_logic.Services
             {
                 goal = _goalRepo.GetLatestCompletedGoal(_userServices.ConvertToEntity(GetUser()));
             }
-            GoalDTO goalDTO = ConvertToDTO(goal, goal.User);
-            return goalDTO;
+            if(goal != null)
+            {
+                GoalDTO goalDTO = ConvertToDTO(goal, goal.User);
+                return goalDTO;
+            }
+            return null;
         }
 
         public void UpdateGoal(GoalDTO goalDTO)
