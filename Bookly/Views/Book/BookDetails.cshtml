@@ -42,6 +42,24 @@
                 </div>
             </form>
 
+            <h4 class="mb-2">Move to Shelf</h4>
+            <form asp-controller="Shelf" asp-action="MoveToShelf" class="mb-4">
+                <input type="hidden" name="bookId" value="@Model.Book.Id" />
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
+                        Select Shelf
+                    </button>
+                    <ul class="dropdown-menu w-100">
+                        @foreach (var shelf in Model.Shelves)
+                        {
+                            <li>
+                                <button type="submit" class="dropdown-item" name="shelfId" value="@shelf.Shelf.Id">@shelf.Shelf.Name</button>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </form>
+
             <h4>Reviews</h4>
 
             @if (Model.Reviews?.Count > 0)
