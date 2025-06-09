@@ -43,8 +43,14 @@
             </form>
 
             <h4 class="mb-2">Move to Shelf</h4>
-            <form asp-controller="Shelf" asp-action="MoveToShelf" class="mb-4">
+            <form asp-controller="Shelf" asp-action="MoveToShelf" class="mb-4" method="post">
                 <input type="hidden" name="bookId" value="@Model.Book.Id" />
+
+                <div class="mb-2">
+                    <label for="dueDate" class="form-label">Due Date for Planner:</label>
+                    <input type="date" name="dueDate" class="form-control" required />
+                </div>
+
                 <div class="dropdown">
                     <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
                         Select Shelf
@@ -53,7 +59,9 @@
                         @foreach (var shelf in Model.Shelves)
                         {
                             <li>
-                                <button type="submit" class="dropdown-item" name="shelfId" value="@shelf.Shelf.Id">@shelf.Shelf.Name</button>
+                                <button type="submit" class="dropdown-item" name="shelfId" value="@shelf.Shelf.Id">
+                                    @shelf.Shelf.Name
+                                </button>
                             </li>
                         }
                     </ul>

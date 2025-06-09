@@ -7,5 +7,6 @@
         public string? Author { get; set; }
         public string? Image { get; set; }
         public int Pages { get; set; }
+        public DateTime DueDate { get; set; }
     }
 }

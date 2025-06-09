@@ -131,7 +131,7 @@ namespace Bookly.Bookly.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> MoveToShelf(int bookId, int shelfId)
+        public async Task<IActionResult> MoveToShelf(int bookId, int shelfId, DateTime dueDate)
         {
             try
             {
@@ -147,7 +147,8 @@ namespace Bookly.Bookly.Controllers
                         Title = book.Title,
                         Author = book.Author,
                         Image = book.Picture,
-                        Pages = book.Pages
+                        Pages = book.Pages,
+                        DueDate = dueDate
                     };
 
                     using HttpClient client = new HttpClient();
