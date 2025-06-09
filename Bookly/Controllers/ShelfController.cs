@@ -131,13 +131,41 @@ namespace Bookly.Bookly.Controllers
         }
 
         [HttpPost]
-        public IActionResult MoveToShelf(int bookId, int shelfId)
+        public async Task<IActionResult> MoveToShelf(int bookId, int shelfId)
         {
             try
             {
                 BookDTO? book = _bookService.GetBookById(bookId);
                 RegularShelfDTO? shelf = _shelfService.GetShelfById(shelfId);    
                 _shelfService.AddBookToShelf(book, shelf);
+
+                if(shelf.Shelf.Name == "Want To Read")
+                {
+                    PlannerTaskDTO task = new PlannerTaskDTO
+                    {
+                        Username = HttpContext.Session.GetString("Username"),
+                        Title = book.Title,
+                        Author = book.Author,
+                        Image = book.Picture,
+                        Pages = book.Pages
+                    };
+
+                    using HttpClient client = new HttpClient();
+                    client.BaseAddress = new Uri("https://localhost:7238");
+                    try
+                    {
+                        var response = await client.PostAsJsonAsync("/api/tasks/from-bookly", task);
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            TempData["Warning"] = "Book was added to shelf, but not to Planner.";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        TempData["Error"] = $"Planner connection failed: {ex.Message}";
+                    }
+                }
+
                 TempData["Success"] = "Book successfully added to shelf!";
             }
             catch(BookIsAlreadyOnShelfException ex)
