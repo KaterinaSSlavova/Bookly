@@ -8,9 +8,9 @@ namespace Interfaces
         List<GoalDTO> GetPersonalGoals();
         void UpdateGoal(GoalDTO goal);
         void RemoveGoal(int id);
-        GoalDTO? GetNewestGoal(bool isIncreasing);
+        GoalDTO? GetNewestGoal(bool isIncreasing, UserDTO user = null);
         Task SendRemindersAsync();
-        void IncreaseProgress();
+        void IncreaseProgress(UserDTO user = null);
         void DecreaseProgress();
     }
 }

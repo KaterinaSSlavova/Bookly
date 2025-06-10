@@ -41,19 +41,36 @@ namespace Bookly.Business_logic.Services
              _goalRepo.RemoveGoal(id);
         }
 
-        public GoalDTO? GetNewestGoal(bool isIncreasing)
+        public GoalDTO? GetNewestGoal(bool isIncreasing, UserDTO user = null)
         {
-            Goal? goal = _goalRepo.GetNewestGoal(isIncreasing, _userServices.ConvertToEntity(GetUser()));
-            if (goal == null && !isIncreasing)
+            if(user == null)
             {
-                goal = _goalRepo.GetLatestCompletedGoal(_userServices.ConvertToEntity(GetUser()));
+                Goal? goal = _goalRepo.GetNewestGoal(isIncreasing, _userServices.ConvertToEntity(GetUser()));
+                if (goal == null && !isIncreasing)
+                {
+                    goal = _goalRepo.GetLatestCompletedGoal(_userServices.ConvertToEntity(GetUser()));
+                }
+                if (goal != null)
+                {
+                    GoalDTO goalDTO = ConvertToDTO(goal, goal.User);
+                    return goalDTO;
+                }
+                return null;
             }
-            if(goal != null)
+            else
             {
-                GoalDTO goalDTO = ConvertToDTO(goal, goal.User);
-                return goalDTO;
+                Goal? goal = _goalRepo.GetNewestGoal(isIncreasing, _userServices.ConvertToEntity(user));
+                if (goal == null && !isIncreasing)
+                {
+                    goal = _goalRepo.GetLatestCompletedGoal(_userServices.ConvertToEntity(user));
+                }
+                if (goal != null)
+                {
+                    GoalDTO goalDTO = ConvertToDTO(goal, goal.User);
+                    return goalDTO;
+                }
+                return null;
             }
-           return null;
         }
 
         public void UpdateGoal(GoalDTO goalDTO)
@@ -84,9 +101,17 @@ namespace Bookly.Business_logic.Services
             }
         }
 
-        public void IncreaseProgress()
+        public void IncreaseProgress(UserDTO user = null)
         {
-            GoalDTO? goal = GetNewestGoal(true);
+            GoalDTO? goal = null;
+            if(user != null)
+            {
+                goal = GetNewestGoal(true, user);
+            }
+            else
+            {
+                goal = GetNewestGoal(true);
+            }
             if (goal != null)
             {
                 goal.CurrentProgress++;

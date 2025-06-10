@@ -106,12 +106,24 @@ namespace Bookly.Business_logic.Services
             _shelfRepo.SaveCurrentBookProgress(book);
         }
 
-        private void CheckForPreviousShelf(int bookId)
+        private void CheckForPreviousShelf(int bookId, UserDTO user = null)
         {
-            RegularShelfDTO? oldShelf = GetUserShelves().FirstOrDefault(s => s.BooksOnShelf.Any(b => b.Id == bookId));
-            if(oldShelf != null)
+            if(user == null)
             {
-                RemoveBookFromShelf(bookId, oldShelf);
+                RegularShelfDTO? oldShelf = GetUserShelves().FirstOrDefault(s => s.BooksOnShelf.Any(b => b.Id == bookId));
+                if (oldShelf != null)
+                {
+                    RemoveBookFromShelf(bookId, oldShelf);
+                }
+            }
+            else
+            {
+                List<RegularShelf>? shelves = _shelfRepo.GetUserRegularShelves(_userServices.ConvertToEntity(user));
+                RegularShelf? oldShelf = shelves.FirstOrDefault(s => s.BooksOnShelf.Any(b => b.Id == bookId));
+                if (oldShelf != null)
+                {
+                    RemoveBookFromShelf(bookId, _mapper.Map<RegularShelfDTO>(oldShelf));
+                }
             }
         }
 
@@ -174,9 +186,9 @@ namespace Bookly.Business_logic.Services
                 BookDTO? book = _bookServices.GetBookFromPlanner(plannerBook.Title, plannerBook.Author, plannerBook.Pages);
                 if (book != null)
                 {
-                    CheckForPreviousShelf(book.Id);
+                    CheckForPreviousShelf(book.Id, user);
                     RegularShelf? completedShelf = _shelfRepo.GetUsersHaveReadShelf(completedBooksShelf, _userServices.ConvertToEntity(user));
-                    _goalService.IncreaseProgress();
+                    _goalService.IncreaseProgress(user);
                     _shelfRepo.AddBookToShelf(book.Id, completedShelf.Shelf.Id, user.Id);
                 }
             }

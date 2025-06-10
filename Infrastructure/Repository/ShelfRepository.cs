@@ -431,7 +431,7 @@ namespace Bookly.Data.Repository
                                FROM Shelves as s
 							   Inner Join Users as u
 							   On u.Id = s.UserId
-                               WHERE s.Name = @Name and and s.UserId = @UserId";
+                               WHERE s.Name = @Name and s.UserId = @UserId";
                 using SqlCommand command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@Name", shelfName);
                 command.Parameters.AddWithValue("@UserId", user.Id);

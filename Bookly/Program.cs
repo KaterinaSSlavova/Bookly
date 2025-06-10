@@ -50,6 +50,12 @@ namespace WebApp
 
             app.UseRouting();
 
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+
             app.UseAuthorization();
 
             app.MapControllerRoute(
