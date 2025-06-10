@@ -16,7 +16,7 @@ namespace Bookly.Mappers
 
 
             CreateMap<BookDetailsDTO, BookDetailsViewModel>()
-                .ForMember(dest => dest.RatingFromUser, opt => opt.MapFrom(src => src.RatingFromUser ?? 0))
+                .ForMember(dest => dest.RatingFromUser, opt => opt.MapFrom(src => (int?)src.RatingFromUser ?? 0))
                 .ForMember(src => src.Ratings, opt => opt.Ignore())
                 .ReverseMap()
                 .ForMember(dest => dest.RatingFromUser, opt => opt.MapFrom(src => src.RatingFromUser))
