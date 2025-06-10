@@ -23,7 +23,7 @@ namespace Bookly.Data.Repository
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
-                string insertSql = @"INSERT INTO Users([Username], , [Password]) 
+                string insertSql = @"INSERT INTO Users([Username], Email, [Password]) 
                                VALUES (@Username, @Email, @Password)";
                 using SqlCommand commandInsert = new SqlCommand(insertSql, connection);
                 commandInsert.Parameters.AddWithValue("@Username", user.Username);
