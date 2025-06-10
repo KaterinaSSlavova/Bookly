@@ -20,58 +20,66 @@
 
         <div class="modal fade" id="modal-@book.Id" tabindex="-1" aria-hidden="true">
             <form asp-controller="Random" asp-action="AddBookFromRandomDate" method="post">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
                             <input type="hidden" name="Id" value="@book.Id" />
                             <input type="hidden" name="Title" value="@book.Title" />
-                        <h5 class="modal-title">@book.Title</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
+                            <h5 class="modal-title">@book.Title</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
                             <input type="hidden" name="Picture" value="@book.Picture" />
-                        <img src="@book.Picture" alt="Book Picture" class="img-fluid mb-3" />
+                            <img src="@book.Picture" alt="Book Picture" class="img-fluid mb-3" />
                             <input type="hidden" name="Author" value="@book.Author" />
-                        <p><strong>Author:</strong> @book.Author</p>
+                            <p><strong>Author:</strong> @book.Author</p>
                             <input type="hidden" name="Description" value="@book.Description" />
-                        <p><strong>Description:</strong> @book.Description</p>
+                            <p><strong>Description:</strong> @book.Description</p>
                             <input type="hidden" name="Genre" value="@book.Genre" />
-                        <p><strong>Genre:</strong> @book.Genre</p>
+                            <p><strong>Genre:</strong> @book.Genre</p>
                             <input type="hidden" name="ISBN" value="@book.ISBN" />
-                        <p><strong>ISBN:</strong> @book.ISBN</p>
+                            <p><strong>ISBN:</strong> @book.ISBN</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Add to Want To Read</button>
+                        </div>
                     </div>
-                        <button type="submit" class="btn btn-success">Add to Want To Read</button>
                 </div>
-            </div>
             </form>
         </div>
-
     }
 }
 else
 {
     <form asp-controller="Random" asp-action="FilterBooks" method="post">
-        <div class="form-group">
-            <label for="RatingSelect" class="control-label">Select Rating:</label>
-            <select name="ratings" class="form-select">
-                <option value="">Select a Rating</option>
-                @foreach (var rating in Model.Ratings)
-                {
-                    <option value="@rating.Value">@rating.Text</option>
-                }
-            </select>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="RatingSelect" class="form-label">Select Rating:</label>
+                <select name="ratings" class="form-select">
+                    <option value="">Select a Rating</option>
+                    @foreach (var rating in Model.Ratings)
+                    {
+                        <option value="@rating.Value">@rating.Text</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label for="GenreSelect" class="form-label">Genre:</label>
+                <select name="genre" class="form-select">
+                    <option value="">Select a Genre</option>
+                    @foreach (var genre in Model.Genres)
+                    {
+                        <option value="@genre.Value">@genre.Text</option>
+                    }
+                </select>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="GenreSelect" class="control-label">Genre:</label>
-            <select name="genre" class="form-select">
-                <option value="">Select a Genre</option>
-                @foreach (var genre in Model.Genres)
-                {
-                    <option value="@genre.Value">@genre.Text</option>
-                }
-            </select>
+        <div class="row">
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-dark px-5">Filter</button>
+            </div>
         </div>
-        <button type="submit" class="btn btn-dark">Filter</button>
     </form>
 }
