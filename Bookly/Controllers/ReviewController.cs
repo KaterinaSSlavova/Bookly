@@ -1,4 +1,5 @@
 ﻿using Bookly.Filters;
+using Exceptions;
 using Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,10 +17,25 @@ namespace Bookly.Controllers
         [HttpPost]
         public IActionResult CreateReview(string description, int bookId)
 		{
-			_reviewServices.AddReview(description, bookId);
-            TempData["Success"] = "Review was successfully created!";
+            try
+            {
+                _reviewServices.AddReview(description, bookId);
+                TempData["Success"] = "Review was successfully created!";
 
-			return RedirectToAction("BookDetails", "Book", new { bookId = bookId });
+            }
+            catch (NullReferenceException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            catch (InvalidReviewLengthException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            catch (ReviewLengthShortException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            return RedirectToAction("BookDetails", "Book", new { bookId = bookId });
         }
 
         [HttpPost]

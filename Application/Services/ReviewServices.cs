@@ -2,6 +2,7 @@
 using Interfaces;
 using Models.Entities;
 using Business_logic.DTOs;
+using Exceptions;
 
 namespace Bookly.Business_logic.Services
 {
@@ -25,6 +26,7 @@ namespace Bookly.Business_logic.Services
             UserDTO? user = _userServices.LoadUser();
             BookDTO? book = _bookServices.GetBookById(bookId);
             ReviewDTO review = new ReviewDTO(description, user, book);
+            ValidateReview(review);
             _reviewRepo.AddReview(ConvertToEntity(review));    
         }
 
@@ -37,6 +39,13 @@ namespace Bookly.Business_logic.Services
         public void RemoveReview(int reviewId)
         {
             _reviewRepo.RemoveReview(reviewId);
+        }
+
+        private void ValidateReview(ReviewDTO review)
+        {
+            if (review == null || review.Description == null) throw new NullReferenceException("Review cannot be empty");
+            if (review.Description.Length > 500) throw new InvalidReviewLengthException();
+            if (review.Description.Length <= 1) throw new ReviewLengthShortException();
         }
 
         private Review ConvertToEntity(ReviewDTO review)
