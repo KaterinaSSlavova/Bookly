@@ -59,8 +59,10 @@ namespace Business_logic.Services
             return randomBook;
         }
 
-        public List<BookDTO> FilterBooks(Genre genre, Ratings rating)
+        public List<BookDTO> FilterBooks(Genre? genre, Ratings? rating)
         {
+            if (genre == null || rating == null)
+                throw new ArgumentException("Please select both genre and rating!");
             List<BookDTO> filteredBooks = GetUnreadBooks();
             filteredBooks = filteredBooks.Where(b => b.Genre == genre).ToList();
             filteredBooks = filteredBooks.Where(b => _ratingServices.GetMostPopularRating(b.Id) == rating).ToList();

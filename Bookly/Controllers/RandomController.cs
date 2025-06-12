@@ -52,13 +52,20 @@ namespace Bookly.Controllers
         }
 
         [HttpPost]
-        public IActionResult FilterBooks(Ratings ratings, Genre genre)
+        public IActionResult FilterBooks(Ratings? ratings, Genre? genre)
         {
-            List<BookDTO> filteredBooks = _randomServices.FilterBooks(genre, ratings);
-            TempData["Filtered"] = JsonConvert.SerializeObject(filteredBooks);
-            if (filteredBooks.Count == 0 || filteredBooks == null)
+            try
             {
-                TempData["Warning"] = "No matches found!";
+                List<BookDTO> filteredBooks = _randomServices.FilterBooks(genre, ratings);
+                TempData["Filtered"] = JsonConvert.SerializeObject(filteredBooks);
+                if (filteredBooks.Count == 0 || filteredBooks == null)
+                {
+                    TempData["Warning"] = "No matches found!";
+                }
+            }
+            catch(ArgumentException ex)
+            {
+                TempData["Warning"]= ex.Message;
             }
             return RedirectToAction("DateWithABook", "Random");
         }

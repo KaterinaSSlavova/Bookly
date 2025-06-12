@@ -7,7 +7,7 @@ namespace Interfaces
     {
         List<BookDTO> GetUnreadBooks();
         BookDTO RandomResult();
-        List<BookDTO> FilterBooks(Genre genre, Ratings rating);
+        List<BookDTO> FilterBooks(Genre? genre, Ratings? rating);
         void AddToWishList(BookDTO book);
         DateWithABookDTO CreateDateDTO(string filteredJson);
     }

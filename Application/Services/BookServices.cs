@@ -45,10 +45,11 @@ namespace Bookly.Business_logic.Services
 
         private void ValidateUpdatedBook(BookDTO oldBookVersion, BookDTO newBookVersion)
         {
-            if (newBookVersion == null) throw new NullReferenceException("Invalid data!");
-
-           
-
+            if (newBookVersion.Title == null) throw new NullReferenceException("Please enter valid book title!");
+            if (newBookVersion.Author == null) throw new NullReferenceException("Please enter valid book author!");
+            if (newBookVersion.Description == null) throw new NullReferenceException("Please enter valid book description!");
+            if (newBookVersion.ISBN == null) throw new NullReferenceException("Please enter valid ISBN!");
+            if ((int)newBookVersion.Genre == -1) throw new NullReferenceException("Please select genre!");
             if (newBookVersion.Pages <= 0) throw new InvalidBookPagesException(newBookVersion.Pages);
             List<BookDTO> allBooks = LoadBooks().Where(b => b.Id != oldBookVersion.Id).ToList();
             foreach(BookDTO book in allBooks)
@@ -59,8 +60,12 @@ namespace Bookly.Business_logic.Services
 
         private void ValidateBook(BookDTO newBook)
         {
-            if (newBook == null) throw new NullReferenceException("Invalid data!");
-            if(newBook.Pages <= 0) throw new InvalidBookPagesException(newBook.Pages);
+            if (newBook.Title == null) throw new NullReferenceException("Please enter valid book title!");
+            if(newBook.Author == null) throw new NullReferenceException("Please enter valid book author!");
+            if (newBook.Description == null) throw new NullReferenceException("Please enter valid book description!");
+            if (newBook.ISBN == null) throw new NullReferenceException("Please enter valid ISBN!");
+            if ((int)newBook.Genre == -1) throw new NullReferenceException("Please select genre!");
+            if (newBook.Pages <= 0) throw new InvalidBookPagesException(newBook.Pages);
             List<BookDTO> allBooks = LoadBooks();
             foreach(BookDTO book in allBooks)
             {

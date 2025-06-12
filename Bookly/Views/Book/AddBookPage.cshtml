@@ -53,7 +53,7 @@
             <div class="form-group mb-3">
                 <label asp-for="Genre" class="control-label">Genre:</label>
                 <select asp-for="Genre" asp-items="@Model.Genres" class="form-select">
-                    <option value="">Select a Genre</option>
+                    <option value="-1">Select a Genre</option>
                 </select>
                 <span asp-validation-for="Genre" class="text-danger"></span>
             </div>

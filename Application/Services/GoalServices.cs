@@ -96,7 +96,7 @@ namespace Bookly.Business_logic.Services
 
         private void ValidateGoal(GoalDTO goal)
         {
-            if (goal == null) throw new NullReferenceException("Enter valid data!");
+            if (goal.Start == DateTime.MinValue || goal.End == DateTime.MinValue) throw new NullReferenceException("Please select valid start and end date!"); 
             if (goal.ReadingGoal <= 0) throw new InvalidReadingGoalException(goal.ReadingGoal);
             if (goal.Start > goal.End) throw new InvalidGoalStartDateException();
             if (goal.End < DateTime.Now) throw new InvalidGoalEndDateException();
