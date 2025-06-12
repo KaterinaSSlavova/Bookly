@@ -174,13 +174,16 @@ namespace Bookly.Data.Repository
                 using SqlConnection connection = GetSqlConnection();
                 connection.Open();
 
+               
+
                 string sql = "SELECT COUNT(*) FROM Users WHERE Username = @Username";
-                if(user.Id != null || user.Id != 0) sql += " and Id <> @Id";
+                if(user.Id != 0) sql += " and Id <> @Id";
 
                 using SqlCommand command = new SqlCommand(sql, connection);
 
                 command.Parameters.AddWithValue("@Username", user.Username);
-                if (user.Id != null || user.Id != 0) command.Parameters.AddWithValue("@Id", user.Id);
+        
+                if (user.Id != 0) command.Parameters.AddWithValue("@Id", user.Id);
 
                 int count = (int)command.ExecuteScalar();
                 return count > 0;
@@ -205,11 +208,11 @@ namespace Bookly.Data.Repository
                 connection.Open();
 
                 string sql = "SELECT COUNT(*) FROM Users WHERE Email = @Email";
-                if (user.Id != null || user.Id != 0) sql += " and Id <> @Id";
+                if (user.Id != 0) sql += " and Id <> @Id";
 
                 using SqlCommand command = new SqlCommand(sql, connection);
-                command.Parameters.AddWithValue("@Email", user.Email);
-                if (user.Id != null || user.Id !=0) command.Parameters.AddWithValue("@Id", user.Id);
+                command.Parameters.AddWithValue("@Email", user.Email);   
+                if (user.Id !=0) command.Parameters.AddWithValue("@Id", user.Id);
 
                 int count = (int)command.ExecuteScalar();
                 return count > 0;

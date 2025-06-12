@@ -76,13 +76,7 @@ namespace Bookly.Bookly.Controllers
 
         [HttpPost]
         public IActionResult AddBook(AddBookModel bookModel)
-        {
-            if (!ModelState.IsValid)
-            {
-                TempData["Error"] = "Please fill all fields!";
-                return RedirectToAction("AddBookPage", "Book");
-            }
-
+        { 
             try
             {
                 BookDTO book = _mapper.Map<BookDTO>(bookModel);

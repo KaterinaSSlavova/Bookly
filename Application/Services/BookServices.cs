@@ -46,7 +46,10 @@ namespace Bookly.Business_logic.Services
         private void ValidateUpdatedBook(BookDTO oldBookVersion, BookDTO newBookVersion)
         {
             if (newBookVersion == null) throw new NullReferenceException("Invalid data!");
-            if (newBookVersion.Pages == 0) throw new InvalidBookPagesException(newBookVersion.Pages);
+
+           
+
+            if (newBookVersion.Pages <= 0) throw new InvalidBookPagesException(newBookVersion.Pages);
             List<BookDTO> allBooks = LoadBooks().Where(b => b.Id != oldBookVersion.Id).ToList();
             foreach(BookDTO book in allBooks)
             {
@@ -57,7 +60,7 @@ namespace Bookly.Business_logic.Services
         private void ValidateBook(BookDTO newBook)
         {
             if (newBook == null) throw new NullReferenceException("Invalid data!");
-            if(newBook.Pages == 0) throw new InvalidBookPagesException(newBook.Pages);
+            if(newBook.Pages <= 0) throw new InvalidBookPagesException(newBook.Pages);
             List<BookDTO> allBooks = LoadBooks();
             foreach(BookDTO book in allBooks)
             {

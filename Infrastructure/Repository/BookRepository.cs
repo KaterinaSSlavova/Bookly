@@ -99,9 +99,10 @@ namespace Bookly.Data.Repository
 
                 string sql = @"SELECT Id, Picture, Title, Author, [Description], ISBN, Genre, Pages
                                FROM Books 
-                               WHERE Id=@Id";
+                               WHERE Id=@Id and isArchived=@IsArchived";
                 using SqlCommand command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@Id", id);
+                command.Parameters.AddWithValue("@IsArchived", 0);
 
                 SqlDataReader reader = command.ExecuteReader();
                 if (reader.Read())
@@ -146,7 +147,7 @@ namespace Bookly.Data.Repository
                                  ISBN = @ISBN,
                                  Genre = @Genre,
                                  Pages = @Pages
-                                 WHERE Id = @Id";
+                                 WHERE Id = @Id and isArchived=@IsArchived";
                 using SqlCommand command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@Id", book.Id);
                 command.Parameters.AddWithValue("@Picture", book.Picture);
@@ -156,6 +157,7 @@ namespace Bookly.Data.Repository
                 command.Parameters.AddWithValue("@ISBN", book.ISBN);
                 command.Parameters.AddWithValue("@Genre", book.Genre);
                 command.Parameters.AddWithValue("@Pages", book.Pages);
+                command.Parameters.AddWithValue("@IsArchived", 0);
 
                 command.ExecuteNonQuery();
             }

@@ -74,7 +74,7 @@ namespace Bookly.Data.Repository
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError(ex, "Unexpected error occurred while laoding user shelves.");
+				_logger.LogError(ex, "Unexpected error occurred while loading user shelves.");
 				throw new RepositoryException("An unexpected error occurred. Please try again later.");
 			}
 		}
@@ -125,9 +125,11 @@ namespace Bookly.Data.Repository
                                FROM Books as b
                                INNER JOIN ShelfBook as sb
                                ON b.Id=sb.BookId
-                               WHERE sb.ShelfId=@Id";
+                               WHERE sb.ShelfId=@Id and b.isArchived = @IsArchived";
                 using SqlCommand command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@Id", id);
+                command.Parameters.AddWithValue("@IsArchived", 0);
+
                 using SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -167,9 +169,11 @@ namespace Bookly.Data.Repository
                                FROM Shelves as s
 							   Inner Join Users as u
 							   On u.Id = s.UserId
-                               WHERE s.Id = @Id";
+                               WHERE s.Id = @Id and isArchived = @IsArchived";
                 using SqlCommand command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@Id", id);
+                command.Parameters.AddWithValue("@IsArchived", 0);
+
                 using SqlDataReader reader = command.ExecuteReader();
                 if (reader.Read())
                 {
@@ -241,9 +245,10 @@ namespace Bookly.Data.Repository
                                 From Books as b
                                 Inner join UserBookProgress as ubp
                                 On b.Id = ubp.BookId
-                                WHERE UserId = @UserId";
+                                WHERE UserId = @UserId and isArchived = @IsArchived";
                 using SqlCommand command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@UserId", user.Id);
+                command.Parameters.AddWithValue("@IsArchived", 0);
 
                 using SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())

@@ -14,7 +14,7 @@
         <div class="card shadow-sm border-0 p-4">
             <div class="card-body">
                 <h4 class="card-title mb-3">Create a New Shelf</h4>
-                <form asp-controller="Shelf" asp-action="CreateNewShelf">
+                <form asp-controller="Shelf" asp-action="CreateNewShelf" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group mb-3">
                         <label asp-for="Name" class="form-label">Shelf Name:</label>
@@ -22,13 +22,13 @@
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
 
-                    <div class="d-flex justify-content-between">
-                        <button type="submit" class="btn btn-dark">Save</button>
-
-                        <form asp-controller="Shelf" asp-action="GoBack" method="post" class="mb-0">
-                            <button type="submit" class="btn btn-dark">Go Back</button>
-                        </form>
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="submit" class="btn btn-dark me-2">Save</button>
                     </div>
+                </form>
+
+                <form asp-controller="Shelf" asp-action="GoBack" method="post" class="mt-2 d-flex justify-content-end">
+                    <button type="submit" class="btn btn-secondary">Go Back</button>
                 </form>
             </div>
         </div>

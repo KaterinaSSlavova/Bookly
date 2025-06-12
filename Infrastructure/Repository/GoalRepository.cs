@@ -264,7 +264,7 @@ namespace Bookly.Data.Repository
                                 FROM Goals as g
 								INNER JOIN Users as u
 								ON u.Id = g.UserId
-                                WHERE isArchived=0";
+                                WHERE isArchived=@isArchived";
                 using SqlCommand command = new SqlCommand(sql,connection);
                 command.Parameters.AddWithValue("@isArchived", 0);
 
