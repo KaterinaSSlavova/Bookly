@@ -96,12 +96,15 @@ namespace Bookly.Business_logic.Services
             if (user == null)
                 throw new NullReferenceException("Invalid data!");
 
-            if (user.BirthDate.HasValue)
+            if(user.Id != 0)
             {
-                if (user.BirthDate.Value > DateTime.Now || user.BirthDate.Value.Year == DateTime.Today.Year)
-                    throw new InvalidBirthdayException();
+                if (user.BirthDate.HasValue)
+                {
+                    if (user.BirthDate.Value > DateTime.Now || user.BirthDate.Value.Year == DateTime.Today.Year)
+                        throw new InvalidBirthdayException();
+                }
+                else if (!user.BirthDate.HasValue) throw new InvalidBirthdayException();
             }
-            else if (!user.BirthDate.HasValue) throw new InvalidBirthdayException();
 
             if (user.Username == null) throw new NullReferenceException("Please enter valid data for your username!");
 
