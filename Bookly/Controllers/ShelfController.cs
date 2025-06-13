@@ -25,7 +25,15 @@ namespace Bookly.Bookly.Controllers
         public IActionResult ShelfOverview()
         {
             List<RegularShelfDTO> myShelves = _shelfService.GetUserShelves();
-            List<RegularShelfViewModel> model = _mapper.Map<List<RegularShelfViewModel>>(myShelves);
+            List<RegularShelfViewModel> shelves = _mapper.Map<List<RegularShelfViewModel>>(myShelves);
+            var deleteViewModels = shelves
+                .Select(s => new DeleteModalViewModel(s.Shelf.Id, "Shelf", s.Shelf.Name, "Shelf", "RemoveShelf"))
+                .ToList();
+            var model = new ShelfOverviewViewModel()
+            {
+                RegularShelves = shelves,
+                DeleteModal = deleteViewModels
+            };
             return View(model);
         }
 
@@ -72,7 +80,14 @@ namespace Bookly.Bookly.Controllers
         {
             RegularShelfDTO shelf = _shelfService.GetShelfById(id);
             RegularShelfViewModel shelfModel = _mapper.Map<RegularShelfViewModel>(shelf);
-            return View(shelfModel);
+            var deleteModel = shelfModel.BooksOnShelf
+                .Select(b => new DeleteModalViewModel(b.Id, "Book", b.Title, "Shelf", "RemoveFromShelf")).ToList();
+            var model = new ShelfDetailsViewModel
+            {
+                Shelf = shelfModel,
+                DeleteModal = deleteModel
+            };
+            return View(model);
         }
 
         [HttpPost]

@@ -1,10 +1,10 @@
-﻿@model RegularShelfViewModel
+﻿@model ShelfDetailsViewModel
 
 @{
     ViewData["Title"] = "Shelf Details";
 }
 
-<h1>@Model.Shelf.Name</h1>
+<h1>@Model.Shelf.Shelf.Name</h1>
 <hr />
 
 @Html.Partial("_Alert")
@@ -18,7 +18,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (BookViewModel book in Model.BooksOnShelf)
+        @foreach (BookViewModel book in Model.Shelf.BooksOnShelf)
         {
             <tr>
                 <td>
@@ -31,11 +31,10 @@
                         <input type="hidden" name="Id" value="@book.Id" />
                         <input type="submit" value="View Book" class="btn btn-dark" />
                     </form>
-                    <form asp-controller="Shelf" asp-action="RemoveFromShelf" style="display:inline;">
-                        <input type="hidden" name="bookId" value="@book.Id" />
-                        <input type="hidden" name="shelfId" value="@Model.Shelf.Id" />
-                        <input type="submit" value="Remove from shelf" class="btn btn-danger" />
-                    </form>
+
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@book.Id">
+                        Remove from shelf
+                    </button>
                 </td>
             </tr>
         }
@@ -47,3 +46,8 @@
         <input type="submit" value="Go Back" class="btn btn-dark" />
     </div>
 </form>
+
+@foreach (DeleteModalViewModel modal in Model.DeleteModal)
+{
+    @await Html.PartialAsync("_DeleteModal", modal)
+}

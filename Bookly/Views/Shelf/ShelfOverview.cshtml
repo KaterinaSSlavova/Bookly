@@ -1,4 +1,4 @@
-﻿@model List<RegularShelfViewModel>
+﻿@model ShelfOverviewViewModel
 
 @{
     ViewData["Title"] = "Shelf Overview";
@@ -18,7 +18,7 @@
 @Html.Partial("_Alert")
 
 <div class="row">
-    @foreach (RegularShelfViewModel shelf in Model)
+    @foreach (RegularShelfViewModel shelf in Model.RegularShelves)
     {
         <div class="col-md-6 col-lg-4 mb-3">
             <div class="card shadow-sm border-0">
@@ -41,10 +41,9 @@
                         }
                         @if(shelf.Shelf.Name!="Have Read" && shelf.Shelf.Name != "Want To Read" && shelf.Shelf.Name != "Currently Reading")
                         {
-                            <form asp-controller="Shelf" asp-action="RemoveShelf" method="post">
-                                <input type="hidden" name="id" value="@shelf.Shelf.Id" />
-                                <button type="submit" class="btn btn-danger">Remove Shelf</button>
-                            </form>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@shelf.Shelf.Id">
+                                Delete
+                            </button>
                         }
                     </div>
                 </div>
@@ -52,3 +51,8 @@
         </div>
     }
 </div>
+
+@foreach (DeleteModalViewModel modal in Model.DeleteModal)
+{
+    @await Html.PartialAsync("_DeleteModal", modal)
+}

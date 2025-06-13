@@ -325,29 +325,6 @@ body {
     animation: hh 0.1s;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.modal-backdrop.show {
+    background-color: rgba(0, 0, 0, 0.3);
+}
