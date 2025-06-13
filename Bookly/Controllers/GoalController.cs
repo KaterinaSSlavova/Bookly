@@ -24,6 +24,7 @@ namespace Bookly.WebApp.Controllers
         {
             List<GoalDTO> goals = _goalService.GetPersonalGoals();
             List<GoalViewModel> personalGoals = _mapper.Map<List<GoalViewModel>>(goals);
+            personalGoals.ForEach(g => g.DeleteModal = new DeleteModalViewModel(g.Id, "id","Goal", null, "Goal", "RemoveGoal"));
             return View(personalGoals);
         }
 

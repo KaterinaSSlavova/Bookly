@@ -55,11 +55,11 @@
                                 <span class="badge bg-danger">⏰ Expired</span>
                             }
                         </p>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@goal.Id">
+                            Remove
+                        </button>
 
-                        <form asp-controller="Goal" asp-action="RemoveGoal" method="post">
-                            <input type="hidden" name="id" value="@goal.Id" />
-                            <input type="submit" value="Remove" class="btn btn-danger mb-3" />
-                        </form>
+                        @await Html.PartialAsync("_DeleteModal", goal.DeleteModal)
                     </div>
                 </div>
             </div>

@@ -12,7 +12,9 @@ namespace Bookly.Mappers
 
             CreateMap<RegularShelfDTO, RegularShelfViewModel>().ReverseMap();   
 
-            CreateMap<CurrentBookShelfDTO, CurrentBookShelfViewModel>().ReverseMap();
+            CreateMap<CurrentBookShelfDTO, CurrentBookShelfViewModel>()
+                .ForMember(dest => dest.DeleteModal, opt => opt.Ignore())
+                .ReverseMap();
         }
     }
 }

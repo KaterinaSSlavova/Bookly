@@ -82,11 +82,9 @@
 
                                         @if (username == review.Username)
                                         {
-                                            <form asp-controller="Review" asp-action="RemoveReview" class="mt-2">
-                                                <input type="hidden" name="reviewId" value="@review.Id" />
-                                                <input type="hidden" name="bookId" value="@Model.Book.Id" />
-                                                <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
-                                            </form>
+                                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@review.Id" class="w-100" style="max-width: 500px;">
+                                                Remove
+                                            </button>
                                         }
                                     </div>
                                 </div>
@@ -125,12 +123,10 @@
                         <button class="btn btn-warning w-100">Update</button>
                     </form>
 
-                    <form asp-controller="Book" asp-action="RemoveBook" class="w-100" style="max-width: 500px;">
-                        <input type="hidden" name="id" value="@Model.Book.Id" />
-                        <button class="btn btn-danger w-100">Remove Book</button>
-                    </form>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@Model.Book.Id" class="w-100" style="max-width: 500px;">
+                        Remove Book
+                    </button>
                 }
-
                 <form asp-controller="Book" asp-action="GoBack" class="w-100" style="max-width: 500px;">
                     <button class="btn btn-dark w-100">Go Back</button>
                 </form>
@@ -139,3 +135,9 @@
         </div>
     </div>
 </div>
+@await Html.PartialAsync("_DeleteModal", Model.DeleteModalBooks)
+
+@foreach (DeleteModalViewModel modal in Model.DeleteModalReviews)
+{
+    @await Html.PartialAsync("_DeleteModal", modal)
+}

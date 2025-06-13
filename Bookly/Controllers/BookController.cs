@@ -45,7 +45,9 @@ namespace Bookly.Bookly.Controllers
         {
             BookDetailsDTO bookDTO = _bookDetailsService.CreateDetailsDTO(bookId);
             BookDetailsViewModel model = _mapper.Map<BookDetailsViewModel>(bookDTO);
-            model.Ratings = MapRatings(bookDTO.Ratings);
+            model.Ratings = MapRatings(bookDTO.Ratings); 
+            model.DeleteModalBooks = new DeleteModalViewModel(model.Book.Id, "id", "Book", model.Book.Title, "Book", "RemoveBook");
+            model.DeleteModalReviews = model.Reviews.Select(r => new DeleteModalViewModel(r.Id, "reviewId", model.Book.Id, "bookId", "Review", null, "Review", "RemoveReview")).ToList();
             return View(model);
         }
 

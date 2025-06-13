@@ -14,7 +14,8 @@ namespace Bookly.Mappers
                .ForMember(dest => dest.Start, opt => opt.MapFrom(src => src.Start.ToString("yyyy-MM-dd")))
                .ForMember(dest => dest.End, opt => opt.MapFrom(src => src.End.ToString("yyyy-MM-dd")))
                .ReverseMap()
-               .ForMember(dest => dest.User, opt => opt.Ignore());
+               .ForMember(dest => dest.User, opt => opt.Ignore())
+               .ForSourceMember(src => src.DeleteModal, opt => opt.DoNotValidate());
         }
     }
 }

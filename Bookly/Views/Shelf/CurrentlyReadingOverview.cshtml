@@ -54,11 +54,14 @@
                                 Update progress
                             </button>
 
-                            <form asp-controller="Shelf" asp-action="RemoveFromCurrentBookShelf" method="post" class="mb-0">
-                                <input type="hidden" name="bookId" value="@book.Book.Id" />
-                                <input type="hidden" name="shelfId" value="@Model.Shelf.Id" />
-                                <input type="submit" value="Remove" class="btn btn-danger" />
-                            </form>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@book.Book.Id">
+                                Remove Book
+                            </button>
+
+                            @foreach (DeleteModalViewModel modal in Model.DeleteModal)
+                            {
+                                @await Html.PartialAsync("_DeleteModal", modal)
+                            }
                         </div>
 
                         <form asp-controller="Shelf" asp-action="UpdateCurrentBookProgress" method="post">

@@ -27,7 +27,7 @@ namespace Bookly.Bookly.Controllers
             List<RegularShelfDTO> myShelves = _shelfService.GetUserShelves();
             List<RegularShelfViewModel> shelves = _mapper.Map<List<RegularShelfViewModel>>(myShelves);
             var deleteViewModels = shelves
-                .Select(s => new DeleteModalViewModel(s.Shelf.Id, "Shelf", s.Shelf.Name, "Shelf", "RemoveShelf"))
+                .Select(s => new DeleteModalViewModel(s.Shelf.Id, "id", "Shelf", s.Shelf.Name, "Shelf", "RemoveShelf"))
                 .ToList();
             var model = new ShelfOverviewViewModel()
             {
@@ -78,10 +78,10 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult ShelfDetails(int id)
         {
-            RegularShelfDTO shelf = _shelfService.GetShelfById(id);
+            RegularShelfDTO? shelf = _shelfService.GetShelfById(id);
             RegularShelfViewModel shelfModel = _mapper.Map<RegularShelfViewModel>(shelf);
             var deleteModel = shelfModel.BooksOnShelf
-                .Select(b => new DeleteModalViewModel(b.Id, "Book", b.Title, "Shelf", "RemoveFromShelf")).ToList();
+                .Select(b => new DeleteModalViewModel(b.Id, "bookId", shelfModel.Shelf.Id, "shelfId", "Book", b.Title, "Shelf", "RemoveFromShelf")).ToList();
             var model = new ShelfDetailsViewModel
             {
                 Shelf = shelfModel,
@@ -101,6 +101,9 @@ namespace Bookly.Bookly.Controllers
         {
             CurrentBookShelfDTO currentBooksShelf = _shelfService.GetCurrentlyReadingShelf();
             CurrentBookShelfViewModel shelfModel = _mapper.Map<CurrentBookShelfViewModel>(currentBooksShelf);
+            shelfModel.DeleteModal = shelfModel.CurrentBooks
+                .Select(b => new DeleteModalViewModel
+                (b.Book.Id, "bookId", shelfModel.Shelf.Id, "shelfId", "Shelf", b.Book.Title, "Shelf", "RemoveFromCurrentBookShelf")).ToList();
             return View(shelfModel);
         }
 

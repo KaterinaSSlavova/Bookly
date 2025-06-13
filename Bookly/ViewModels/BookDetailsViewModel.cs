@@ -9,5 +9,7 @@ namespace Bookly.ViewModels
         public List<ReviewViewModel> Reviews { get; set; } = new List<ReviewViewModel>();
         public string RatingFromUser { get; set; }
         public List<SelectListItem> Ratings { get; set; }
+        public DeleteModalViewModel DeleteModalBooks { get; set; }
+        public List<DeleteModalViewModel> DeleteModalReviews { get; set; }
     }
 }
