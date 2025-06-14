@@ -37,12 +37,14 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult ViewBook(int id)
         {
-            return RedirectToAction("BookDetails", "Book", new { bookId = id });
+            TempData["BookId"] = id;
+            return RedirectToAction("BookDetails", "Book");
         }
 
         [HttpGet]
-        public IActionResult BookDetails(int bookId)
+        public IActionResult BookDetails()
         {
+            int bookId = (int)TempData["BookId"];
             BookDetailsDTO bookDTO = _bookDetailsService.CreateDetailsDTO(bookId);
             BookDetailsViewModel model = _mapper.Map<BookDetailsViewModel>(bookDTO);
             model.Ratings = MapRatings(bookDTO.Ratings); 
@@ -60,7 +62,8 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult GetBookDetails(int id)
         {
-            return RedirectToAction("BookDetails", "Book", new { bookid = id });
+            TempData["BookId"] = id;
+            return RedirectToAction("BookDetails", "Book");
         }
 
         [HttpGet]
@@ -103,8 +106,9 @@ namespace Bookly.Bookly.Controllers
         }
 
         [HttpGet]
-        public IActionResult UpdateBook(int bookId)
+        public IActionResult UpdateBook()
         {
+            int bookId = (int)TempData["BookId"];
             BookDetailsDTO bookDTO = _bookDetailsService.CreateDetailsDTO(bookId);
             AddBookModel model = new AddBookModel(bookId, bookDTO.Book.Picture, bookDTO.Book.Title, bookDTO.Book.Author, bookDTO.Book.Description, bookDTO.Book.ISBN, bookDTO.Book.Genre.ToString(), bookDTO.Book.Pages);
             return View(model);
@@ -113,7 +117,8 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult GoToUpdateBook(int Id)
         {
-            return RedirectToAction("UpdateBook", "Book", new { bookId = Id });
+            TempData["BookId"] = Id;
+            return RedirectToAction("UpdateBook", "Book");
         }
 
         [HttpPost]

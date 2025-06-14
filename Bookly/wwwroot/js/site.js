@@ -1,16 +1,19 @@
-﻿let degree = 1800;
-let clicks = 0;
-
-$(document).ready(function () {
+﻿$(document).ready(function () {
     $('#spin').click(function () {
-        clicks++;
-        let newDegree = degree * clicks;
-        let extraDegree = Math.floor(Math.random() * 360);
-        let totalDegree = newDegree + extraDegree;
+        const $spinBtn = $(this);
+
+        if ($spinBtn.prop('disabled')) {
+            return;
+        }
+        $spinBtn.prop('disabled', true);
+
+        let baseRotation = 1800; 
+        let extraRotation = Math.floor(Math.random() * 360);
+        let totalRotation = baseRotation + extraRotation;
 
         $('#inner-wheel').css({
             'transition': 'transform 4s ease-out',
-            'transform': 'rotate(' + totalDegree + 'deg)'
+            'transform': 'rotate(' + totalRotation + 'deg)'
         });
 
         setTimeout(function () {
@@ -41,12 +44,29 @@ $(document).ready(function () {
                     $('#bookGenre').text(data.genre);
                     $('input[name="ISBN"]').val(data.isbn);
                     $('#bookISBN').text(data.isbn);
-                    var modal = new bootstrap.Modal(document.getElementById('bookModal'));
+
+                    const modalElement = document.getElementById('bookModal');
+
+                    if ($(modalElement).hasClass('show')) {
+                        $(modalElement).modal('hide');
+                    }
+                    const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+
+                    $(modalElement).off('hidden.bs.modal'); 
+                    $(modalElement).on('hidden.bs.modal', function () {
+                        $spinBtn.prop('disabled', false);
+
+                        $('.modal-backdrop').remove();
+                    });
+
                     modal.show();
                 })
                 .catch(error => {
                     console.error('Fetch error:', error);
                     alert('Failed to spin the wheel. Please try again.');
+                    $spinBtn.prop('disabled', false);
+
+                    $('.modal-backdrop').remove();
                 });
         }, 4000);
     });

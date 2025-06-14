@@ -123,15 +123,19 @@
                         <button class="btn btn-warning w-100">Update</button>
                     </form>
 
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@Model.Book.Id" class="w-100" style="max-width: 500px;">
-                        Remove Book
-                    </button>
+                    <div class="w-100" style="max-width: 500px;">
+                        <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#deleteModal-@Model.Book.Id">
+                            Remove Book
+                        </button>
+                    </div>
                 }
+
                 <form asp-controller="Book" asp-action="GoBack" class="w-100" style="max-width: 500px;">
                     <button class="btn btn-dark w-100">Go Back</button>
                 </form>
 
             </div>
+
         </div>
     </div>
 </div>

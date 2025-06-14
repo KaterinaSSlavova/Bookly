@@ -23,6 +23,10 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+            if (!string.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
+            {
+                return RedirectToAction("Index", "Book");
+            }
             return View();
         }
 
@@ -63,6 +67,10 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult LogIn()
         {
+            if (!string.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
+            {
+                return RedirectToAction("Index", "Book");
+            }
             return View();
         }
 

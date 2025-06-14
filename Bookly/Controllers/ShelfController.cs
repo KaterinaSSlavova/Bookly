@@ -76,8 +76,9 @@ namespace Bookly.Bookly.Controllers
         }
 
         [HttpGet]
-        public IActionResult ShelfDetails(int id)
+        public IActionResult ShelfDetails()
         {
+            int id = (int)TempData["ShelfId"];
             RegularShelfDTO? shelf = _shelfService.GetShelfById(id);
             RegularShelfViewModel shelfModel = _mapper.Map<RegularShelfViewModel>(shelf);
             var deleteModel = shelfModel.BooksOnShelf
@@ -93,7 +94,8 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult ViewShelf(int id)
         {
-            return RedirectToAction("ShelfDetails", "Shelf", new { id = id });
+            TempData["ShelfId"] = id;
+            return RedirectToAction("ShelfDetails", "Shelf");
         }
 
         [HttpGet]
