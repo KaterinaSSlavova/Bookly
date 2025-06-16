@@ -19,7 +19,8 @@ namespace Bookly.Controllers
         {
 			_ratingService.RateBook(bookId, ratingId);
 			TempData["Success"] = "Rating successful!";
-			return RedirectToAction("BookDetails", "Book", new { bookId = bookId });
+            TempData["BookId"] = bookId;
+			return RedirectToAction("BookDetails", "Book");
 		}
     }
 }

@@ -129,7 +129,8 @@ namespace Bookly.Bookly.Controllers
                 BookDTO book = _mapper.Map<BookDTO>(bookModel);
                 _bookService.UpdateBook(book);
                 TempData["Success"] = "Book updated successfully!";
-                return RedirectToAction("BookDetails", "Book", new { bookId = bookModel.Id });
+                TempData["BookId"] = book.Id;
+                return RedirectToAction("BookDetails", "Book");
             }
             catch (NullReferenceException ex)
             {

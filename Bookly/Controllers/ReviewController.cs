@@ -21,7 +21,7 @@ namespace Bookly.Controllers
             {
                 _reviewServices.AddReview(description, bookId);
                 TempData["Success"] = "Review was successfully created!";
-
+                TempData["BookId"] = bookId;
             }
             catch (NullReferenceException ex)
             {
@@ -35,7 +35,7 @@ namespace Bookly.Controllers
             {
                 TempData["Error"] = ex.Message;
             }
-            return RedirectToAction("BookDetails", "Book", new { bookId = bookId });
+            return RedirectToAction("BookDetails", "Book");
         }
 
         [HttpPost]
@@ -43,7 +43,8 @@ namespace Bookly.Controllers
         {
 			_reviewServices.RemoveReview(reviewId);
 			TempData["Success"] = "Review was successfully removed!";
-			return RedirectToAction("BookDetails", "Book", new { bookId = bookId });
+            TempData["BookId"] = bookId;
+            return RedirectToAction("BookDetails", "Book");
 		}
     }
 }

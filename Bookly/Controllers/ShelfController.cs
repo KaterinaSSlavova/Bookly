@@ -125,7 +125,8 @@ namespace Bookly.Bookly.Controllers
         public IActionResult RemoveFromShelf(int bookId, int shelfId)
         {
             RemoveBookFromShelf(bookId, shelfId);
-            return RedirectToAction("ShelfDetails", "Shelf", new { id = shelfId });
+            TempData["ShelfId"] = shelfId;
+            return RedirectToAction("ShelfDetails", "Shelf");
         }
 
         [HttpPost]
