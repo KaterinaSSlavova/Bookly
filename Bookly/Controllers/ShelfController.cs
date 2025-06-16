@@ -155,6 +155,7 @@ namespace Bookly.Bookly.Controllers
         {
             try
             {
+                TempData["BookId"] = bookId;
                 BookDTO? book = _bookService.GetBookById(bookId);
                 RegularShelfDTO? shelf = _shelfService.GetShelfById(shelfId);    
                 _shelfService.AddBookToShelf(book, shelf);
@@ -180,7 +181,7 @@ namespace Bookly.Bookly.Controllers
             {
                 TempData["Error"] = ex.Message;
             }
-            return RedirectToAction("BookDetails", "Book", new { bookId = bookId });
+            return RedirectToAction("BookDetails", "Book");
         }
 
         [HttpPost]
