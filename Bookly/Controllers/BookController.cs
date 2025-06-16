@@ -37,14 +37,14 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult ViewBook(int id)
         {
-            TempData["BookId"] = id;
+            HttpContext.Session.SetInt32("BookId", id);
             return RedirectToAction("BookDetails", "Book");
         }
 
         [HttpGet]
         public IActionResult BookDetails()
         {
-            int bookId = (int)TempData["BookId"];
+            int bookId = HttpContext.Session.GetInt32("BookId").Value;
             BookDetailsDTO bookDTO = _bookDetailsService.CreateDetailsDTO(bookId);
             BookDetailsViewModel model = _mapper.Map<BookDetailsViewModel>(bookDTO);
             model.Ratings = MapRatings(bookDTO.Ratings); 
@@ -62,7 +62,7 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult GetBookDetails(int id)
         {
-            TempData["BookId"] = id;
+            HttpContext.Session.SetInt32("BookId", id);
             return RedirectToAction("BookDetails", "Book");
         }
 
@@ -108,7 +108,7 @@ namespace Bookly.Bookly.Controllers
         [HttpGet]
         public IActionResult UpdateBook()
         {
-            int bookId = (int)TempData["BookId"];
+            int bookId = HttpContext.Session.GetInt32("BookId").Value;
             BookDetailsDTO bookDTO = _bookDetailsService.CreateDetailsDTO(bookId);
             AddBookModel model = new AddBookModel(bookId, bookDTO.Book.Picture, bookDTO.Book.Title, bookDTO.Book.Author, bookDTO.Book.Description, bookDTO.Book.ISBN, bookDTO.Book.Genre.ToString(), bookDTO.Book.Pages);
             return View(model);
@@ -117,7 +117,7 @@ namespace Bookly.Bookly.Controllers
         [HttpPost]
         public IActionResult GoToUpdateBook(int Id)
         {
-            TempData["BookId"] = Id;
+            HttpContext.Session.SetInt32("BookId", Id);
             return RedirectToAction("UpdateBook", "Book");
         }
 
@@ -129,7 +129,7 @@ namespace Bookly.Bookly.Controllers
                 BookDTO book = _mapper.Map<BookDTO>(bookModel);
                 _bookService.UpdateBook(book);
                 TempData["Success"] = "Book updated successfully!";
-                TempData["BookId"] = book.Id;
+                HttpContext.Session.SetInt32("BookId", book.Id);
                 return RedirectToAction("BookDetails", "Book");
             }
             catch (NullReferenceException ex)

@@ -125,7 +125,7 @@ namespace Bookly.Bookly.Controllers
         public IActionResult RemoveFromShelf(int bookId, int shelfId)
         {
             RemoveBookFromShelf(bookId, shelfId);
-            TempData["ShelfId"] = shelfId;
+            HttpContext.Session.SetInt32("ShelfId", shelfId);
             return RedirectToAction("ShelfDetails", "Shelf");
         }
 
@@ -156,7 +156,7 @@ namespace Bookly.Bookly.Controllers
         {
             try
             {
-                TempData["BookId"] = bookId;
+                HttpContext.Session.SetInt32("BookId", bookId);
                 BookDTO? book = _bookService.GetBookById(bookId);
                 RegularShelfDTO? shelf = _shelfService.GetShelfById(shelfId);    
                 _shelfService.AddBookToShelf(book, shelf);
