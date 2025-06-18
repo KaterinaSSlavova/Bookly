@@ -69,7 +69,7 @@ namespace Bookly.Business_logic.Services
             if (newBook.Title == null) throw new NullReferenceException("Please enter valid book title!");
             if (newBook.Author == null) throw new NullReferenceException("Please enter valid book author!");
             if (newBook.Description == null) throw new NullReferenceException("Please enter valid book description!");
-            if (newBook.ISBN == null || newBook.ISBN.StartsWith("-")) throw new NullReferenceException("Please enter valid ISBN!");
+            if (newBook.ISBN == null || newBook.ISBN.StartsWith("-") || newBook.ISBN.Length > 13) throw new NullReferenceException("Please enter valid ISBN!");
             if ((int)newBook.Genre == -1) throw new NullReferenceException("Please select genre!");
             if (newBook.Pages <= 0) throw new InvalidBookPagesException(newBook.Pages);
         }

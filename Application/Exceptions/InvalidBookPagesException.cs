@@ -2,7 +2,7 @@
 {
     public class InvalidBookPagesException: Exception
     {
-        public InvalidBookPagesException(int pages): base($"Book pages cannot be {pages}! Please enter a number bugger than 0!") { }
+        public InvalidBookPagesException(int pages): base($"Book pages cannot be {pages}! Please enter a number bigger than 0!") { }
     }
 
     public class DuplicateISBNException: Exception

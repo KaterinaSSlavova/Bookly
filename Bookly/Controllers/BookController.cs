@@ -144,7 +144,7 @@ namespace Bookly.Bookly.Controllers
             {
                 TempData["Error"] = ex.Message;
             }
-            return RedirectToAction("UpdateBook", "Book", new { bookId = bookModel.Id });
+            return RedirectToAction("UpdateBook", "Book");
         }
 
         [HttpPost]
