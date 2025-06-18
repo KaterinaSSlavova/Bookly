@@ -14,6 +14,7 @@ namespace Bookly.ViewModels
         public string BirthDate { get; set; }
 
         [Required]
+        [EmailAddress(ErrorMessage = "Invalid Email format!")]
         public string Email { get; set; }
 
         public string Image {  get; set; }

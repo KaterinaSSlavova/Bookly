@@ -3,6 +3,7 @@ using Interfaces;
 using Microsoft.AspNetCore.Http;
 using Business_logic.DTOs;
 using Exceptions;
+using System.ComponentModel.DataAnnotations;
 
 namespace Bookly.Business_logic.Services
 {
@@ -109,6 +110,9 @@ namespace Bookly.Business_logic.Services
             if (user.Username == null) throw new NullReferenceException("Please enter valid data for your username!");
 
             if (user.Email == null) throw new NullReferenceException("Please enter valid data for your email!");
+
+            EmailAddressAttribute emailAttribute = new EmailAddressAttribute();
+            if(!emailAttribute.IsValid(user.Email)) throw new NullReferenceException("Please enter valid data for your email!");
 
             if (_userRepo.DoesUsernameExists(user))
                 throw new UsernameAlreadyExistsException(user.Username);
