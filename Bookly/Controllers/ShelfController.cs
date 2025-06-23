@@ -152,10 +152,10 @@ namespace Bookly.Bookly.Controllers
                     };
 
                     using HttpClient client = new HttpClient();
-                    client.BaseAddress = new Uri("https://localhost:7238");
+                    client.BaseAddress = new Uri("https://localhost:7166");
                     try
                     {
-                        var response = await client.PostAsJsonAsync("/api/tasks/from-bookly", task);
+                        var response = await client.PostAsJsonAsync("/api/book-tasks/from-bookly", task);
                         if (!response.IsSuccessStatusCode)
                         {
                             TempData["Warning"] = "Book was added to shelf, but not to Planner.";
