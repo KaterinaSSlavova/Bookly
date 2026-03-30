@@ -50,7 +50,7 @@ The application also includes structured logging and error monitoring.
 
 The original data layer was later replaced with Entity Framework using a database-first approach, allowing the domain model to be generated directly from the database schema.
 
-Bookly also integrates with a [.NET MAUI Planner]() application through REST APIs. This integration enables synchronization between the reading platform and the planner:
+Bookly also integrates with a [.NET MAUI Planner](https://github.com/KaterinaSSlavova/BooklyPlanner.git) application through REST APIs. This integration enables synchronization between the reading platform and the planner:
 
 When a book is added to the "Want to Read" shelf in Bookly, it is automatically sent to the planner as a new reading task.
 When a book is marked as completed in the planner, the system updates Bookly and moves the book to the "Have Read" shelf.
